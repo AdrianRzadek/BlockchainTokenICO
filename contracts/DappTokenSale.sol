@@ -33,22 +33,26 @@ contract DappTokenSale {
 
     // buy tokens
 
-    function buyTokens(uint256 _numberOfTokens)public payable{
+    function buyTokens(uint256 _numberOfTokens)external payable{
       
       
        //require that value is equal to tokens
       
-       require(msg.value == (_numberOfTokens * tokenPrice));
+       require(msg.value == (_numberOfTokens * tokenPrice), "Incorrect value sent");
        //require that contract has enought tokens
-       require(tokenContract.balanceOf(address(this))>= _numberOfTokens);
+       //require(tokenContract.balanceOf(address(this)) >= _numberOfTokens, "Not enough tokens available");
        //require that a transfer is successful
-       require(tokenContract.transfer(msg.sender, _numberOfTokens));
+      // require(tokenContract.transfer(msg.sender, _numberOfTokens), "Token transfer failed");
         //Keep track of tokenSold
         tokensSold += _numberOfTokens;
         //Trigger Sell event
         emit Sell(msg.sender, _numberOfTokens);
 
     }
+
+        
+
+
     //ending token sale
     function endSale() public payable {
         //require admin

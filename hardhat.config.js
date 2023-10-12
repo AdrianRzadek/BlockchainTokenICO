@@ -1,4 +1,5 @@
 require("@nomicfoundation/hardhat-toolbox");
+require("ethers");
 
 /** @type import('hardhat/config').HardhatUserConfig */
 module.exports = {
@@ -12,11 +13,16 @@ module.exports = {
     localhost: {
       url: "http://127.0.0.1:8545",
     },
+    hardhat: {
+      chainId: 31337, // The network ID for the local development network
+      gas: "auto",
+      hardfork: "shanghai",
+    },
   },
   paths: {
     sources: "./contracts",
     tests: "./test",
     cache: "./cache",
-    artifacts: "./client/src/artifacts"
+    artifacts: "./artifacts"
   },
 };

@@ -1,174 +1,315 @@
 import React, { Component, useEffect, useState } from 'react';
-import Web3 from 'web3';
+import { ethers } from 'ethers';
+//import DappTokenSale from './artifacts/contracts/DappTokenSale.sol/DappTokenSale.json';
+//import DappToken from './artifacts/contracts/DappToken.sol/DappToken.json';
+//import Transactions from './artifacts/contracts/Transactions.sol/Transactions.json';
 
-import DappTokenSale from './artifacts/contracts/DappTokenSale.sol/DappTokenSale.json';
-import DappToken from './artifacts/contracts/DappToken.sol/DappToken.json';
-import Transactions from './artifacts/contracts/Transactions.sol/Transactions.json';
+import DappToken from "./contracts/DappToken.json";
+import DappTokenSale from "./contracts/DappTokenSale.json";
+import Transactions from "./contracts/Transactions.json";
+import contractAddress from "./contracts/contract-address.json";
 import './App.scss';
-//import { TransactionProvider } from './Components/TransactionProvider';
+import { TransactionProvider } from './Components/TransactionProvider';
+
+// This is the default id used by the Hardhat Network
 
 //stan początkowy
+
 class App extends Component {
+
   constructor(props) {
     super(props);
-    this.state = {
+    this.initialState = {
       web3: null,
+      provider:'0x0',
+      setWeb3: null,
       account: '0x0',
       loading: false,
-      tokenPrice: Web3.utils.toWei("1", "ether"),
+      tokenPrice: ethers.parseEther("1"),
       tokensSold: 0,
       tokensAvailable: 750000,
       dappTokenSale: null,
       dappToken: null,
-      numberOfTokens: 0,
+      numberOfTokens: 0n,
       transaction:0,
     };
-    this.buyTokens = this.buyTokens.bind(this);
-   
+   //this.buyTokens = this.buyTokens.bind(this);
+   this.state=this.initialState;
   }
 
-   async componentDidMount() {
-     await this.loadWeb3();
-     await this.loadBlockchainData();
-   }
+  
 
-   async loadWeb3() {
-     if (window.ethereum) {
-  //     // Modern dapp browsers
-       const web3 = new Web3(window.ethereum);
-       try {
-  //       // Request account access
-        await window.ethereum.request('eth_requestAccounts');
-        this.setState({ web3 });
-       } catch (error) {
-         console.error('User denied account access');
-       }
-     } else if (window.web3) {
-       // Legacy dapp browsers
-       this.setState({ web3: new Web3(window.web3.currentProvider) });
-     } else {
-  //     // Non-dapp browsers
-       window.alert(
-         'Non-Ethereum browser detected. You should consider trying MetaMask!'
-       );
-     }
-   }
+  async componentDidMount() {
+    await this.loadWeb3();
+    await this.loadBlockchainData();
+  }
 
-   async loadBlockchainData() {
-    const web3 = new Web3(window.ethereum);
+  async loadWeb3() {
+    if (typeof window.ethereum !== 'undefined') {
+      // Ethereum user detected. You can now use the provider.
+     
+      try {
+         // Ethereum user detected. You can now use the provider.
+        //const provider = await new ethers.BrowserProvider(window.ethereum);
+        const provider = new ethers.JsonRpcProvider('http://localhost:8545')  
+        // Request account access if needed
+          await window.ethereum.request({ method: 'eth_requestAccounts' });
+          
+          // We have access to the wallet
+          const signer = await provider.getSigner();
 
-
-    // Load account data
-    const accounts = await web3.eth.getAccounts();
-    this.setState({ account: accounts[0] });
-
-    // Load smart contracts
-    const networkId = await web3.eth.net.getId();
-    const dappTokenSaleData = DappTokenSale.networks[networkId];
-    const dappTokenData = DappToken.networks[networkId];
-    const transactionsData = Transactions.networks[networkId];
-    if (dappTokenSaleData && dappTokenData && transactionsData) {
-      const dappTokenSale = new web3.eth.Contract(
-        DappTokenSale.abi,
-        dappTokenSaleData.address,
-        console.log(dappTokenSaleData.address)
-      );
-      const dappToken = new web3.eth.Contract(
-        DappToken.abi,
-        dappTokenData.address,
-        console.log(dappTokenData.address)
-      );
-      const transactions = new web3.eth.Contract(
-        Transactions.abi,
-        transactionsData.address,
-        //transactionsData.signer,
-        console.log(transactionsData.address)
-      );
-
-      this.setState({ dappTokenSale, dappToken, transactions });
-
-      // Load token sale data
-      const tokenPrice = await dappTokenSale.methods.tokenPrice().call();
-      const tokensSold = await dappTokenSale.methods.tokensSold().call();
-      //ładowanie danych kontraktu transakcji
-      const transaction = await transactions.methods.getTransactionsCount().call();
-      this.setState({ tokenPrice, tokensSold, transaction });
+          // Get the address of the connected wallet
+          const addressSigner = await signer.getAddress();
+          console.log("Connected wallet address:", addressSigner);
+          this.setState({addressSigner, signer,provider});
+          // Now you can do things like read balances, query smart contracts, etc.
+          console.log(signer);
+        } catch (error) {
+          console.error(error);
+      }
+      } else {
+      console.log('No Ethereum browser extension detected, install MetaMask!');
+      }
+    /*if (window.ethereum ) {
+      // Modern dapp browsers with MetaMask or similar
+      try {
+        
+        // Request account access
+        await window.ethereum.request({ method: 'eth_requestAccounts' });
+        const provider = await new ethers.BrowserProvider(window.ethereum);
+        const signer = await provider.getSigner();
+        this.setState({ web3: provider, signer });
+        console.log('Polaczon');
+        // const provider = new ethers.BrowserProvider(window.ethereum);
+       // this.setState({web3: provider});
+      } catch (error) {
+        console.error('User denied account access');
+      }
+    } else if (window.web3) {
+      // Legacy dapp browsers (e.g., with web3.js)
+      const provider = await new ethers.BrowserProvider(window.web3.currentProvider);
+      this.setState({web3: provider});
     } else {
-      window.alert('Smart contracts not deployed to the detected network.');
-    }
+      // Non-dapp browsers
+      window.alert('Non-Ethereum browser detected. You should consider using MetaMask or similar.');
+    }*/
   }
-  
-  
-   async buyTokens(event) {
-     event.preventDefault();
-  //   // Prevent the default form submission behavior
-     const { account, dappTokenSale, tokenPrice } = this.state;
-     const numberOfTokens = event.target.numberOfTokens.value; // Get the value from the input field
-     this.setState({ loading: true });
-  
-     try {
-       console.log("Buy Tokens Info:");
-      console.log("From Account: " + account);
-       console.log("Value: " + (numberOfTokens * tokenPrice));
-       console.log("Number of Tokens: " + numberOfTokens);
-      await dappTokenSale.methods
-         .buyTokens(numberOfTokens)
-       // .send({ from: this.state.account, value: numberOfTokens * tokenPrice, gas:500000});
+
+
+  async loadBlockchainData() {
+    if (typeof window.ethereum !== 'undefined') {
+      // Use this.state.web3 to interact with Ethereum
+      //const prov = this.state.web3;
+     // const provider = ethers.getDefaultProvider();
+      // Load account data
+     // const accounts = await provider.listAccounts();
+      //const account = accounts[0]; // Get the account address
+    //  this.setState({ account });
+    const {provider, signer,addressSigner, tokenPrice}= this.state;
+      console.log(signer);
+      console.log(provider);
+      console.log(addressSigner)
+      console.log(tokenPrice)
+
+      //const signer = await this.setState({ account: accounts[0] });
+     // const signer = await provider.();
+    //  console.log(signer);
+    //  this.setState(signer);
+    // console.log(signer);
+    // Load smart contracts
+   // const networkId = await web3.eth.net.getId();
+   // console.log('66l ' + contractAddress.DappTokenSale);
+   // const dappTokenSaleData = DappTokenSale;
+   // const dappTokenData = DappToken;
+  //  const transactionsData = Transactions;
+    console.log(DappTokenSale.abi);
+   // console.log(account.address);
+
+
+
+    if (DappTokenSale && DappToken && Transactions) {
+      
+      const addressDappTokenSale = contractAddress.DappTokenSale;
+      const abiDappTokenSale =  DappTokenSale.abi;
+
+      const dappTokenSale = await new ethers.Contract(
+       
+        addressDappTokenSale,
+        abiDappTokenSale,
+        signer
+    );
+   
+    console.log(dappTokenSale);
+    const addressDappToken = contractAddress.DappToken;
+    const abiDappToken =  DappToken.abi;
+
+      const dappToken = await new ethers.Contract(
+        addressDappToken,
+        abiDappToken,
+        signer
+        
+             );
+
+     const addressTransactions = contractAddress.Transactions;
+     const abiTransactions =  Transactions.abi;         
+      const transactions = new ethers.Contract(
+        addressTransactions,
+        abiTransactions ,
+        signer
+       
+      );
+      
+     
+      
+      console.log(dappTokenSale);
+      // Load token sale data
+      console.log(DappTokenSale.abi);
+
+
+      //const TokenPrice = await dappTokenSale.tokenPrice();
+     // console.log(tokenPrice.toString());
+     // console.log(TokenPrice); 
+      
+    //  const tokensSold = await dappTokenSale.tokensSold();
+    //  console.log(tokensSold.toString());
+     // console.log(tokensSold); 
+
+
+
+     
+      //console.log(signer.address); 
+      
+      //ładowanie danych kontraktu transakcji
+     // const transaction = await transactions.getTransactionsCount;
+     this.setState({ dappTokenSale, dappToken, transactions, addressDappTokenSale});
+    
+      } else {
+      window.alert('Smart contracts not deployed to the detected network.');
+      }
+      }
+    };
+    
+   buyTokens = (event) => {
+    event.preventDefault();
+    // Prevent the default form submission behavior
+   
+    const { signer, dappTokenSale, tokenPrice} = this.state;
+   console.log(dappTokenSale.target);
+   console.log(signer)
+   console.log(tokenPrice); 
+   const addressFrom = dappTokenSale.target;
+    
+    this.setState({ loading: true });
+
+  //console.log(Signer);
+    try {
+     const numberOfTokens = (event.target.numberOfTokens.value);
+     const numberOfTokensBigInt = ethers.toBigInt(numberOfTokens);
+      console.log("Buy Tokens Info:");
+      console.log("From Account: " + addressFrom);
+      console.log(tokenPrice);
+      console.log("Value: " + (ethers.toBigInt(numberOfTokens) * tokenPrice));
+      console.log("Number of Tokens: " + numberOfTokensBigInt);
+
+
+      //const value = ethers.formatEther(tokenPrice) * numberOfTokens;
+
+      const value = tokenPrice * numberOfTokensBigInt;
+         dappTokenSale.buyTokens(numberOfTokensBigInt,{ address: signer, value: value, gasLimit: 1000000 });
       
        
         console.log("Tokens bought...");
-       console.log("Tokens bought...");
-  //     //this.setState({ loading: false, numberOfTokens: 0 }); // Reset the number of tokens
-       } catch (error) {
-       console.error(error);
-       this.setState({ loading: false });
-       console.log('blad');
-     }
-   };
+    
+      //this.setState({ loading: false, numberOfTokens: 0 }); // Reset the number of tokens
+    } catch (error) {
+      console.error(error);
+      this.setState({ loading: false });
+      console.log('blad');
+    }
+  };
+/*
+ buyTokens = async (event) => {
+    event.preventDefault();
 
+    const { web3, tokenPrice, numberOfTokens,dappTokenSale, addressDappTokenSale } = this.state;
+    const numberOfTokensToBuy = event.target.numberOfTokens.value;
+
+    this.setState({ loading: true });
+    console.log(addressDappTokenSale); 
+  
+        // Ensuring web3 instance is available
+        console.log(ethers.formatEther(tokenPrice))
+            //const signer = web3.getSigner(); // getting the signer
+            //const contractWithSigner = addressDappTokenSale; // connecting the contract with the signer
+           // console.log(contractWithSigner);
+            // Sending the transaction
+            console.log(dappTokenSale);
+           //console.log(await dappTokenSale.buyTokens(numberOfTokensToBuy));
+         
+           const TokenPrice = ethers.formatEther(tokenPrice);
+           const transaction = await dappTokenSale.buyTokens(numberOfTokensToBuy
+            , {
+                value: numberOfTokensToBuy * TokenPrice,
+                gasLimit: toString(500000),
+            });
+
+            console.log('Transaction sent:', transaction);
+            await transaction.wait();  // Waiting for the transaction to be mined
+            console.log('Transaction mined.');
+
+            this.setState({ loading: false, numberOfTokens: 0 });
+        
+            console.error('Web3 is not available.');
+            this.setState({ loading: false });
+ };
+   */
+
+
+ 
   render() {
-    const { account, loading, tokenPrice, tokensSold, tokensAvailable, transaction } = this.state;
-
+    const {account,addressSigner, loading, tokenPrice, tokensSold, tokensAvailable, transaction } =
+      this.state;
+    
     return (
+      
       <div className="App">
         <h1>Your Dapp</h1>
-        <p>Current Account: {account}</p>
+          <p>Current Account: {addressSigner}</p> 
 
         <div className="container">
           <div className="row">
             <div className="col-md-8">
               {/* Token Sale Details */}
               <h2>Token Sale</h2>
-              <p>Token Price: {tokenPrice} Wei</p>
-               <p>Tokens Sold: {tokensSold}</p>
-               <p>Tokens Available: {tokensAvailable}</p>
-               {/* Buy Tokens Form */}
-               <form onSubmit={this.buyTokens}>
-                 <div className="form-group">
+              
+               { <p>Token Price: {tokenPrice.toString()} Wei</p> }
+              { <p>Tokens Sold: {tokensSold.toString()}</p> }
+              <p>Tokens Available: {tokensAvailable}</p> 
+              {/* Buy Tokens Form */}
+              <form onSubmit={this.buyTokens}>
+                <div className="form-group">
                   <input
                     type="number"
                     id="numberOfTokens"
-                     className="form-control"
-                     placeholder="Number of Tokens"
-                     required
-                   />
-                 </div>
-                 <button type="submit" className="btn btn-primary">
-                   Buy Tokens
-                 </button>
-               </form>
-             </div>
-           </div>
-         </div>
-         <p>Transactions: {transaction}</p>
-      
+                    className="form-control"
+                    placeholder="Number of Tokens"
+                    required
+                  />
+                </div>
+                <button type="submit" className="btn btn-primary">
+                  Buy Tokens
+                </button>
+              </form> 
+            </div>
+          </div>
+        </div>
+        {/* <p>Transactions: {transaction}</p>  */}
+   
       </div>
-     ); 
-   }
-//do wywalenia
- // render() {
- //   return( <div className="App"></div>); */}
-//  }
+    );
+  } 
 }
+
+
 
 export default App;
