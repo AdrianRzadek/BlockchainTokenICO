@@ -20,7 +20,7 @@ describe("DappTokenSale", () => {
     const DappToken = await ethers.getContractFactory("DappToken");
     const DappTokenSale = await ethers.getContractFactory("DappTokenSale");
 
-    tokenInstance = await DappToken.deploy({value: 1000000}); // Deploy your DappToken contract with an initial supply
+    tokenInstance = await DappToken.deploy(1000000); // Deploy your DappToken contract with an initial supply
     tokenSaleInstance = await DappTokenSale.deploy(tokenInstance.target, tokenPrice);
   });
 

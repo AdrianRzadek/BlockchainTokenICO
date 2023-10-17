@@ -7,7 +7,7 @@ describe("DappToken", function () {
   before(async function () {
     accounts = await ethers.getSigners();
     const DappToken = await ethers.getContractFactory("DappToken");
-    tokenInstance = await DappToken.deploy();
+    tokenInstance = await DappToken.deploy(1000000);
     
   });
   it("sets total supply and allocates initial supply", async function () {
