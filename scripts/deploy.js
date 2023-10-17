@@ -1,4 +1,4 @@
-const { ethers, artifacts } = require("hardhat");
+const { ethers} = require("hardhat");
 const path = require("path");
 const fs = require("fs");
 
@@ -8,21 +8,23 @@ async function main() {
     console.log("Deploying the contracts with the account:", address);
 
     const DappToken = await ethers.getContractFactory("DappToken");
-    const dappToken = await DappToken.deploy();
-   
+    const dappToken = await DappToken.deploy(1000000)
+    await dappToken.waitForDeployment()
     console.log("Token address:", dappToken.target);
 
     const tokenPrice = ethers.parseEther("1"); // Convert 1 Ether to Wei
 
     const DappTokenSale = await ethers.getContractFactory("DappTokenSale");
-    const dappTokenSale = await DappTokenSale.deploy(address, tokenPrice);
-   
+    const dappTokenSale = await DappTokenSale.deploy(dappToken.target, tokenPrice);
+    await dappTokenSale.waitForDeployment()
     console.log("DappTokenSale address:", dappTokenSale.target);
    // console.log("DappTokenSale token price:", dappTokenSale);
     const Transactions = await ethers.getContractFactory("Transactions");
     const transactions = await Transactions.deploy();
-
+    await transactions.waitForDeployment()
     console.log("Transactions address:", transactions.target);
+
+    await dappToken.transfer(dappTokenSale.target, '1000000');
 
     saveClientFiles(dappToken, dappTokenSale, transactions);
 }
@@ -42,12 +44,12 @@ function saveClientFiles(dappToken, dappTokenSale, transactions) {
 
     fs.writeFileSync(
         path.join(contractsDir, "contract-address.json"),
-        JSON.stringify(contractAddresses, null, 2)
+        JSON.stringify(contractAddresses,  undefined, 2)
     );
 
-    const DappTokenArtifact = require("../artifacts/contracts/DappToken.sol/DappToken.json");
-    const DappTokenSaleArtifact = require("../artifacts/contracts/DappTokenSale.sol/DappTokenSale.json");
-    const TransactionsArtifact = require("../artifacts/contracts/Transactions.sol/Transactions.json");
+    const DappTokenArtifact = artifacts.readArtifactSync("DappToken");
+    const DappTokenSaleArtifact = artifacts.readArtifactSync("DappTokenSale");
+    const TransactionsArtifact = artifacts.readArtifactSync("Transactions");
 
     fs.writeFileSync(
         path.join(contractsDir, "DappToken.json"),
@@ -63,7 +65,9 @@ function saveClientFiles(dappToken, dappTokenSale, transactions) {
     );
 }
 
-main().catch((error) => {
+main()
+  .then(() => process.exit(0))
+  .catch((error) => {
     console.error(error);
-    process.exitCode = 1;
-});
+    process.exit(1);
+  });
