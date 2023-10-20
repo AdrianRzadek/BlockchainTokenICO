@@ -68,6 +68,7 @@ class App extends Component {
         console.log(signer);
       } catch (error) {
         console.error("User denied account access");
+        window.alert("User denied account access");
       }
     } else if (window.web3) {
       // Legacy dapp browsers (e.g., with web3.js)
