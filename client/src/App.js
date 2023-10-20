@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { Component, useEffect, useRef } from "react";
 import { ethers } from "ethers";
 
 import DappToken from "./contracts/DappToken.json";
@@ -7,12 +7,12 @@ import Transactions from "./contracts/Transactions.json";
 import contractAddress from "./contracts/contract-address.json";
 import "./App.scss";
 
-
 // This is the default id used by the Hardhat Network
 
 //stan początkowy
 
 class App extends Component {
+  
   constructor(props) {
     super(props);
     this.initialState = {
@@ -26,14 +26,21 @@ class App extends Component {
       numberOfTokens: 0n,
       transaction: null,
       balance: null,
+      tokenDecimals: 1,
+      tokenSymbol: "FOSSA",
+      
     };
+    this.tokensSold = React.createRef();
     //this.buyTokens = this.buyTokens.bind(this);
     this.state = this.initialState;
+    
   }
 
   async componentDidMount() {
     await this.loadWeb3();
     await this.loadBlockchainData();
+    await this.loadLogo();
+    
   }
 
   async loadWeb3() {
@@ -60,39 +67,23 @@ class App extends Component {
         // Now you can do things like read balances, query smart contracts, etc.
         console.log(signer);
       } catch (error) {
-        console.error(error);
-      }
-    } else {
-      console.log("No Ethereum browser extension detected, install MetaMask!");
-    }
-    /*if (window.ethereum ) {
-      // Modern dapp browsers with MetaMask or similar
-      try {
-        
-        // Request account access
-        await window.ethereum.request({ method: 'eth_requestAccounts' });
-        const provider = await new ethers.BrowserProvider(window.ethereum);
-        const signer = await provider.getSigner();
-        this.setState({ web3: provider, signer });
-        console.log('Polaczon');
-        // const provider = new ethers.BrowserProvider(window.ethereum);
-       // this.setState({web3: provider});
-      } catch (error) {
-        console.error('User denied account access');
+        console.error("User denied account access");
       }
     } else if (window.web3) {
       // Legacy dapp browsers (e.g., with web3.js)
-      const provider = await new ethers.BrowserProvider(window.web3.currentProvider);
-      this.setState({web3: provider});
+      const provider = await new ethers.BrowserProvider(
+        window.web3.currentProvider
+      );
+      this.setState({ web3: provider });
     } else {
       // Non-dapp browsers
-      window.alert('Non-Ethereum browser detected. You should consider using MetaMask or similar.');
-    }*/
+      window.alert("No Ethereum browser extension detected, install MetaMask!");
+    }
   }
 
   async loadBlockchainData() {
-    if (typeof window.ethereum !== "undefined") {
     
+    if (typeof window.ethereum !== "undefined") {
       const {
         provider,
         signer,
@@ -162,18 +153,50 @@ class App extends Component {
 
         //ładowanie danych kontraktu transakcji
         // const transaction = await transactions.getTransactionsCount;
+        
         await this.setState({
           dappTokenSale,
           Dapptoken: this.dappToken,
           transactions,
           addressDappTokenSale,
           tokensSold,
+          addressDappToken,
         });
       } else {
         window.alert("Smart contracts not deployed to the detected network.");
       }
     }
   }
+
+  async loadLogo() {
+    const tokenImage =
+      "https://img.freepik.com/premium-zdjecie/akwarela-malarstwo-fossa_721965-64.jpg?w=826";
+    console.log(this.state.addressDappToken);
+    try {
+      // 'wasAdded' is a boolean. Like any RPC method, an error can be thrown.
+      const wasAdded = await window.ethereum.request({
+        method: "wallet_watchAsset",
+        params: {
+          type: "ERC20",
+          options: {
+            address: this.state.addressDappToken, // The address of the token
+            symbol: this.state.tokenSymbol, // A ticker symbol or shorthand, up to 5 characters.
+            decimals: this.state.tokenDecimals,
+            image: tokenImage, // A string URL of the token logo.
+          },
+        },
+      });
+
+      if (wasAdded) {
+        console.log("Thanks for your interest!");
+      } else {
+        console.log("Your loss!");
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
 
   buyTokens = (event) => {
     event.preventDefault();
@@ -203,9 +226,7 @@ class App extends Component {
         value: value,
         gasLimit: 2000000,
       });
-
-      console.log("Tokens bought...");
-
+     
       //this.setState({ loading: false, numberOfTokens: 0 }); // Reset the number of tokens
     } catch (error) {
       console.error(error);
@@ -215,6 +236,7 @@ class App extends Component {
   };
 
   render() {
+   
     const {
       account,
       addressSigner,
@@ -238,7 +260,7 @@ class App extends Component {
               <h2>Token Sale</h2>
 
               <p>Token Price: {tokenPrice.toString()} Wei</p>
-              <p>Tokens Sold: {tokensSold.toString()}</p>
+              <p>Token Sold: {tokensSold.toString()} </p>
               <p>Tokens Available: {tokensAvailable.toString()}</p>
               {/* Buy Tokens Form */}
               <form onSubmit={this.buyTokens}>

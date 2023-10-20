@@ -5,13 +5,13 @@ import "hardhat/console.sol";
 
 contract DappToken {
     //name
-    string public name = "DAppToken";
+    string public name = "FossaToken";
     //symbol
-    string public symbol = "DAPP";
+    string public symbol = "FOSSA";
     //standard
-    string public standard = "DApp Token v1.0";
+    string public standard = "Fossa Token v1.0";
     //decimals
-    uint8 public constant decimals = 18;
+    uint8 public constant decimals = 1;
     //max/total supply
     uint256 public totalSupply = 1000000;
 
