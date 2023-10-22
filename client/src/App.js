@@ -45,11 +45,8 @@ class App extends Component {
 
       try {
         // Ethereum user detected. You can now use the provider.
-        //const provider = await new ethers.BrowserProvider(window.ethereum);
+        const provider = await new ethers.BrowserProvider(window.ethereum);
 
-        const provider = await new ethers.JsonRpcProvider(
-          "http://localhost:8545"
-        );
         // Request account access if needed
         await window.ethereum.request({ method: "eth_requestAccounts" });
 
@@ -102,7 +99,7 @@ class App extends Component {
         this.dappTokenSale = new ethers.Contract(
           await addressDappTokenSale,
           await abiDappTokenSale,
-          await this.provider.getSigner(0)
+          await this.provider.getSigner()
         );
 
         const addressDappToken = contractAddress.DappToken;
@@ -111,18 +108,18 @@ class App extends Component {
         this.dappToken = await new ethers.Contract(
           await addressDappToken,
           await abiDappToken,
-          await this.provider.getSigner(0)
+          await this.provider.getSigner()
         );
 
         const addressTransactions = contractAddress.Transactions;
         const abiTransactions = Transactions.abi;
         this.provider = await new ethers.BrowserProvider(window.ethereum);
-        this.transactions = await new ethers.Contract(
+        this.transaction = await new ethers.Contract(
           await addressTransactions,
           await abiTransactions,
-          await this.provider.getSigner(0)
+          await this.provider.getSigner()
         );
-
+         // console.log(this.transaction.target)
         // console.log( await dappToken.transfer(dappTokenSale.target, this.state.tokensAvailable));
 
         // Load token sale data
@@ -154,7 +151,7 @@ class App extends Component {
         await this.setState({
           dappTokenSale,
           Dapptoken: this.dappToken,
-          Transactions: this.transactions,
+          Transactions: this.transaction,
           addressDappTokenSale,
           tokensSold,
           addressDappToken,
@@ -230,7 +227,24 @@ class App extends Component {
       console.log("blad");
     }
   };
-
+  sendTransaction = (event) => {
+    event.preventDefault();
+    const reciver = event.target.reciver.value;
+    const amount = event.target.amount.value;
+    const message = event.target.message.value; 
+   const value = ethers.toBigInt(amount)
+     
+    this.transaction.sendTransaction( reciver,
+      value,
+      message,
+      {
+        from: this.state.addressSigner,
+        value: value,
+        gas: 20000000
+      }
+      
+    )
+  }
   render() {
     const {
       account,
@@ -279,8 +293,8 @@ class App extends Component {
         <div className="container">
           <div className="row">
             <div className="col-md-8">
-              <p>Transactions: {this.transaction}</p>
-              <form>
+              <p>Transactions:</p>
+              <form onSubmit={this.sendTransaction}>
                 <input
                   type="text"
                   id="reciver"
