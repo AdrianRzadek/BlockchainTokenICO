@@ -12,7 +12,6 @@ import "./App.scss";
 //stan początkowy
 
 class App extends Component {
-  
   constructor(props) {
     super(props);
     this.initialState = {
@@ -28,19 +27,16 @@ class App extends Component {
       balance: null,
       tokenDecimals: 1,
       tokenSymbol: "FOSSA",
-      
     };
     this.tokensSold = React.createRef();
     //this.buyTokens = this.buyTokens.bind(this);
     this.state = this.initialState;
-    
   }
 
   async componentDidMount() {
     await this.loadWeb3();
     await this.loadBlockchainData();
     await this.loadLogo();
-    
   }
 
   async loadWeb3() {
@@ -83,7 +79,6 @@ class App extends Component {
   }
 
   async loadBlockchainData() {
-    
     if (typeof window.ethereum !== "undefined") {
       const {
         provider,
@@ -121,10 +116,11 @@ class App extends Component {
 
         const addressTransactions = contractAddress.Transactions;
         const abiTransactions = Transactions.abi;
-        const transactions = new ethers.Contract(
-          addressTransactions,
-          abiTransactions,
-          signer
+        this.provider = await new ethers.BrowserProvider(window.ethereum);
+        this.transactions = await new ethers.Contract(
+          await addressTransactions,
+          await abiTransactions,
+          await this.provider.getSigner(0)
         );
 
         // console.log( await dappToken.transfer(dappTokenSale.target, this.state.tokensAvailable));
@@ -154,11 +150,11 @@ class App extends Component {
 
         //ładowanie danych kontraktu transakcji
         // const transaction = await transactions.getTransactionsCount;
-        
+
         await this.setState({
           dappTokenSale,
           Dapptoken: this.dappToken,
-          transactions,
+          Transactions: this.transactions,
           addressDappTokenSale,
           tokensSold,
           addressDappToken,
@@ -198,7 +194,6 @@ class App extends Component {
     }
   }
 
-
   buyTokens = (event) => {
     event.preventDefault();
     // Prevent the default form submission behavior
@@ -227,7 +222,7 @@ class App extends Component {
         value: value,
         gasLimit: 2000000,
       });
-     
+
       //this.setState({ loading: false, numberOfTokens: 0 }); // Reset the number of tokens
     } catch (error) {
       console.error(error);
@@ -237,7 +232,6 @@ class App extends Component {
   };
 
   render() {
-   
     const {
       account,
       addressSigner,
@@ -281,7 +275,41 @@ class App extends Component {
             </div>
           </div>
         </div>
-        {/* <p>Transactions: {transaction}</p>  */}
+
+        <div className="container">
+          <div className="row">
+            <div className="col-md-8">
+              <p>Transactions: {this.transaction}</p>
+              <form>
+                <input
+                  type="text"
+                  id="reciver"
+                  className="form-control"
+                  placeholder="Address of reciver"
+                  required
+                />
+
+                <input
+                  type="text"
+                  id="amount"
+                  className="form-control"
+                  placeholder="Amount of Tokens"
+                  required
+                />
+                <input
+                  type="text"
+                  id="message"
+                  className="form-control"
+                  placeholder="Message for reciver"
+                  required
+                />
+                <button type="submit" className="btn btn-primary">
+                  Wyślij
+                </button>
+              </form>
+            </div>
+          </div>
+        </div>
       </div>
     );
   }
