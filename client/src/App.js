@@ -6,6 +6,7 @@ import DappTokenSale from "./contracts/DappTokenSale.json";
 import Transactions from "./contracts/Transactions.json";
 import contractAddress from "./contracts/contract-address.json";
 import "./App.scss";
+import Background from "./Components/Background"
 
 // This is the default id used by the Hardhat Network
 
@@ -324,6 +325,7 @@ class App extends Component {
             </div>
           </div>
         </div>
+        <Background/>
       </div>
     );
   }
