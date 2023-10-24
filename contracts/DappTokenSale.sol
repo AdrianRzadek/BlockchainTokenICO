@@ -8,7 +8,7 @@ contract DappTokenSale {
 
     address payable public admin;
     DappToken public tokenContract;
-    uint256 public tokenPrice = 1000000000000000;
+    uint256 public tokenPrice = 10000000000000000;
     uint256 public tokensSold; 
 
     event Sell(address _buyer, uint256 _amount);

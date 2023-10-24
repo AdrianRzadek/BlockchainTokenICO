@@ -241,7 +241,7 @@ class App extends Component {
       {
         from: this.state.addressSigner,
         value: value,
-        gas: 20000000
+        gas: 2000000
       }
       
     )
