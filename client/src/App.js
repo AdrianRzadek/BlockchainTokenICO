@@ -260,6 +260,7 @@ class App extends Component {
 
     return (
       <div className="App">
+         <Background/>
         <h1>Dapp</h1>
         <p>Current Account: {addressSigner}</p>
 
@@ -325,7 +326,8 @@ class App extends Component {
             </div>
           </div>
         </div>
-        <Background/>
+       
+      
       </div>
     );
   }

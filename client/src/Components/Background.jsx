@@ -3,7 +3,7 @@ import "../App.scss";
 function Background(){
 
 return(
-<div>
+<div class="background">
 <span></span>
 <span></span>
 <span></span>
