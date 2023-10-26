@@ -11,7 +11,7 @@ contract DappToken {
     //standard
     string public standard = "Fossa Token v1.0";
     //decimals
-    uint8 public constant decimals = 1;
+    uint8 public constant decimals = 0;
     //max/total supply
     uint256 public totalSupply = 1000000;
 
@@ -21,7 +21,7 @@ contract DappToken {
 
      //Transfer
 
-    event Transfer(address indexed _from, address indexed _to, uint256 _value);
+    event Transfer(address indexed _from, address indexed _to, uint256 value);
 
       //I OWNER APPROVE ACCOUNT B to approve value
     event Approval(
@@ -48,6 +48,10 @@ contract DappToken {
 
 
     function transfer(address _to, uint256 _value) public returns (bool) {
+        
+        //without decimals in token value
+        //uint256 value = _value*10;
+        console.log(_value);
         //exception if account doesn't exist
         require(balanceOf[msg.sender] >= _value, "Insufficient balance");
 

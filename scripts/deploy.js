@@ -20,7 +20,7 @@ async function main() {
     console.log("DappTokenSale address:", dappTokenSale.target);
    // console.log("DappTokenSale token price:", dappTokenSale);
     const Transactions = await ethers.getContractFactory("Transactions");
-    const transactions = await Transactions.deploy();
+    const transactions = await Transactions.deploy(dappToken.target);
     await transactions.waitForDeployment()
     console.log("Transactions address:", transactions.target);
 

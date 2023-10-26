@@ -5,7 +5,20 @@ contract Transactions{
 
     uint256 TransactionCounter;
 
+<<<<<<< Updated upstream
     event Transfer(address from, address reciver, uint amount, string message, uint256 timestamp);
+=======
+
+      constructor(DappToken _tokenContract) 
+     {
+    
+        //Token Contract
+        tokenContract = _tokenContract;
+        
+    }
+
+    event Transfer(address from, address reciver, uint256 numberOfTokens, string message, uint256 timestamp);
+>>>>>>> Stashed changes
 
     struct TransferStruct{
         address sender;
@@ -32,4 +45,8 @@ contract Transactions{
          function getTransactionsCount() public view returns (uint256) {
             return TransactionCounter;
         }
+
+         receive() external payable {}
+
+         fallback() external payable {}
 }

@@ -25,7 +25,7 @@ class App extends Component {
       numberOfTokens: 0n,
       transaction: null,
       balance: null,
-      tokenDecimals: 1,
+      tokenDecimals: 0,
       tokenSymbol: "FOSSA",
     };
     this.tokensSold = React.createRef();
