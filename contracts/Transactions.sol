@@ -1,13 +1,11 @@
 // SPDX-License-Identifier: MIT 
 pragma solidity ^0.8.21;
+import "./DappToken.sol";
 
 contract Transactions{
 
     uint256 TransactionCounter;
-
-<<<<<<< Updated upstream
-    event Transfer(address from, address reciver, uint amount, string message, uint256 timestamp);
-=======
+    DappToken public tokenContract;
 
       constructor(DappToken _tokenContract) 
      {
@@ -17,8 +15,7 @@ contract Transactions{
         
     }
 
-    event Transfer(address from, address reciver, uint256 numberOfTokens, string message, uint256 timestamp);
->>>>>>> Stashed changes
+   
 
     struct TransferStruct{
         address sender;
@@ -34,8 +31,8 @@ contract Transactions{
         function sendTransaction(address payable reciver, uint amount, string memory message) public payable{
             TransactionCounter += 1;
             transactions.push(TransferStruct(msg.sender, reciver, amount, message, block.timestamp));
-
-            emit Transfer(msg.sender, reciver,amount, message, block.timestamp);
+            require(tokenContract.transferFrom(msg.sender, reciver, amount), "Token transfer failed");
+  
         }
 
          function getAllTransactions() public view returns (TransferStruct[] memory){

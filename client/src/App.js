@@ -48,7 +48,7 @@ class App extends Component {
         const provider = await new ethers.BrowserProvider(window.ethereum);
 
         // Request account access if needed
-        await window.ethereum.request({ method: "eth_requestAccounts" });
+        await window.ethereum.request(await{ method: "eth_requestAccounts" });
 
         // We have access to the wallet
         const signer = await provider.getSigner();
@@ -227,13 +227,18 @@ class App extends Component {
       console.log("blad");
     }
   };
-  sendTransaction = (event) => {
+ 
+
+
+  Transfer = (event) => {
     event.preventDefault();
     const reciver = event.target.reciver.value;
     const amount = event.target.amount.value;
     const message = event.target.message.value; 
    const value = ethers.toBigInt(amount)
-     
+     console.log(this.state.addressSigner);
+     console.log(reciver);
+    this.dappToken.approve(this.transaction.target, value);
     this.transaction.sendTransaction( reciver,
       value,
       message,
@@ -245,6 +250,9 @@ class App extends Component {
       
     )
   }
+
+
+
   render() {
     const {
       account,
@@ -294,7 +302,7 @@ class App extends Component {
           <div className="row">
             <div className="col-md-8">
               <p>Transactions:</p>
-              <form onSubmit={this.sendTransaction}>
+              <form onSubmit={this.Transfer}>
                 <input
                   type="text"
                   id="reciver"
