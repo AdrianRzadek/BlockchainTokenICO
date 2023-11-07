@@ -45,10 +45,10 @@ class App extends Component {
 
       try {
         // Ethereum user detected. You can now use the provider.
-        const provider = await new ethers.BrowserProvider(window.ethereum);
+        const provider = await new ethers.BrowserProvider(await window.ethereum);
 
         // Request account access if needed
-        await window.ethereum.request(await{ method: "eth_requestAccounts" });
+        await window.ethereum.request(await{method: "eth_requestAccounts" });
 
         // We have access to the wallet
         const signer = await provider.getSigner();
@@ -191,7 +191,7 @@ class App extends Component {
     }
   }
 
-  buyTokens = (event) => {
+  buyTokens = async (event) => {
     event.preventDefault();
     // Prevent the default form submission behavior
 
@@ -214,7 +214,18 @@ class App extends Component {
       //const value = ethers.formatEther(tokenPrice) * numberOfTokens;
 
       const value = tokenPrice * numberOfTokensBigInt;
-      this.dappTokenSale.buyTokens(numberOfTokensBigInt, {
+
+         // Start listening to TokensPurchased event
+
+    this.dappTokenSale.on('Sell', (buyer, amount) => {
+      // Update state here
+      this.setState({
+        lastBuyer: buyer,
+        lastAmount: amount.toString()  // converting BigNumber to string, if amount is a BigNumber
+      });
+    });
+
+    await this.dappTokenSale.buyTokens(numberOfTokensBigInt, {
         address: this.state.addressSigner,
         value: value,
         gasLimit: 2000000,
@@ -230,7 +241,7 @@ class App extends Component {
  
 
 
-  Transfer = (event) => {
+  Transfer = async (event) => {
     event.preventDefault();
     const reciver = event.target.reciver.value;
     const amount = event.target.amount.value;
@@ -250,8 +261,11 @@ class App extends Component {
       
     )
   }
-
-
+/*
+  componentWillUnmount() {
+    // Remove the event listener when the component unmounts
+    this.dappTokenSale.off('TokensPurchased', this.tokensPurchasedListener);
+  }*/
 
   render() {
     const {
