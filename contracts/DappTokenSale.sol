@@ -9,13 +9,13 @@ contract DappTokenSale {
     DappToken public tokenContract;
     uint256 public tokenPrice = 1000000000000000;
     uint256 public tokensSold;
-   // uint256 public rate = 100;
+   uint256 public rate = 100;
 
     event Sell(
         address _buyer,
-     // address tokenContract,
-        uint256 _amount,
-   //   uint256 rate
+      
+        uint256 _amount
+        
     );
 
     constructor(DappToken _tokenContract, uint256 _tokenPrice) {
@@ -32,7 +32,7 @@ contract DappTokenSale {
 
     function buyTokens(uint256 _numberOfTokens) public payable {
         
-        uint256 tokenAmount = msg.value * rate;
+      //  uint256 tokenAmount = msg.value * rate;
 
         //require that value is equal to tokens
         require(

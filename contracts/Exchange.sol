@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.22;
 
-import "./DappToken";
+import "./DappToken.sol";
 import "./DappTokenSale.sol";
 
 contract Exchange {
@@ -18,22 +18,22 @@ contract Exchange {
         uint256 rate
     );
 
-    constructor(DappToken _dappToken, DappTokenSale _dappTokenSale )public{
-        dapptoken = _dappToken;
-        dapptokensale = _dappTokenSale;
+  /*  constructor(DappToken _dappToken)public{
+        tokenContract = _dappToken;
+      //  tokenSale = _dappTokenSale;
     }
 
-    DappTokenSale.buyTokens(){
+   // DappTokenSale.buyTokens(){
         
-    }
-    function sellTokens(uint256 _amount){
+ //   }
+    function sellTokens(uint256 _amount) public {
         //przelicznik wymiany
         uint256 etherAmount = _amount/rate;
         //Wykonanie transferu
-        dapptoken.transferFrom(msg.sender,address(this), _amount)
-        msg.sender.transfer(etherAmount);
+        DappToken.transferFrom(msg.sender,address(this), _amount);
+    //    msg.sender.transfer(etherAmount);
 
-        emit Sold(msg.sender, address(token), _amount, rate );
-    }
+        emit Sold(msg.sender, address(tokenContract), _amount, rate );
+    }*/
     
 }

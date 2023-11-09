@@ -17,9 +17,9 @@ class App extends Component {
     this.initialState = {
       account: "0x0",
       loading: false,
-      tokenPrice: ethers.parseEther("1"),
+      tokenPrice: ethers.parseEther("0"),
       tokensSold: 0,
-      tokensAvailable: ethers.toBigInt(1000000),
+      tokensAvailable: ethers.toBigInt(0),
       dappTokenSale: null,
       dappToken: null,
       numberOfTokens: 0n,
@@ -28,7 +28,7 @@ class App extends Component {
       tokenDecimals: 0,
       tokenSymbol: "FOSSA",
     };
-    this.tokensSold = React.createRef();
+    
     //this.buyTokens = this.buyTokens.bind(this);
     this.state = this.initialState;
   }
@@ -137,9 +137,13 @@ class App extends Component {
 
         console.log(TokenPrice);
 
-        const tokensSold = await this.dappTokenSale.tokensSold();
-        console.log(tokensSold.toString());
-        console.log(tokensSold);
+        const TokensAvailable = await this.dappToken.balanceOf(this.dappTokenSale.target);
+
+        console.log(TokensAvailable);
+
+        const TokensSold = await this.dappTokenSale.tokensSold();
+        console.log(TokensSold.toString());
+        console.log(TokensSold);
 
         // let Available =  ethers.toBigInt(tokensAvailable) - ethers.toBigInt(tokensSold);
 
@@ -153,8 +157,10 @@ class App extends Component {
           Dapptoken: this.dappToken,
           Transactions: this.transaction,
           addressDappTokenSale,
-          tokensSold,
+          tokensSold: TokensSold,
           addressDappToken,
+          tokenPrice: TokenPrice,
+          tokensAvailable:TokensAvailable,
         });
       } else {
         window.alert("Smart contracts not deployed to the detected network.");
@@ -163,33 +169,43 @@ class App extends Component {
   }
 
   async loadLogo() {
-    const tokenImage =
-      "https://img.freepik.com/premium-zdjecie/akwarela-malarstwo-fossa_721965-64.jpg?w=826";
+    const tokenImage = "https://img.freepik.com/premium-zdjecie/akwarela-malarstwo-fossa_721965-64.jpg?w=826";
     console.log(this.state.addressDappToken);
-    try {
-      // 'wasAdded' is a boolean. Like any RPC method, an error can be thrown.
-      const wasAdded = await window.ethereum.request({
-        method: "wallet_watchAsset",
-        params: {
-          type: "ERC20",
-          options: {
-            address: this.state.addressDappToken, // The address of the token
-            symbol: this.state.tokenSymbol, // A ticker symbol or shorthand, up to 5 characters.
-            decimals: this.state.tokenDecimals,
-            image: tokenImage, // A string URL of the token logo.
-          },
-        },
-      });
 
-      if (wasAdded) {
-        console.log("Thanks for your interest!");
-      } else {
-        console.log("Your loss!");
-      }
+    try {
+        // Check local storage
+        const tokenAdded = localStorage.getItem('tokenAdded');
+
+        // If the token hasn't been added yet, prompt the user to add it
+        if (!tokenAdded) {
+            const wasAdded = await window.ethereum.request({
+                method: "wallet_watchAsset",
+                params: {
+                    type: "ERC20",
+                    options: {
+                        address: this.state.addressDappToken,
+                        symbol: this.state.tokenSymbol,
+                        decimals: this.state.tokenDecimals,
+                        image: tokenImage,
+                    },
+                },
+            });
+
+            if (wasAdded) {
+                console.log("Thanks for your interest!");
+                // Update local storage
+                localStorage.setItem('tokenAdded', 'true');
+            } else {
+                console.log("Your loss!");
+            }
+        } else {
+            // Here you can add code to check if the token is already added
+            console.log("Token already added or user previously prompted.");
+        }
     } catch (error) {
-      console.log(error);
+        console.log(error);
     }
-  }
+}
 
   buyTokens = async (event) => {
     event.preventDefault();
@@ -214,16 +230,6 @@ class App extends Component {
       //const value = ethers.formatEther(tokenPrice) * numberOfTokens;
 
       const value = tokenPrice * numberOfTokensBigInt;
-
-         // Start listening to TokensPurchased event
-
-    this.dappTokenSale.on('Sell', (buyer, amount) => {
-      // Update state here
-      this.setState({
-        lastBuyer: buyer,
-        lastAmount: amount.toString()  // converting BigNumber to string, if amount is a BigNumber
-      });
-    });
 
     await this.dappTokenSale.buyTokens(numberOfTokensBigInt, {
         address: this.state.addressSigner,
@@ -261,11 +267,11 @@ class App extends Component {
       
     )
   }
-/*
+
   componentWillUnmount() {
     // Remove the event listener when the component unmounts
-    this.dappTokenSale.off('TokensPurchased', this.tokensPurchasedListener);
-  }*/
+   this.loadLogo();
+  }
 
   render() {
     const {
