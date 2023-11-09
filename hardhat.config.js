@@ -5,7 +5,7 @@ require("ethers");
 
  module.exports = {
   solidity: {
-    version: "0.8.21",
+    version: "0.8.22",
     settings: {
       evmVersion: "shanghai",
     },
