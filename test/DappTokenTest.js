@@ -19,9 +19,9 @@ describe("DappToken", function () {
     const decimals = await tokenInstance.decimals();
     const totalSupply = await tokenInstance.totalSupply();
 
-    expect(name).to.equal("DAppToken");
-    expect(symbol).to.equal("DAPP");
-    expect(decimals).to.equal(18);
+    expect(name).to.equal("FossaToken");
+    expect(symbol).to.equal("FOSSA");
+    expect(decimals).to.equal(0);
     expect(totalSupply).to.equal(1000000n);
   });
 

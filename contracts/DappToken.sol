@@ -80,7 +80,7 @@ contract DappToken {
         //require _from has enaught tokens
         require(_value <= balanceOf[_from]);
         //require allowance is big enought
-        require(_value <= allowance[_from][msg.sender]);
+        require(_value <= allowance[_from][msg.sender],"allowance is not big enought");
         //change the balance
         balanceOf[_from] -= _value;
         balanceOf[_to] += _value;

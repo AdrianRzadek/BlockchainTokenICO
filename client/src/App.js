@@ -4,10 +4,10 @@ import { ethers } from "ethers";
 import DappToken from "./contracts/DappToken.json";
 import DappTokenSale from "./contracts/DappTokenSale.json";
 import Transactions from "./contracts/Transactions.json";
+import Exchange from "./contracts/Exchange.json"
 import contractAddress from "./contracts/contract-address.json";
 import "./App.scss";
 
-// This is the default id used by the Hardhat Network
 
 //stan początkowy
 
@@ -29,11 +29,7 @@ class App extends Component {
       balance: null,
       tokenDecimals: 0,
       tokenSymbol: "FOSSA",
-    };
-    
-    //this.buyTokens = this.buyTokens.bind(this);
-  
-   
+    };   
   }
 
   async componentDidMount() {
@@ -96,7 +92,7 @@ class App extends Component {
       console.log(tokenPrice);
       console.log(DappTokenSale.abi);
 
-      if (DappTokenSale && DappToken && Transactions) {
+      if (DappTokenSale && DappToken && Transactions && Exchange) {
         const addressDappTokenSale = contractAddress.DappTokenSale;
         const abiDappTokenSale = DappTokenSale.abi;
         this.provider = await new ethers.BrowserProvider(window.ethereum);
@@ -123,7 +119,16 @@ class App extends Component {
           await abiTransactions,
           await this.provider.getSigner()
         );
-         // console.log(this.transaction.target)
+
+        const addressExchange = contractAddress.Exchange;
+        const abiExchange = Exchange.abi;
+        this.provider = await new ethers.BrowserProvider(window.ethereum);
+        this.exchange = await new ethers.Contract(
+          await addressExchange,
+          await abiExchange,
+          await this.provider.getSigner()
+        );
+         console.log(this.exchange)
         // console.log( await dappToken.transfer(dappTokenSale.target, this.state.tokensAvailable));
 
         // Load token sale data
@@ -149,8 +154,6 @@ class App extends Component {
      //   console.log(TokensSold.toString());
      //   console.log(TokensSold);
 
-        // let Available =  ethers.toBigInt(tokensAvailable) - ethers.toBigInt(tokensSold);
-
         //console.log(signer.address);
 
         //ładowanie danych kontraktu transakcji
@@ -160,12 +163,14 @@ class App extends Component {
           dappTokenSale: this.dappTokenSale,
           Dapptoken: this.dappToken,
           Transactions: this.transaction,
+          Exchange: this.exchange,
           addressDappTokenSale,
           tokensSold: TokensSold,
           addressDappToken,
           tokenPrice: TokenPrice,
           tokensAvailable:TokensAvailable,
         });
+     
       } else {
         window.alert("Smart contracts not deployed to the detected network.");
       }
@@ -268,10 +273,28 @@ class App extends Component {
       {
         from: this.state.addressSigner,
         value: value,
-        gas: 20000000
+        gas: 20000000,
       }
       
     )
+  }
+
+  Swap = async (event) =>{
+    event.preventDefault();
+    console.log(this.exchange)
+    const amount = event.target.tokensExchange.value;
+   const value = ethers.toBigInt(amount);
+  console.log(value)
+  //  this.dappToken.approve(this.transaction.target, value);
+       await this.exchange.sellTokens(value,
+      {
+        from: this.state.addressSigner,
+        value: value,
+        gas: 20000000,
+      }
+      
+    )
+  
   }
 
   polling = () => {
@@ -370,6 +393,34 @@ class App extends Component {
               </form>
             </div>
           </div>
+        </div>
+        <br/>
+        <br/>
+       
+        <div className="container">
+          <div className="row">
+            <div className="col-md-8">
+              <p>Transactions:</p>
+              <form onSubmit={this.Swap}>
+          <input  type="text"
+                  id="tokensExchange"
+                  className="form-control"
+                  placeholder="TokensExchange"
+                  required/>
+                  <br/>
+          <input
+           type="text"
+           id="etherExchange"
+           className="form-control"
+           placeholder="EtherExchange"
+           />
+            <br/>
+             <button type="submit" className="btn btn-primary">
+                 Wymień
+                </button>
+           </form>
+        </div>
+        </div>
         </div>
       </div>
     );

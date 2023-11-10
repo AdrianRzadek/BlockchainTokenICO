@@ -25,7 +25,7 @@ async function main() {
     console.log("Transactions address:", transactions.target);
     // Exchange deploy
     const Exchange = await ethers.getContractFactory("Exchange");
-    const exchange = await Exchange.deploy();
+    const exchange = await Exchange.deploy(dappToken.target);
     await exchange.waitForDeployment()
     console.log("Exchange address:", exchange.target);
     //Token transfer to sale contract

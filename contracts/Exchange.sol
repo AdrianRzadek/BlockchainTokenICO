@@ -8,8 +8,8 @@ contract Exchange {
     string public name = "Swap";
     DappToken public tokenContract;
     DappTokenSale public tokenSale;
-    //100 tokens costs 1ETH
-    uint public rate = 100;
+    //1 tokens costs 1ETH
+    uint public rate = 1;
 
     event Sold(
         address account,
@@ -18,22 +18,20 @@ contract Exchange {
         uint256 rate
     );
 
-  /*  constructor(DappToken _dappToken)public{
-        tokenContract = _dappToken;
-      //  tokenSale = _dappTokenSale;
+    constructor(DappToken _tokenContract){
+        tokenContract = _tokenContract;
+
     }
 
-   // DappTokenSale.buyTokens(){
-        
- //   }
-    function sellTokens(uint256 _amount) public {
+ 
+    function sellTokens(uint256 _amount) public payable{
         //przelicznik wymiany
         uint256 etherAmount = _amount/rate;
         //Wykonanie transferu
-        DappToken.transferFrom(msg.sender,address(this), _amount);
-    //    msg.sender.transfer(etherAmount);
+       require(tokenContract.transferFrom(msg.sender,address(this), _amount),"Token transfer failed");
+         payable(msg.sender).transfer(etherAmount);
 
         emit Sold(msg.sender, address(tokenContract), _amount, rate );
-    }*/
+    }
     
 }
