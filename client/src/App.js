@@ -1,4 +1,4 @@
-import React, { Component, useEffect, useRef } from "react";
+import React, { Component, useEffect, createRef } from "react";
 import { ethers } from "ethers";
 
 import DappToken from "./contracts/DappToken.json";
@@ -12,9 +12,11 @@ import "./App.scss";
 //stan początkowy
 
 class App extends Component {
+
+  //konstruktor wartości kontraktu
   constructor(props) {
     super(props);
-    this.initialState = {
+    this.state = {
       account: "0x0",
       loading: false,
       tokenPrice: ethers.parseEther("0"),
@@ -30,13 +32,16 @@ class App extends Component {
     };
     
     //this.buyTokens = this.buyTokens.bind(this);
-    this.state = this.initialState;
+  
+   
   }
 
   async componentDidMount() {
     await this.loadWeb3();
     await this.loadBlockchainData();
     await this.loadLogo();
+    await this.polling();
+
   }
 
   async loadWeb3() {
@@ -82,10 +87,9 @@ class App extends Component {
         signer,
         addressSigner,
         tokenPrice,
-        dappToken,
         dappTokenSale,
-        tokensAvailable,
       } = await this.state;
+
       console.log(signer);
       console.log(provider);
       console.log(addressSigner);
@@ -141,9 +145,9 @@ class App extends Component {
 
         console.log(TokensAvailable);
 
-        const TokensSold = await this.dappTokenSale.tokensSold();
-        console.log(TokensSold.toString());
-        console.log(TokensSold);
+       const TokensSold = await this.dappTokenSale.tokensSold();
+     //   console.log(TokensSold.toString());
+     //   console.log(TokensSold);
 
         // let Available =  ethers.toBigInt(tokensAvailable) - ethers.toBigInt(tokensSold);
 
@@ -153,7 +157,7 @@ class App extends Component {
         // const transaction = await transactions.getTransactionsCount;
 
         await this.setState({
-          dappTokenSale,
+          dappTokenSale: this.dappTokenSale,
           Dapptoken: this.dappToken,
           Transactions: this.transaction,
           addressDappTokenSale,
@@ -235,14 +239,16 @@ class App extends Component {
         address: this.state.addressSigner,
         value: value,
         gasLimit: 2000000,
-      });
-
+      })
+       
+      
       //this.setState({ loading: false, numberOfTokens: 0 }); // Reset the number of tokens
     } catch (error) {
       console.error(error);
       this.setState({ loading: false });
       console.log("blad");
     }
+
   };
  
 
@@ -268,9 +274,22 @@ class App extends Component {
     )
   }
 
+  polling = () => {
+    this.pollingInterval = setInterval(async () => {
+     
+      const tokensAvailable = await this.dappToken.balanceOf(this.dappTokenSale.target);
+      const tokensSold = await this.dappTokenSale.tokensSold();
+        this.setState({ tokensSold });
+        this.setState({tokensAvailable});
+    }, 1000); // Poll every 1 second
+};
+
+
+
   componentWillUnmount() {
     // Remove the event listener when the component unmounts
    this.loadLogo();
+   this.polling();
   }
 
   render() {
@@ -310,7 +329,7 @@ class App extends Component {
                     required
                   />
                 </div>
-                <button type="submit" className="btn btn-primary">
+                <button type="submit"  className="btn btn-primary">
                   Buy Tokens
                 </button>
               </form>
