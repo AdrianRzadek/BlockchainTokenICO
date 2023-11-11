@@ -92,7 +92,7 @@ class App extends Component {
       console.log(tokenPrice);
       console.log(DappTokenSale.abi);
 
-      if (DappTokenSale && DappToken && Transactions && Exchange) {
+      if (DappTokenSale && DappToken && Transactions ) {
         const addressDappTokenSale = contractAddress.DappTokenSale;
         const abiDappTokenSale = DappTokenSale.abi;
         this.provider = await new ethers.BrowserProvider(window.ethereum);
@@ -120,7 +120,7 @@ class App extends Component {
           await this.provider.getSigner()
         );
 
-        const addressExchange = contractAddress.Exchange;
+      /*  const addressExchange = contractAddress.Exchange;
         const abiExchange = Exchange.abi;
         this.provider = await new ethers.BrowserProvider(window.ethereum);
         this.exchange = await new ethers.Contract(
@@ -128,7 +128,7 @@ class App extends Component {
           await abiExchange,
           await this.provider.getSigner()
         );
-         console.log(this.exchange)
+         console.log(this.exchange)*/
         // console.log( await dappToken.transfer(dappTokenSale.target, this.state.tokensAvailable));
 
         // Load token sale data
@@ -283,20 +283,20 @@ class App extends Component {
 
   Swap = async (event) =>{
     event.preventDefault();
-    console.log(this.exchange)
+  //  console.log(this.exchange)
     const amount = event.target.tokensExchange.value;
    const value = ethers.toBigInt(amount);
 
    try {
     // Approve the exchange to spend tokens on behalf of the user
-    await this.dappToken.approve(this.exchange.target, value, {
+    await this.dappToken.approve(this.dappTokenSale.target, value, {
         from: this.state.addressSigner,
        
         gas: 20000000,
     });
 
     // Sell tokens on the exchange
-    await this.exchange.sellTokens(value, {
+    await this.dappTokenSale.sellTokens(value, {
         from: this.state.addressSigner,
         value: value,
         gas: 20000000,

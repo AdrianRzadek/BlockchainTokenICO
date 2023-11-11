@@ -9,13 +9,17 @@ contract DappTokenSale {
     DappToken public tokenContract;
     uint256 public tokenPrice = 1000000000000000;
     uint256 public tokensSold;
-   uint256 public rate = 100;
+   uint256 public rate = 1;
 
     event Sell(
         address _buyer,
-      
         uint256 _amount
-        
+    );
+      event Sold(
+        address account,
+        address tokenContract,
+        uint256 amount,
+        uint256 rate
     );
 
     constructor(DappToken _tokenContract, uint256 _tokenPrice) {
@@ -56,6 +60,18 @@ contract DappTokenSale {
         emit Sell(msg.sender, _numberOfTokens);
         // emit TokensPurchased(msg.sender, address(tokenContract), _numberOfTokens, tokenPrice);
     }
+
+     
+    function sellTokens(uint256 _amount) public payable{
+        //przelicznik wymiany
+        uint256 etherAmount = _amount;
+        //Wykonanie transferu
+       require(tokenContract.transferFrom(msg.sender,address(this), _amount),"Token transfer failed");
+         payable(msg.sender).transfer(etherAmount);
+
+        emit Sold(msg.sender, address(tokenContract), _amount, rate );
+    }
+
 
     //ending token sale
     function endSale() public payable {

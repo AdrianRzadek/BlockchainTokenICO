@@ -24,17 +24,17 @@ async function main() {
     await transactions.waitForDeployment()
     console.log("Transactions address:", transactions.target);
     // Exchange deploy
-    const Exchange = await ethers.getContractFactory("Exchange");
-    const exchange = await Exchange.deploy(dappToken.target);
-    await exchange.waitForDeployment()
-    console.log("Exchange address:", exchange.target);
+//    const Exchange = await ethers.getContractFactory("Exchange");
+//    const exchange = await Exchange.deploy(dappToken.target);
+//    await exchange.waitForDeployment()
+ //   console.log("Exchange address:", exchange.target);
     //Token transfer to sale contract
     await dappToken.transfer(dappTokenSale.target, '1000000');
 
-    saveClientFiles(dappToken, dappTokenSale, transactions, exchange);
+    saveClientFiles(dappToken, dappTokenSale, transactions);
 }
 
-function saveClientFiles(dappToken, dappTokenSale, transactions, exchange) {
+function saveClientFiles(dappToken, dappTokenSale, transactions) {
     const contractsDir = path.join(__dirname, "..", "client", "src", "contracts");
 
     if (!fs.existsSync(contractsDir)) {
@@ -45,7 +45,7 @@ function saveClientFiles(dappToken, dappTokenSale, transactions, exchange) {
         DappToken: dappToken.target,
         DappTokenSale: dappTokenSale.target,
         Transactions: transactions.target,
-        Exchange: exchange.target,
+      //  Exchange: exchange.target,
     };
 
     fs.writeFileSync(
@@ -56,7 +56,7 @@ function saveClientFiles(dappToken, dappTokenSale, transactions, exchange) {
     const DappTokenArtifact = artifacts.readArtifactSync("DappToken");
     const DappTokenSaleArtifact = artifacts.readArtifactSync("DappTokenSale");
     const TransactionsArtifact = artifacts.readArtifactSync("Transactions");
-    const ExchangeArtifact = artifacts.readArtifactSync("Exchange");
+  //  const ExchangeArtifact = artifacts.readArtifactSync("Exchange");
 
     fs.writeFileSync(
         path.join(contractsDir, "DappToken.json"),
@@ -70,10 +70,10 @@ function saveClientFiles(dappToken, dappTokenSale, transactions, exchange) {
         path.join(contractsDir, "Transactions.json"),
         JSON.stringify(TransactionsArtifact, null, 2)
     );
-    fs.writeFileSync(
-        path.join(contractsDir, "Exchange.json"),
-        JSON.stringify(ExchangeArtifact, null, 2)
-    );
+    // fs.writeFileSync(
+    //     path.join(contractsDir, "Exchange.json"),
+    //     JSON.stringify(ExchangeArtifact, null, 2)
+    // );
 }
 
 main()
