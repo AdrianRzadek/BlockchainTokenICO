@@ -286,21 +286,28 @@ class App extends Component {
     console.log(this.exchange)
     const amount = event.target.tokensExchange.value;
    const value = ethers.toBigInt(amount);
-  console.log(value)
-   await this.dappToken.approve(this.exchange.target, value,
-    {
-      from: this.state.addressSigner,
-      value: value,
-      gas: 20000000,
-   });
-       await this.exchange.sellTokens(value,
-      {
+
+   try {
+    // Approve the exchange to spend tokens on behalf of the user
+    await this.dappToken.approve(this.exchange.target, value, {
+        from: this.state.addressSigner,
+       
+        gas: 20000000,
+    });
+
+    // Sell tokens on the exchange
+    await this.exchange.sellTokens(value, {
         from: this.state.addressSigner,
         value: value,
         gas: 20000000,
-      }
+    });
+
+    console.log("Tokens approved and sold successfully!");
+} catch (error) {
+    console.error("Error during token approval and sale:", error);
+}
       
-    )
+    
   
   }
 

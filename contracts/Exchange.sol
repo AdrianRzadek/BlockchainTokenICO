@@ -26,7 +26,7 @@ contract Exchange {
  
     function sellTokens(uint256 _amount) public payable{
         //przelicznik wymiany
-        uint256 etherAmount = _amount/rate;
+        uint256 etherAmount = _amount;
         //Wykonanie transferu
        require(tokenContract.transferFrom(msg.sender,address(this), _amount),"Token transfer failed");
          payable(msg.sender).transfer(etherAmount);
