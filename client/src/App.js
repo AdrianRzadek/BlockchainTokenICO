@@ -183,10 +183,11 @@ class App extends Component {
 
     try {
         // Check local storage
+        
         const tokenAdded = localStorage.getItem('tokenAdded');
-
+        const storedTokenAddress = localStorage.getItem('tokenAddress');
         // If the token hasn't been added yet, prompt the user to add it
-        if (!tokenAdded) {
+        if (!tokenAdded || storedTokenAddress !== this.state.addressDappToken) {
             const wasAdded = await window.ethereum.request({
                 method: "wallet_watchAsset",
                 params: {
@@ -204,7 +205,8 @@ class App extends Component {
                 console.log("Thanks for your interest!");
                 // Update local storage
                 localStorage.setItem('tokenAdded', 'true');
-            } else {
+                localStorage.setItem('tokenAddress', this.state.addressDappToken);
+              } else {
                 console.log("Your loss!");
             }
         } else {
@@ -285,7 +287,12 @@ class App extends Component {
     const amount = event.target.tokensExchange.value;
    const value = ethers.toBigInt(amount);
   console.log(value)
-  //  this.dappToken.approve(this.transaction.target, value);
+   await this.dappToken.approve(this.exchange.target, value,
+    {
+      from: this.state.addressSigner,
+      value: value,
+      gas: 20000000,
+   });
        await this.exchange.sellTokens(value,
       {
         from: this.state.addressSigner,
