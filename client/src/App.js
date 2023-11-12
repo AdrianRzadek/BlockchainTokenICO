@@ -418,11 +418,17 @@ class App extends Component {
                   placeholder="TokensExchange"
                   required/>
                   <br/>
+                  <span className="float-right text-muted">
+            Balance: {(this.state.tokenPrice)}
+          </span>
+          <br/>
           <input
            type="text"
            id="etherExchange"
            className="form-control"
            placeholder="EtherExchange"
+           value={this.state.tokenPrice}
+            disabled
            />
             <br/>
              <button type="submit" className="btn btn-primary">
