@@ -63,8 +63,17 @@ contract DappTokenSale {
 
      
     function sellTokens(uint256 _amount) public payable{
+        
+         // nie można sprzedać więcej niż się ma
+        require(tokenContract.balanceOf(msg.sender) >= _amount);
+        
         //przelicznik wymiany
         uint256 etherAmount = _amount;
+
+        
+    // Require that Swap has enough Ether
+    require(address(this).balance >= _amount, "Swap has not enought eth");
+
         //Wykonanie transferu
        require(tokenContract.transferFrom(msg.sender,address(this), _amount),"Token transfer failed");
          payable(msg.sender).transfer(etherAmount);
