@@ -419,15 +419,15 @@ class App extends Component {
                   required/>
                   <br/>
                   <span className="float-right text-muted">
-            Balance: {(this.state.tokenPrice)}
+            Balance: {(this.tokenPrice)}
           </span>
           <br/>
           <input
            type="text"
            id="etherExchange"
            className="form-control"
-           placeholder="EtherExchange"
-           value={this.state.tokenPrice}
+           placeholder="0"
+           value={this.tokenPrice}
             disabled
            />
             <br/>
