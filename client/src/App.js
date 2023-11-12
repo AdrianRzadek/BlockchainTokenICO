@@ -1,10 +1,10 @@
-import React, { Component, useEffect, createRef } from "react";
+import React, { Component} from "react";
 import { ethers } from "ethers";
 
 import DappToken from "./contracts/DappToken.json";
 import DappTokenSale from "./contracts/DappTokenSale.json";
 import Transactions from "./contracts/Transactions.json";
-import Exchange from "./contracts/Exchange.json"
+
 import contractAddress from "./contracts/contract-address.json";
 import "./App.scss";
 
@@ -83,7 +83,6 @@ class App extends Component {
         signer,
         addressSigner,
         tokenPrice,
-        dappTokenSale,
       } = await this.state;
 
       console.log(signer);
@@ -222,7 +221,7 @@ class App extends Component {
     event.preventDefault();
     // Prevent the default form submission behavior
 
-    const { signer, dappTokenSale, tokenPrice, dappToken, Available } =
+    const { tokenPrice} =
       this.state;
 
     try {
@@ -331,14 +330,11 @@ class App extends Component {
 
   render() {
     const {
-      account,
       addressSigner,
       loading,
       tokenPrice,
       tokensSold,
       tokensAvailable,
-      transactio,
-      dappTokenSale,
     } = this.state;
 
     return (

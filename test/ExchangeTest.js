@@ -4,13 +4,14 @@ describe("Exchange", function () {
     let tokenInstance;
     let accounts;
     let exchangeInstance;
+    let tokenPrice = 1000000000000000000n;
     before(async function () {
       accounts = await ethers.getSigners();
       [owner, buyer] = await ethers.getSigners();
-      const Exchange = await ethers.getContractFactory("Exchange");
+      const DappTokenSale = await ethers.getContractFactory("DappTokenSale");
       const DappToken = await ethers.getContractFactory("DappToken");
       tokenInstance = await DappToken.deploy(ethers.parseEther("1000")); 
-    exchangeInstance = await Exchange.deploy(tokenInstance.target);
+      exchangeInstance = await DappTokenSale.deploy(tokenInstance.target, tokenPrice);
     await tokenInstance.transfer(buyer.address, ethers.parseEther("1000"));
         
  const allowanceAmount = ethers.parseEther("100")// calculate the necessary allowance
@@ -31,6 +32,7 @@ describe("Exchange", function () {
         const initialContractBalance = await tokenInstance.balanceOf(exchangeInstance.target);
 
         await exchangeInstance.connect(buyer).sellTokens(amountToSell, { value: amountToSell });
+
     
         const finalBuyerBalance = await tokenInstance.balanceOf(buyer.address);
         const finalContractBalance = await tokenInstance.balanceOf(exchangeInstance.target);
@@ -45,5 +47,9 @@ describe("Exchange", function () {
         // Check that the ether was transferred to the contract
         const expectedContractBalance = initialContractBalance + (amountToSell);
         expect(finalContractBalance).to.equal(expectedContractBalance);
+
+
       });
+
+   
 });
