@@ -261,20 +261,20 @@ class App extends Component {
 
   Transfer = async (event) => {
     event.preventDefault();
-    const reciver = event.target.reciver.value;
-    const amount = event.target.amount.value;
-    const message = event.target.message.value; 
-   const value = ethers.toBigInt(amount)
+    const reciver = await event.target.reciver.value;
+    const amount =  await event.target.amount.value;
+    const message =  await event.target.message.value; 
+   const value = await ethers.toBigInt(amount)
      console.log(this.state.addressSigner);
      console.log(reciver);
-    this.dappToken.approve(this.transaction.target, value);
-    this.transaction.sendTransaction( reciver,
+     await this.dappToken.approve(this.transaction.target, value);
+     await this.transaction.sendTransaction( reciver,
       value,
       message,
       {
         from: this.state.addressSigner,
         value: value,
-        gas: 20000000,
+        gas: 200000000,
       }
       
     )
