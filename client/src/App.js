@@ -1,43 +1,43 @@
-import React, { Component, useEffect, useRef } from "react";
+import React, { Component} from "react";
 import { ethers } from "ethers";
 
 import DappToken from "./contracts/DappToken.json";
 import DappTokenSale from "./contracts/DappTokenSale.json";
 import Transactions from "./contracts/Transactions.json";
+
 import contractAddress from "./contracts/contract-address.json";
 import "./App.scss";
-import Background from "./Components/Background"
 
-// This is the default id used by the Hardhat Network
 
 //stan początkowy
 
 class App extends Component {
+
+  //konstruktor wartości kontraktu
   constructor(props) {
     super(props);
-    this.initialState = {
+    this.state = {
       account: "0x0",
       loading: false,
-      tokenPrice: ethers.parseEther("1"),
+      tokenPrice: ethers.parseEther("0"),
       tokensSold: 0,
-      tokensAvailable: ethers.toBigInt(1000000),
+      tokensAvailable: ethers.toBigInt(0),
       dappTokenSale: null,
       dappToken: null,
       numberOfTokens: 0n,
       transaction: null,
       balance: null,
-      tokenDecimals: 1,
+      tokenDecimals: 0,
       tokenSymbol: "FOSSA",
-    };
-    this.tokensSold = React.createRef();
-    //this.buyTokens = this.buyTokens.bind(this);
-    this.state = this.initialState;
+    };   
   }
 
   async componentDidMount() {
     await this.loadWeb3();
     await this.loadBlockchainData();
     await this.loadLogo();
+    await this.polling();
+
   }
 
   async loadWeb3() {
@@ -46,10 +46,10 @@ class App extends Component {
 
       try {
         // Ethereum user detected. You can now use the provider.
-        const provider = await new ethers.BrowserProvider(window.ethereum);
+        const provider = await new ethers.BrowserProvider(await window.ethereum);
 
         // Request account access if needed
-        await window.ethereum.request({ method: "eth_requestAccounts" });
+        await window.ethereum.request(await{method: "eth_requestAccounts" });
 
         // We have access to the wallet
         const signer = await provider.getSigner();
@@ -83,17 +83,15 @@ class App extends Component {
         signer,
         addressSigner,
         tokenPrice,
-        dappToken,
-        dappTokenSale,
-        tokensAvailable,
       } = await this.state;
+
       console.log(signer);
       console.log(provider);
       console.log(addressSigner);
       console.log(tokenPrice);
       console.log(DappTokenSale.abi);
 
-      if (DappTokenSale && DappToken && Transactions) {
+      if (DappTokenSale && DappToken && Transactions ) {
         const addressDappTokenSale = contractAddress.DappTokenSale;
         const abiDappTokenSale = DappTokenSale.abi;
         this.provider = await new ethers.BrowserProvider(window.ethereum);
@@ -120,7 +118,16 @@ class App extends Component {
           await abiTransactions,
           await this.provider.getSigner()
         );
-         // console.log(this.transaction.target)
+
+      /*  const addressExchange = contractAddress.Exchange;
+        const abiExchange = Exchange.abi;
+        this.provider = await new ethers.BrowserProvider(window.ethereum);
+        this.exchange = await new ethers.Contract(
+          await addressExchange,
+          await abiExchange,
+          await this.provider.getSigner()
+        );
+         console.log(this.exchange)*/
         // console.log( await dappToken.transfer(dappTokenSale.target, this.state.tokensAvailable));
 
         // Load token sale data
@@ -138,11 +145,13 @@ class App extends Component {
 
         console.log(TokenPrice);
 
-        const tokensSold = await this.dappTokenSale.tokensSold();
-        console.log(tokensSold.toString());
-        console.log(tokensSold);
+        const TokensAvailable = await this.dappToken.balanceOf(this.dappTokenSale.target);
 
-        // let Available =  ethers.toBigInt(tokensAvailable) - ethers.toBigInt(tokensSold);
+        console.log(TokensAvailable);
+
+       const TokensSold = await this.dappTokenSale.tokensSold();
+     //   console.log(TokensSold.toString());
+     //   console.log(TokensSold);
 
         //console.log(signer.address);
 
@@ -150,13 +159,17 @@ class App extends Component {
         // const transaction = await transactions.getTransactionsCount;
 
         await this.setState({
-          dappTokenSale,
+          dappTokenSale: this.dappTokenSale,
           Dapptoken: this.dappToken,
           Transactions: this.transaction,
+          Exchange: this.exchange,
           addressDappTokenSale,
-          tokensSold,
+          tokensSold: TokensSold,
           addressDappToken,
+          tokenPrice: TokenPrice,
+          tokensAvailable:TokensAvailable,
         });
+     
       } else {
         window.alert("Smart contracts not deployed to the detected network.");
       }
@@ -164,39 +177,51 @@ class App extends Component {
   }
 
   async loadLogo() {
-    const tokenImage =
-      "https://img.freepik.com/premium-zdjecie/akwarela-malarstwo-fossa_721965-64.jpg?w=826";
+    const tokenImage = "https://img.freepik.com/premium-zdjecie/akwarela-malarstwo-fossa_721965-64.jpg?w=826";
     console.log(this.state.addressDappToken);
+
     try {
-      // 'wasAdded' is a boolean. Like any RPC method, an error can be thrown.
-      const wasAdded = await window.ethereum.request({
-        method: "wallet_watchAsset",
-        params: {
-          type: "ERC20",
-          options: {
-            address: this.state.addressDappToken, // The address of the token
-            symbol: this.state.tokenSymbol, // A ticker symbol or shorthand, up to 5 characters.
-            decimals: this.state.tokenDecimals,
-            image: tokenImage, // A string URL of the token logo.
-          },
-        },
-      });
+        // Check local storage
+        
+        const tokenAdded = localStorage.getItem('tokenAdded');
+        const storedTokenAddress = localStorage.getItem('tokenAddress');
+        // If the token hasn't been added yet, prompt the user to add it
+        if (!tokenAdded || storedTokenAddress !== this.state.addressDappToken) {
+            const wasAdded = await window.ethereum.request({
+                method: "wallet_watchAsset",
+                params: {
+                    type: "ERC20",
+                    options: {
+                        address: this.state.addressDappToken,
+                        symbol: this.state.tokenSymbol,
+                        decimals: this.state.tokenDecimals,
+                        image: tokenImage,
+                    },
+                },
+            });
 
-      if (wasAdded) {
-        console.log("Thanks for your interest!");
-      } else {
-        console.log("Your loss!");
-      }
+            if (wasAdded) {
+                console.log("Thanks for your interest!");
+                // Update local storage
+                localStorage.setItem('tokenAdded', 'true');
+                localStorage.setItem('tokenAddress', this.state.addressDappToken);
+              } else {
+                console.log("Your loss!");
+            }
+        } else {
+            // Here you can add code to check if the token is already added
+            console.log("Token already added or user previously prompted.");
+        }
     } catch (error) {
-      console.log(error);
+        console.log(error);
     }
-  }
+}
 
-  buyTokens = (event) => {
+  buyTokens = async (event) => {
     event.preventDefault();
     // Prevent the default form submission behavior
 
-    const { signer, dappTokenSale, tokenPrice, dappToken, Available } =
+    const { tokenPrice} =
       this.state;
 
     try {
@@ -215,52 +240,105 @@ class App extends Component {
       //const value = ethers.formatEther(tokenPrice) * numberOfTokens;
 
       const value = tokenPrice * numberOfTokensBigInt;
-      this.dappTokenSale.buyTokens(numberOfTokensBigInt, {
+
+    await this.dappTokenSale.buyTokens(numberOfTokensBigInt, {
         address: this.state.addressSigner,
         value: value,
         gasLimit: 2000000,
-      });
-
+      })
+       
+      
       //this.setState({ loading: false, numberOfTokens: 0 }); // Reset the number of tokens
     } catch (error) {
       console.error(error);
       this.setState({ loading: false });
       console.log("blad");
     }
+
   };
-  sendTransaction = (event) => {
+ 
+
+
+  Transfer = async (event) => {
     event.preventDefault();
     const reciver = event.target.reciver.value;
     const amount = event.target.amount.value;
     const message = event.target.message.value; 
    const value = ethers.toBigInt(amount)
-     
+     console.log(this.state.addressSigner);
+     console.log(reciver);
+    this.dappToken.approve(this.transaction.target, value);
     this.transaction.sendTransaction( reciver,
       value,
       message,
       {
         from: this.state.addressSigner,
         value: value,
-        gas: 2000000
+        gas: 20000000,
       }
       
     )
   }
+
+  Swap = async (event) =>{
+    event.preventDefault();
+  //  console.log(this.exchange)
+    const amount = event.target.tokensExchange.value;
+   const value = ethers.toBigInt(amount);
+
+   try {
+    // Approve the exchange to spend tokens on behalf of the user
+    await this.dappToken.approve(this.dappTokenSale.target, value, {
+        from: this.state.addressSigner,
+       
+        gas: 20000000,
+    });
+
+    // Sell tokens on the exchange
+    await this.dappTokenSale.sellTokens(value, {
+        from: this.state.addressSigner,
+        value: value,
+        gas: 20000000,
+    });
+
+    console.log("Tokens approved and sold successfully!");
+} catch (error) {
+    console.error("Error during token approval and sale:", error);
+}
+      
+    
+  
+  }
+
+  polling = () => {
+    this.pollingInterval = setInterval(async () => {
+     
+      const tokensAvailable = await this.dappToken.balanceOf(this.dappTokenSale.target);
+      const tokensSold = await this.dappTokenSale.tokensSold();
+        this.setState({ tokensSold });
+        this.setState({tokensAvailable});
+    }, 1000); // Poll every 1 second
+};
+
+
+
+  componentWillUnmount() {
+    // Remove the event listener when the component unmounts
+   this.loadLogo();
+   this.polling();
+  }
+
   render() {
     const {
-      account,
       addressSigner,
       loading,
       tokenPrice,
       tokensSold,
       tokensAvailable,
-      transactio,
-      dappTokenSale,
     } = this.state;
 
     return (
       <div className="App">
-         <Background/>
         <h1>Dapp</h1>
         <p>Current Account: {addressSigner}</p>
 
@@ -284,7 +362,7 @@ class App extends Component {
                     required
                   />
                 </div>
-                <button type="submit" className="btn btn-primary">
+                <button type="submit"  className="btn btn-primary">
                   Buy Tokens
                 </button>
               </form>
@@ -296,7 +374,7 @@ class App extends Component {
           <div className="row">
             <div className="col-md-8">
               <p>Transactions:</p>
-              <form onSubmit={this.sendTransaction}>
+              <form onSubmit={this.Transfer}>
                 <input
                   type="text"
                   id="reciver"
@@ -326,8 +404,40 @@ class App extends Component {
             </div>
           </div>
         </div>
+        <br/>
+        <br/>
        
-      
+        <div className="container">
+          <div className="row">
+            <div className="col-md-8">
+              <p>Transactions:</p>
+              <form onSubmit={this.Swap}>
+          <input  type="text"
+                  id="tokensExchange"
+                  className="form-control"
+                  placeholder="TokensExchange"
+                  required/>
+                  <br/>
+                  <span className="float-right text-muted">
+            Balance: {(this.tokenPrice)}
+          </span>
+          <br/>
+          <input
+           type="text"
+           id="etherExchange"
+           className="form-control"
+           placeholder="0"
+           value={this.tokenPrice}
+            disabled
+           />
+            <br/>
+             <button type="submit" className="btn btn-primary">
+                 Wymień
+                </button>
+           </form>
+        </div>
+        </div>
+        </div>
       </div>
     );
   }
