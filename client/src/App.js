@@ -8,7 +8,8 @@ import Transactions from "./contracts/Transactions.json";
 import contractAddress from "./contracts/contract-address.json";
 import "./App.scss";
 
-
+import ProgressLabel from "./Components/Progress";
+import  Loading from "./Components/Loading";
 //stan początkowy
 
 class App extends Component {
@@ -390,18 +391,14 @@ class App extends Component {
                   placeholder="Amount of Tokens"
                   required
                 />
-                <input
-                  type="text"
-                  id="message"
-                  className="form-control"
-                  placeholder="Message for reciver"
-                  required
-                />
+             
                 <button type="submit" className="btn btn-primary">
                   Wyślij
                 </button>
               </form>
+              
             </div>
+      
           </div>
         </div>
         <br/>
