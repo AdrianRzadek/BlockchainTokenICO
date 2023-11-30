@@ -1,26 +1,19 @@
 // SPDX-License-Identifier: MIT 
-pragma solidity ^0.8.22;
+pragma solidity ^0.8.21;
 import "./DappToken.sol";
 
 contract Transactions{
 
-    uint256 TransactionCounter;
+
     DappToken public tokenContract;
+    uint256 TransactionCounter;
 
-      constructor(DappToken _tokenContract) 
-     {
-    
-        //Token Contract
-        tokenContract = _tokenContract;
-        
-    }
-
-   
+    event Transfer(address from, address reciver, uint256 numberOfTokens, string message, uint256 timestamp);
 
     struct TransferStruct{
         address sender;
         address reciver;
-        uint amount;
+        uint256 numberOfTokens;
         string message;
         uint256 timestamp;
         
@@ -28,11 +21,13 @@ contract Transactions{
 
         TransferStruct[] transactions;
 
-        function sendTransaction(address payable reciver, uint amount, string memory message) public payable{
+        function sendTransaction(address payable reciver, uint256 numberOfTokens, string memory message) public payable{
             TransactionCounter += 1;
-            transactions.push(TransferStruct(msg.sender, reciver, amount, message, block.timestamp));
-            require(tokenContract.transferFrom(msg.sender, reciver, amount), "Token transfer failed");
-  
+            // require(tokenContract.balanceOf(address(this)) >= numberOfTokens, "Not enough tokens available");
+
+            transactions.push(TransferStruct(msg.sender, reciver, numberOfTokens, message, block.timestamp));
+
+            emit Transfer(msg.sender, reciver,numberOfTokens, message, block.timestamp);
         }
 
          function getAllTransactions() public view returns (TransferStruct[] memory){
@@ -42,8 +37,4 @@ contract Transactions{
          function getTransactionsCount() public view returns (uint256) {
             return TransactionCounter;
         }
-
-         receive() external payable {}
-
-         fallback() external payable {}
 }

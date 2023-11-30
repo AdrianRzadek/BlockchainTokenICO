@@ -28,6 +28,7 @@
   "dependencies": {
     "big-integer": "^1.6.51",
     "ethers": "^6.8.0",
+    "sass": "^1.69.4",
     "web3": "^4.1.2"
   }
 }

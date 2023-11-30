@@ -16,16 +16,19 @@ body {
 }
 
 .background {
-  width: 100vw;
-  height: 100vh;
-  z-index: 1;
-  background: #023047;
+ width: auto;
+ height: auto;
+  z-index: -1;
+
+  background-color: #023047;
+  
 }
 
 $particleSize: 100vmin;
 $animationDuration: 6s;
 $amount: 20;
 .background span {
+
   width: $particleSize;
   height: $particleSize;
   border-radius: $particleSize;
@@ -35,9 +38,9 @@ $amount: 20;
   animation-duration: $animationDuration;
   animation-timing-function: linear;
   animation-iteration-count: infinite;
-  z-index: 1;
+  z-index: -1;
   $colors: (
-    #8ECAE6,
+    #074967,
     #219EBC,
     #FFB703,
     #FB8500
@@ -45,15 +48,15 @@ $amount: 20;
   @for $i from 1 through $amount {
     &:nth-child(#{$i}) {
       color: nth($colors, random(length($colors)));
-      top: random(100) * 1%;
-      left: random(100) * 1%;
-      animation-duration: (random($animationDuration * 1) / 10) * 1s + 10s;
-      animation-delay: random(($animationDuration + 10s) * 10) / 10 * -1s;
+      top: random(100) ;
+      left: random(100) ;
+      animation-duration: (random($animationDuration * 1) / 10) * 1s + 30s;
+      animation-delay: random(($animationDuration + 10s) * 10) / 30 * -1s;
       transform-origin: (random(50) - 25) * 1vw (random(50) - 25) * 1vh;
       $blurRadius: (random() + 0.5) * $particleSize * 0.5;
-      $x: if(random() > 0.5, -1, 1);
-      box-shadow: ($particleSize * 1.8 * $x) 0 $blurRadius currentColor;
-      z-index: 1;
+     $x: if(random() > 0.5, -1, 1);
+     box-shadow: ($particleSize * 1 * $x) 0 $blurRadius currentColor;
+      z-index: -1;
     }
   }
 }
@@ -61,6 +64,6 @@ $amount: 20;
 @keyframes move {
   100% {
     transform: translate3d(0, 0, 1px) rotate(360deg);
-    z-index: 1;
+    z-index: -1;
   }
 }
