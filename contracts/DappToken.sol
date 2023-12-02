@@ -18,7 +18,6 @@ contract DappToken {
     // An address type variable is used to store ethereum accounts.
     address public owner;
 
-
      //Transfer
 
     event Transfer(address indexed _from, address indexed _to, uint256 value);
@@ -95,5 +94,20 @@ contract DappToken {
         //return true/false
         return true;
     }
+    
+   function mint(address to, uint256 amount) public {
+        // Only allow the contract owner (or another authorized entity) to mint
+        // You might want to implement access control here
+        require(msg.sender == owner, "Only owner can mint");
 
+        // Ensure the minted amount is non-zero
+        require(amount > 0, "Mint amount must be greater than zero");
+
+        // Mint new tokens and update the balance
+        balanceOf[to] += amount;
+
+        // Emit a transfer event
+        emit Transfer(address(0), to, amount);
+    }
 }
+
