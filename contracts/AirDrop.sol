@@ -3,7 +3,7 @@ pragma solidity ^0.8.22;
 
 import "./DappToken.sol";
 import "@openzeppelin/contracts/utils/cryptography/MerkleProof.sol";
-
+import "hardhat/console.sol";
 contract AirDrop {
     DappToken public tokenContract;
     bytes32 public immutable root;
@@ -24,9 +24,10 @@ contract AirDrop {
         require(!claimed[addr], "Already claimed AirDrop");
         claimed[addr] = true;
 
-        bytes32 leaf = keccak256(abi.encode(addr, rewardAmount));
+      bytes32 leaf = keccak256(abi.encode(addr, rewardAmount));
 
         require(MerkleProof.verify(proof, root, leaf), "Invalid proof");
         tokenContract.mint(addr, rewardAmount);
     }
+  
 }
