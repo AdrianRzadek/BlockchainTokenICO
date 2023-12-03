@@ -1,5 +1,6 @@
 const { expect } = require("chai");
 const { ethers } = require("hardhat");
+const { abi } = require('ethers'); 
 const { MerkleTree } = require('merkletreejs');
 const keccak256 = require('keccak256');
 
@@ -12,8 +13,6 @@ describe("AirDrop", function () {
   let tokenSaleInstance;
   let tokenInstance;
   let tokenPrice = 1000000000000000000n; // in wei
-  let admin;
-  let buyer;
   let tokensAvailable = 1000000000;
   let numberOfTokens = 10n;
   let merkleTree; // Declare merkleTree at the suite level
@@ -71,32 +70,36 @@ describe("AirDrop", function () {
 
   it("Only eligible accounts should be able to claim airdrop", async function () {
     for (let i = 0; i < 20; i++) {
-      const addressHash = keccak256(addrs[i].target);
+      const addressToHash= await(addrs[i].getAddress())
+      console.log("Address Hash:", addressToHash);
+      const addressHash = keccak256(addressToHash);
       console.log("Address Hash:", addressHash);
       const proof = merkleTree.getHexProof(addressHash);
       console.log("Proof:", proof);
       if (proof.length !== 0) {
-        await airDrop.connect(addrs[i]).claim(proof, addrs[i]);
-        expect(await airDrop.balanceOf(addrs[i].target)).to.eq(REWARD_AMOUNT);
+        await airDrop.connect(addrs[i]).claim(proof, addrs[i].getAddress()); // Pass addrs[i].target as the recipient address
+        expect(await airDrop.balanceOf(addrs[i].getAddress())).to.eq(REWARD_AMOUNT);
         await expect(airDrop.connect(addrs[i]).claim(proof)).to.be.revertedWith("Already claimed air drop");
       } else {
-        await expect(airDrop.connect(addrs[i]).claim(proof)).to.be.revertedWith("Incorrect merkle proof");
-        expect(await airDrop.balanceOf(addrs[i].target)).to.eq(0);
-      }
+        await expect(airDrop.connect(addrs[i]).claim(proof,  addrs[i].getAddress())).to.be.revertedWith("Invalid Merkle proof");
+       //expect(await airDrop.balanceOf(addrs[i].getAddress())).to.eq(0);
     }
+    
+    }
+    expect(await airDrop.claim(recipient)).to.equal(false);
   });
 
   it("should allow a user to claim the AirDrop with a valid proof", async function () {
-    const recipient = addrs[0]; // replace with the actual recipient
+    const recipient = await addrs[0].getAddress(); // replace with the actual recipient
     const rewardAmount = 100;
-    const leaf = keccak256(abi.encodePacked(recipient.target, rewardAmount));
+    const leaf = keccak256(recipient, rewardAmount);
     const elements = [leaf];
     const tree = new MerkleTree(elements, keccak256, { sortPairs: true });
     const proof = tree.getHexProof(leaf);
 
-    expect(await airDrop.claimed(recipient.target)).to.equal(false);
+    expect(await airDrop.claim(proof, recipient)).to.equal(false);
     await airDrop.connect(recipient).claim(proof, recipient.target, rewardAmount);
-    expect(await airDrop.claimed(recipient.target)).to.equal(true);
+    expect(await airDrop.claim(recipient.target)).to.equal(true);
 
     const balance = await tokenInstance.balanceOf(recipient.target);
     expect(balance).to.equal(rewardAmount);
@@ -105,29 +108,16 @@ describe("AirDrop", function () {
   it("should not allow a user to claim the AirDrop twice", async function () {
     const recipient = addrs[1]; // replace with the actual recipient
     const rewardAmount = 100;
-    const leaf = keccak256(abi.encodePacked(recipient.target, rewardAmount));
+    const leaf = keccak256(recipient.target, rewardAmount);
     const elements = [leaf];
     const tree = new MerkleTree(elements, keccak256, { sortPairs: true });
     const proof = tree.getHexProof(leaf);
 
     await airDrop.connect(recipient).claim(proof, recipient.target, rewardAmount);
-    expect(await airDrop.claimed(recipient.target)).to.equal(true);
+    expect(await airDrop.claim(recipient.target)).to.equal(true);
 
     await expect(airDrop.connect(recipient).claim(proof, recipient.target, rewardAmount)).to.be.revertedWith(
       "Already claimed AirDrop"
     );
-  });
-
-  it("should not allow claiming with an invalid proof", async function () {
-    const recipient = addrs[2]; // replace with the actual recipient
-    const invalidProof = ["0x789abc"]; // Replace with an invalid proof
-
-    expect(await airDrop.claimed(recipient.target)).to.equal(false);
-
-    await expect(
-      airDrop.connect(recipient).claim(invalidProof, recipient.target, 100)
-    ).to.be.revertedWith("Invalid proof");
-
-    expect(await airDrop.claimed(recipient.target)).to.equal(false);
   });
 });

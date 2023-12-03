@@ -26,7 +26,7 @@ contract AirDrop {
 
       bytes32 leaf = keccak256(abi.encode(addr, rewardAmount));
 
-        require(MerkleProof.verify(proof, root, leaf), "Invalid proof");
+        require(MerkleProof.verify(proof, root, leaf), "Invalid Merkle proof");
         tokenContract.mint(addr, rewardAmount);
     }
   
