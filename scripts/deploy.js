@@ -23,18 +23,20 @@ async function main() {
     const transactions = await Transactions.deploy(dappToken.target);
     await transactions.waitForDeployment()
     console.log("Transactions address:", transactions.target);
-    // Exchange deploy
-//    const Exchange = await ethers.getContractFactory("Exchange");
-//    const exchange = await Exchange.deploy(dappToken.target);
-//    await exchange.waitForDeployment()
- //   console.log("Exchange address:", exchange.target);
+    // AirDrop deploy
+    const rewardAmount= 500;
+    const root = "0x0000000000000000000000000000000000000000000000000000000000000000";
+    const AirDrop = await ethers.getContractFactory("AirDrop");
+    const airDrop = await AirDrop.deploy(dappToken.target, root, rewardAmount);
+    await airDrop.waitForDeployment()
+    console.log("AirDrop address:", airDrop.target);
     //Token transfer to sale contract
     await dappToken.transfer(dappTokenSale.target, '1000000');
 
-    saveClientFiles(dappToken, dappTokenSale, transactions);
+    saveClientFiles(dappToken, dappTokenSale, transactions, airDrop);
 }
 
-function saveClientFiles(dappToken, dappTokenSale, transactions) {
+function saveClientFiles(dappToken, dappTokenSale, transactions, airDrop) {
     const contractsDir = path.join(__dirname, "..", "client", "src", "contracts");
 
     if (!fs.existsSync(contractsDir)) {
@@ -45,7 +47,7 @@ function saveClientFiles(dappToken, dappTokenSale, transactions) {
         DappToken: dappToken.target,
         DappTokenSale: dappTokenSale.target,
         Transactions: transactions.target,
-      //  Exchange: exchange.target,
+        AirDrop: airDrop.target,
     };
 
     fs.writeFileSync(
@@ -56,7 +58,7 @@ function saveClientFiles(dappToken, dappTokenSale, transactions) {
     const DappTokenArtifact = artifacts.readArtifactSync("DappToken");
     const DappTokenSaleArtifact = artifacts.readArtifactSync("DappTokenSale");
     const TransactionsArtifact = artifacts.readArtifactSync("Transactions");
-  //  const ExchangeArtifact = artifacts.readArtifactSync("Exchange");
+    const AirDropArtifact = artifacts.readArtifactSync("AirDrop");
 
     fs.writeFileSync(
         path.join(contractsDir, "DappToken.json"),
@@ -70,10 +72,10 @@ function saveClientFiles(dappToken, dappTokenSale, transactions) {
         path.join(contractsDir, "Transactions.json"),
         JSON.stringify(TransactionsArtifact, null, 2)
     );
-    // fs.writeFileSync(
-    //     path.join(contractsDir, "Exchange.json"),
-    //     JSON.stringify(ExchangeArtifact, null, 2)
-    // );
+     fs.writeFileSync(
+         path.join(contractsDir, "AirDrop.json"),
+         JSON.stringify(AirDropArtifact, null, 2)
+     );
 }
 
 main()

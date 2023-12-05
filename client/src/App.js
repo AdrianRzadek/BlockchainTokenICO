@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { ethers } from "ethers";
-
+import { makeMerkleTree } from "@openzeppelin/merkle-tree/dist/core";
+import { keccak256 } from "@ethersproject/keccak256";
 import DappToken from "./contracts/DappToken.json";
 import DappTokenSale from "./contracts/DappTokenSale.json";
 import Transactions from "./contracts/Transactions.json";
@@ -8,8 +9,8 @@ import AirDrop from "./contracts/AirDrop.json";
 import contractAddress from "./contracts/contract-address.json";
 import "./App.scss";
 
-import ProgressLabel from "./Components/Progress";
-import Loading from "./Components/Loading";
+//import ProgressLabel from "./Components/Progress";
+//import Loading from "./Components/Loading";
 //stan początkowy
 
 
@@ -31,6 +32,12 @@ class App extends Component {
       tokenDecimals: 0,
       tokenSymbol: "FOSSA",
       proof:null,
+      merkleTree:null,
+      airDrop:null,
+      REWARD_AMOUNT:null,
+      contractBlocknumber:0,
+      blockNumberCutoff:null
+      
     };
   }
 
@@ -105,7 +112,8 @@ class App extends Component {
         this.dappToken = await new ethers.Contract(
           await addressDappToken,
           await abiDappToken,
-          await this.provider.getSigner()
+          await this.provider.getSigner(),
+          await this.provider.getBlockNumber()
         );
 
         const addressTransactions = contractAddress.Transactions;
@@ -123,7 +131,8 @@ class App extends Component {
         this.airDrop = await new ethers.Contract(
           await addressAirDrop,
           await abiAirDrop,
-          await this.provider.getSigner()
+          await this.provider.getSigner(),
+          await this.provider.getBlockNumber()
         );
         console.log(this.exchange);
         // console.log( await dappToken.transfer(dappTokenSale.target, this.state.tokensAvailable));
@@ -162,7 +171,7 @@ class App extends Component {
           dappTokenSale: this.dappTokenSale,
           Dapptoken: this.dappToken,
           Transactions: this.transaction,
-          Exchange: this.exchange,
+          airDrop: this.airDrop,
           addressDappTokenSale,
           tokensSold: TokensSold,
           addressDappToken,
@@ -298,11 +307,26 @@ class App extends Component {
   };
 
   AirDrop = async(event) =>{
-      event.preventDefault();
-    await this.airDrop.claim(this.state.addressSigner);
-    
-    
-    ;
+    var blockNumberCutoff;
+   var contractBlocknumber = await this.airDrop;
+    const filter = this.dappTokenSale.filters.Sell();
+    const results = await this.dappTokenSale.queryFilter(filter, contractBlocknumber, blockNumberCutoff);
+   const leafs = results.map(i => keccak256(i.args.account));
+    console.log("Leaf Nodes:", leafs);
+    const leafNodes = leafs.map(buffer => '0x' + buffer.toString('hex'));
+
+    var merkleTree = new makeMerkleTree(leafNodes, keccak256, { sortPairs: true });
+    const rootHash = merkleTree.getRoot();
+    console.log("Merkle Root:", rootHash);
+
+   this.state.addressSigner.forEach(async (addressToHash) => {
+      console.log("Address Hash:", addressToHash);
+      const addressHash = keccak256(addressToHash);
+      console.log("Address Hash:", addressHash);
+      const proof = merkleTree.getHexProof(addressHash);
+      console.log("Proof:", proof);
+      await this.airDrop.claim(addressToHash, proof);
+    });
   }
 
 
@@ -324,7 +348,7 @@ class App extends Component {
   }
 
   render() {
-    const { addressSigner, loading, tokenPrice, tokensSold, tokensAvailable } =
+    const { addressSigner, tokenPrice, tokensSold, tokensAvailable } =
       this.state;
 
     return (
