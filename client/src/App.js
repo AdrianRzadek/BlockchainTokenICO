@@ -8,6 +8,7 @@ import Transactions from "./contracts/Transactions.json";
 import AirDrop from "./contracts/AirDrop.json";
 import contractAddress from "./contracts/contract-address.json";
 import "./App.scss";
+import LoadWeb3 from "./Components/LoadWeb3";
 
 //import ProgressLabel from "./Components/Progress";
 //import Loading from "./Components/Loading";
@@ -352,7 +353,9 @@ class App extends Component {
       this.state;
 
     return (
+      
       <div className="App">
+        <LoadWeb3/>
         <h1>Dapp</h1>
         <p>Current Account: {addressSigner}</p>
 

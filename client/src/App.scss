@@ -9,58 +9,13 @@
 .zindex{
   z-index: 2;
 }
-body {
+html, body {
   margin: 0;
-  overflow: hidden;
+
   
 }
 
-.background {
-  width: 100vw;
-  height: 100vh;
-  z-index: 1;
-  background: #023047;
-}
 
-$particleSize: 100vmin;
-$animationDuration: 6s;
-$amount: 20;
-.background span {
-  width: $particleSize;
-  height: $particleSize;
-  border-radius: $particleSize;
-  backface-visibility: hidden;
-  position: absolute;
-  animation-name: move;
-  animation-duration: $animationDuration;
-  animation-timing-function: linear;
-  animation-iteration-count: infinite;
-  z-index: 1;
-  $colors: (
-    #8ECAE6,
-    #219EBC,
-    #FFB703,
-    #FB8500
-  );
-  @for $i from 1 through $amount {
-    &:nth-child(#{$i}) {
-      color: nth($colors, random(length($colors)));
-      top: random(100) * 1%;
-      left: random(100) * 1%;
-      animation-duration: (random($animationDuration * 1) / 10) * 1s + 10s;
-      animation-delay: random(($animationDuration + 10s) * 10) / 10 * -1s;
-      transform-origin: (random(50) - 25) * 1vw (random(50) - 25) * 1vh;
-      $blurRadius: (random() + 0.5) * $particleSize * 0.5;
-      $x: if(random() > 0.5, -1, 1);
-      box-shadow: ($particleSize * 1.8 * $x) 0 $blurRadius currentColor;
-      z-index: 1;
-    }
-  }
-}
-
-@keyframes move {
-  100% {
-    transform: translate3d(0, 0, 1px) rotate(360deg);
-    z-index: 1;
-  }
+canvas {
+  display: block;
 }
