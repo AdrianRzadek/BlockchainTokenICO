@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+/*import React, { useState, useEffect } from 'react';
 import { ethers } from 'ethers';
 
 import LoadingScreen from "./LoadingScreen"
@@ -24,7 +24,7 @@ const fetchData = async () => {
     } catch (error) {
        
       console.error('User denied account access');
-      window.alert('User denied account access');
+     window.alert('User denied account access');
     }
   } else if (window.web3) {
     const provider = new ethers.providers.Web3Provider(window.web3.currentProvider);
@@ -36,6 +36,7 @@ const fetchData = async () => {
     fetchData();
   }, []);
 
- return( <LoadingScreen />);
+ //return( <LoadingScreen />);
 };
 export default LoadWeb3;
+*/
