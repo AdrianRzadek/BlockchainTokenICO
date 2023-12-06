@@ -3,13 +3,13 @@ import ReactDOM from 'react-dom/client';
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
-//import LoadWeb3 from './Components/LoadWeb3';
+import LoadWeb3 from './Components/LoadWeb3';
 import LoadingScreen from './Components/LoadingScreen';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
-    <LoadingScreen/>
+    <LoadWeb3/>
   </React.StrictMode>
 );
 
