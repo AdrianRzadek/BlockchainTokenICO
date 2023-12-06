@@ -10,7 +10,7 @@ import contractAddress from "./contracts/contract-address.json";
 import "./App.scss";
 import LoadWeb3 from "./Components/LoadWeb3";
 
-//import ProgressLabel from "./Components/Progress";
+
 //import Loading from "./Components/Loading";
 //stan początkowy
 
@@ -48,7 +48,7 @@ class App extends Component {
     await this.loadLogo();
     await this.polling();
   }
-
+/*
   async loadWeb3() {
     if (typeof window.ethereum !== "undefined") {
       // Ethereum user detected. You can now use the provider.
@@ -86,7 +86,8 @@ class App extends Component {
       window.alert("No Ethereum browser extension detected, install MetaMask!");
     }
   }
-
+*/
+/*
   async loadBlockchainData() {
     if (typeof window.ethereum !== "undefined") {
       const { provider, signer, addressSigner, tokenPrice } = await this.state;
@@ -183,8 +184,8 @@ class App extends Component {
         window.alert("Smart contracts not deployed to the detected network.");
       }
     }
-  }
-
+  }*/
+/*
   async loadLogo() {
     const tokenImage =
       "https://img.freepik.com/premium-zdjecie/akwarela-malarstwo-fossa_721965-64.jpg?w=826";
@@ -226,7 +227,8 @@ class App extends Component {
       console.log(error);
     }
   }
-
+*/
+/*
   buyTokens = async (event) => {
     event.preventDefault();
     // Prevent the default form submission behavior
@@ -262,8 +264,8 @@ class App extends Component {
       this.setState({ loading: false });
       console.log("blad");
     }
-  };
-
+  };*/
+/*
   Transfer = async (event) => {
     event.preventDefault();
     const reciver = await event.target.reciver.value;
@@ -278,8 +280,8 @@ class App extends Component {
       value: value,
       gas: 200000000,
     });
-  };
-
+  };*/
+/*
   Swap = async (event) => {
     event.preventDefault();
     //  console.log(this.exchange)
@@ -306,8 +308,8 @@ class App extends Component {
       console.error("Error during token approval and sale:", error);
     }
   };
-
-  AirDrop = async(event) =>{
+*/
+ /* AirDrop = async(event) =>{
     var blockNumberCutoff;
    var contractBlocknumber = await this.airDrop;
     const filter = this.dappTokenSale.filters.Sell();
@@ -329,7 +331,7 @@ class App extends Component {
       await this.airDrop.claim(addressToHash, proof);
     });
   }
-
+*/
 
   polling = () => {
     this.pollingInterval = setInterval(async () => {
