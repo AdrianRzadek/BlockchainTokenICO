@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import { ethers } from 'hardhat';
-import DappToken from "./contracts/DappToken.json";
-import DappTokenSale from "./contracts/DappTokenSale.json";
-import Transactions from "./contracts/Transactions.json";
-import AirDrop from "./contracts/AirDrop.json";
-import contractAddress from "./contracts/contract-address.json";
+import { ethers } from 'ethers';
+import DappToken from "../contracts/DappToken.json";
+import DappTokenSale from "../contracts/DappTokenSale.json";
+import Transactions from "../contracts/Transactions.json";
+import AirDrop from "../contracts/AirDrop.json";
+import contractAddress from "../contracts/contract-address.json";
 const LoadBlockchainData = () =>{
   const [dappTokenSale, setDappTokenSale] = useState(null);
   const [dappToken, setDappToken] = useState(null);
@@ -83,11 +83,7 @@ const LoadBlockchainData = () =>{
   }, []);
 
   return (
-    addressDappTokenSale &&
-    addressDappToken &&
-    tokensSold &&
-    tokenPrice &&
-    tokensAvailable
+ <></>
   );
 };
 export default LoadBlockchainData;

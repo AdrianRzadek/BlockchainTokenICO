@@ -1,32 +1,75 @@
-import React from "react";
+import React, { useState } from "react";
 import { ethers } from "ethers";
-import {addressSigner, dappToken, dappTokenSale}from './LoadBlockchainData';
-const Swap = async (event) => {
-  event.preventDefault();
-  //  console.log(this.exchange)
-  const amount = event.target.tokensExchange.value;
-  const value = ethers.toBigInt(amount);
+import LoadBlockchainData from "./LoadBlockchainData";
 
-  try {
-    // Approve the exchange to spend tokens on behalf of the user
-    await dappToken.approve(dappTokenSale.target, value, {
-      from: addressSigner,
-      gas: 20000000,
-    });
 
-    // Sell tokens on the exchange
-    await dappTokenSale.sellTokens(value, {
-      from: addressSigner,
-      value: value,
-      gas: 20000000,
-    });
+const Swap = () => {
+  const [tokensExchange, setTokensExchange] = useState('');
+  const [etherExchange, setEtherExchange] = useState(LoadBlockchainData.tokenPrice);
 
-    console.log("Tokens approved and sold successfully!");
-  } catch (error) {
-    console.error("Error during token approval and sale:", error);
-  }
+  const swap = async (event) => {
+    event.preventDefault();
+    const amount = tokensExchange;
+    const value = ethers.toBigInt(amount);
 
-  // Return any JSX or component structure you desire
-  return <div>{/* Place your component JSX here */}</div>;
+    try {
+      await LoadBlockchainData.dappToken.approve(
+        LoadBlockchainData.dappTokenSale.target,
+        value,
+        {
+          from: LoadBlockchainData.addressSigner,
+          gas: 20000000,
+        }
+      );
+
+      await LoadBlockchainData.dappTokenSale.sellTokens(value, {
+        from: LoadBlockchainData.addressSigner,
+        value: value,
+        gas: 20000000,
+      });
+
+      console.log("Tokens approved and sold successfully!");
+    } catch (error) {
+      console.error("Error during token approval and sale:", error);
+    }
+  };
+
+  return (
+    <div className="container">
+      <div className="row">
+        <div className="col-md-8">
+          <p>Transactions:</p>
+          <form onSubmit={swap}>
+            <input
+              type="text"
+              id="tokensExchange"
+              className="form-control"
+              placeholder="TokensExchange"
+              required
+              value={tokensExchange}
+              onChange={(event) => setTokensExchange(event.target.value)}
+            />
+            <br />
+            <span className="float-right text-muted">
+              Balance: {LoadBlockchainData.tokenPrice}
+            </span>
+            <br />
+            <input
+              type="text"
+              id="etherExchange"
+              className="form-control"
+              placeholder="0"
+              value={etherExchange}
+              disabled
+            />
+            <br />
+            <button type="submit" className="btn btn-primary">
+              Wymień
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+  );
 };
 export default Swap;

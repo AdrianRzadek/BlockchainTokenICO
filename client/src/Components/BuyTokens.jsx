@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
-import { ethers } from 'hardhat';
-import {dappTokenSale, addressSigner}from './LoadBlockchainData';
+import { ethers } from 'ethers';
+import LoadBlockchainData from './LoadBlockchainData';
 const BuyTokens = () => {
   const [tokenPrice, setTokenPrice] = useState('');
-  //const [addressSigner, setAddressSigner] = useState('');
+  const [addressSigner, setAddressSigner] = useState('');
   const [loading, setLoading] = useState(false);
 
   const buyTokens = async (event) => {
@@ -20,7 +20,7 @@ const BuyTokens = () => {
 
       const value = tokenPrice * numberOfTokensBigInt;
 
-      await dappTokenSale.buyTokens(numberOfTokensBigInt, {
+      await LoadBlockchainData.dappTokenSale.buyTokens(numberOfTokensBigInt, {
         address: addressSigner,
         value: value,
         gasLimit: 2000000,
@@ -36,9 +36,37 @@ const BuyTokens = () => {
   };
 
   return (
-    <form onSubmit={buyTokens}>
-      {/* Rest of the JSX code */}
-    </form>
+  <div>
+  <p>Current Account: {addressSigner}</p>
+
+<div className="container">
+  <div className="row">
+    <div className="col-md-8">
+       Token Sale Details 
+      <h2>Token Sale</h2>
+
+      <p>Token Price: {tokenPrice} Wei</p>
+      <p>Token Sold: {LoadBlockchainData.tokensSold} </p>
+      <p>Tokens Available: {LoadBlockchainData.tokensAvailable}</p>
+       Buy Tokens Form
+      <form onSubmit={buyTokens}>
+        <div className="form-group">
+          <input
+            type="number"
+            id="numberOfTokens"
+            className="form-control"
+            placeholder="Number of Tokens"
+            required
+          />
+        </div>
+        <button type="submit" className="btn btn-primary">
+          Buy Tokens
+        </button>
+      </form>
+    </div>
+  </div>
+</div>
+  </div>
   );
 };
 

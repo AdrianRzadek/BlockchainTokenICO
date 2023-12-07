@@ -1,26 +1,26 @@
 import React, { useEffect } from 'react';
-import {addressDappToken, tokenSymbol, tokenDecimals}from './LoadBlockchainData';
+import LoadBlockchainData from './LoadBlockchainData';
 const LoadLogo = () => {
   const tokenImage =
     "https://img.freepik.com/premium-zdjecie/akwarela-malarstwo-fossa_721965-64.jpg?w=826";
   
   useEffect(() => {
     const loadLogo = async () => {
-      console.log(addressDappToken);
+      console.log(LoadBlockchainData.addressDappToken);
 
       try {
         const tokenAdded = localStorage.getItem("tokenAdded");
         const storedTokenAddress = localStorage.getItem("tokenAddress");
 
-        if (!tokenAdded || storedTokenAddress !== addressDappToken) {
+        if (!tokenAdded || storedTokenAddress !== LoadBlockchainData.addressDappToken) {
           const wasAdded = await window.ethereum.request({
             method: "wallet_watchAsset",
             params: {
               type: "ERC20",
               options: {
-                address: addressDappToken,
-                symbol: tokenSymbol,
-                decimals: tokenDecimals,
+                address: LoadBlockchainData.addressDappToken,
+                symbol: LoadBlockchainData.tokenSymbol,
+                decimals: LoadBlockchainData.tokenDecimals,
                 image: tokenImage,
               },
             },
@@ -29,7 +29,7 @@ const LoadLogo = () => {
           if (wasAdded) {
             console.log("Thanks for your interest!");
             localStorage.setItem("tokenAdded", "true");
-            localStorage.setItem("tokenAddress", addressDappToken);
+            localStorage.setItem("tokenAddress", LoadBlockchainData.addressDappToken);
           } else {
             console.log("Your loss!");
           }
@@ -44,7 +44,7 @@ const LoadLogo = () => {
     loadLogo();
   }, []);
 
-  return <div></div>;
+  return (<></>);
 }
 
 export default LoadLogo;

@@ -9,7 +9,7 @@ import LoadingScreen from './Components/LoadingScreen';
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
-    <LoadWeb3/>
+    <App/>
   </React.StrictMode>
 );
 
