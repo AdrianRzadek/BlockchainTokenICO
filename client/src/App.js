@@ -6,13 +6,20 @@ import Transfer from "./Components/Transfer";
 import Swap from "./Components/Swap"
 import LoadLogo from "./Components/LoadLogo"
 import AirDropComponent from "./Components/AirDrop";
+import { Provider } from 'react-redux';
+import store from './Components/store';
+import LoadBlockchainData from "./Components/LoadBlockchainData";
 function App() {
 
   return (
     <div className="App">
-      {/* <LoadWeb3 /> */}
-      <LoadLogo/>
-      <h1>Dapp</h1>
+       <Provider store={store}>
+        
+      <LoadWeb3 />  
+    <LoadBlockchainData/>
+
+   </Provider>
+       {/*   <h1>Dapp</h1>
        <BuyTokens />
       <br />
       <br />
@@ -22,7 +29,7 @@ function App() {
       <Swap/>
       <br />
       <br />
-       {/* <AirDropComponent />    */}
+       <AirDropComponent />    */} 
     </div>
   );
 }

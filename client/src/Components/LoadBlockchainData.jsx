@@ -1,89 +1,79 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { setDappTokenSale, setDappToken, setTransactions } from './actions';
 import { ethers } from 'ethers';
 import DappToken from "../contracts/DappToken.json";
 import DappTokenSale from "../contracts/DappTokenSale.json";
 import Transactions from "../contracts/Transactions.json";
 import AirDrop from "../contracts/AirDrop.json";
 import contractAddress from "../contracts/contract-address.json";
-const LoadBlockchainData = () =>{
-  const [dappTokenSale, setDappTokenSale] = useState(null);
-  const [dappToken, setDappToken] = useState(null);
-  const [transactions, setTransactions] = useState(null);
-  const [airDrop, setAirDrop] = useState(null);
-  const [addressDappTokenSale, setAddressDappTokenSale] = useState(null);
-  const [tokensSold, setTokensSold] = useState(null);
-  const [addressDappToken, setAddressDappToken] = useState(null);
-  const [tokenPrice, setTokenPrice] = useState(null);
-  const [tokensAvailable, setTokensAvailable] = useState(null);
+import LoadWeb3 from './LoadWeb3';
+import LoadLogo from './LoadLogo';
+
+const LoadBlockchainData = () => {
+  const dispatch = useDispatch();
+  const dappTokenSale = useSelector((state) => state.dappTokenSale);
+  const dappToken = useSelector((state) => state.dappToken);
+  const transactions = useSelector((state) => state.transactions);
 
   useEffect(() => {
     async function loadBlockchainData() {
-      if (typeof window.ethereum !== 'undefined') {
-        const provider = new ethers.BrowserProvider(window.ethereum);
-        const signer = await provider.getSigner();
-        const addressSigner = await signer.getAddress();
-        const tokenPrice = await dappTokenSale.tokenPrice();
+      try {
+        if (typeof window.ethereum !== 'undefined') {
+          const provider = new ethers.BrowserProvider(window.ethereum);
+          const signer = await provider.getSigner();
 
-        if (DappTokenSale && DappToken && Transactions && AirDrop) {
-          const addressDappTokenSale = contractAddress.DappTokenSale;
-          const abiDappTokenSale = DappTokenSale.abi;
-          const dappTokenSaleContract = new ethers.Contract(
-            addressDappTokenSale,
-            abiDappTokenSale,
-            signer
-          );
-          setDappTokenSale(dappTokenSaleContract);
+          if (DappTokenSale && DappToken && Transactions && AirDrop) {
+            const addressDappTokenSale = contractAddress.DappTokenSale;
+            const abiDappTokenSale = DappTokenSale.abi;
+            const dappTokenSaleContract = new ethers.Contract(
+              addressDappTokenSale,
+              abiDappTokenSale,
+              signer
+            );
 
-          const addressDappToken = contractAddress.DappToken;
-          const abiDappToken = DappToken.abi;
-          const dappTokenContract = new ethers.Contract(
-            addressDappToken,
-            abiDappToken,
-            signer
-          );
-          setDappToken(dappTokenContract);
+            const addressDappToken = contractAddress.DappToken;
+            const abiDappToken = DappToken.abi;
+            const dappTokenContract = new ethers.Contract(
+              addressDappToken,
+              abiDappToken,
+              signer
+            );
 
-          const addressTransactions = contractAddress.Transactions;
-          const abiTransactions = Transactions.abi;
-          const transactionsContract = new ethers.Contract(
-            addressTransactions,
-            abiTransactions,
-            signer
-          );
-          setTransactions(transactionsContract);
+            const addressTransactions = contractAddress.Transactions;
+            const abiTransactions = Transactions.abi;
+            const transactionsContract = new ethers.Contract(
+              addressTransactions,
+              abiTransactions,
+              signer
+            );
 
-          const addressAirDrop = contractAddress.AirDrop;
-          const abiAirDrop = AirDrop.abi;
-          const airDropContract = new ethers.Contract(
-            addressAirDrop,
-            abiAirDrop,
-            signer
-          );
-          setAirDrop(airDropContract);
-
-          const tokensSold = await dappTokenSaleContract.tokensSold();
-          const tokensAvailable = await dappTokenContract.balanceOf(
-            dappTokenSaleContract.target
-          );
-
-          setAddressDappTokenSale(addressDappTokenSale);
-          setAddressDappToken(addressDappToken);
-          setTokensSold(tokensSold);
-          setTokenPrice(tokenPrice);
-          setTokensAvailable(tokensAvailable);
-        } else {
-          window.alert(
-            'Smart contracts not deployed to the detected network.'
-          );
+            dispatch(setDappTokenSale(dappTokenSaleContract));
+            dispatch(setDappToken(dappTokenContract));
+            dispatch(setTransactions(transactionsContract));
+          } else {
+            window.alert(
+              'Smart contracts not deployed to the detected network.'
+            );
+          }
         }
+      } catch (error) {
+        console.error('Error loading blockchain data:', error);
       }
     }
 
     loadBlockchainData();
-  }, []);
 
-  return (
- <></>
-  );
+    // console.log('Updated state values:', {
+    //   dappTokenSale,
+    //   dappToken,
+    //   transactions,
+    // });
+  }, [dappTokenSale, dappToken, transactions]);
+
+
+
+  return <></>; // Replace with your desired JSX code
 };
+
 export default LoadBlockchainData;

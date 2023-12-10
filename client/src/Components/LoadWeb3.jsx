@@ -3,6 +3,14 @@ import { ethers } from 'ethers';
 
 import LoadingScreen from "./LoadingScreen"
 import "../App.scss";
+import LoadLogo from './LoadLogo';
+import BuyTokens from './BuyTokens';
+import Swap from './Swap';
+import Transfer from './Transfer';
+import LoadBlockchainData from './LoadBlockchainData';
+import { Provider } from 'react-redux';
+import store from './store';
+
 const LoadWeb3 = () => {
   const [addressSigner, setAddressSigner] = useState('');
   const [signer, setSigner] = useState(null);
@@ -10,6 +18,18 @@ const LoadWeb3 = () => {
   const [web3, setWeb3] = useState(null);
   const [dataLoaded, setDataLoaded] = useState(false);
   const [loadingInfo, setLoadingInfo] = useState("Loading...");
+  const [isLoading, setIsLoading] = useState(true);
+ 
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      !isLoading && setDataLoaded(true);
+    }, 2000);
+
+    // Cleanup function to clear the timer in case the component unmounts before loading is complete
+    return () => clearTimeout(timer);
+  }, []);
+
+
   useEffect(() => {
     const loadWeb3 = async () => {
       if (typeof window.ethereum !== "undefined") {
@@ -24,32 +44,57 @@ const LoadWeb3 = () => {
           setSigner(signer);
           setProvider(provider);
           console.log(signer);
+          setIsLoading(false);
         } catch (error) {
           console.error("Zaloguj się do zdecentralizowanej sieci");
           setLoadingInfo("Zaloguj się do zdecentralizowanej sieci");
+          setIsLoading(true);
         }
       } else if (window.web3) {
         const provider = await new ethers.BrowserProvider(
-          window.web3.currentProvider
-        );
+          window.web3.currentProvider);
         setWeb3(provider);
+        setIsLoading(false);
       } else {
-        // window.alert(
-        //   "No Ethereum browser extension detected, install MetaMask!"
-        // );
-        setLoadingInfo("W przeglądarce nie wykryto pugina by połączyć z Ethereum , zainstaluj MetaMask!");
+        setLoadingInfo("W przeglądarce nie wykryto plugina by połączyć z Ethereum , zainstaluj MetaMask!");
+        setIsLoading(true);
       }
       setDataLoaded(true);
     };
     loadWeb3();
+    
   }, []);
 
-  // Conditionally render LoadingScreen or actual content
-  return (
-    <LoadingScreen loadingInfo={loadingInfo} />
+  
+
+  if (isLoading) {
+ 
+ return <LoadingScreen loadingInfo={loadingInfo} />;
+
+
+  } else {
+
+    return <MainComponent />;
+
+  }
+   };  
+   
+   const MainComponent = () => {
+    // Your actual main component logic and content go here
+    return (
+      <div>
+        <Provider store={store}>
+        <LoadLogo/>
+        <BuyTokens/>
+        <Swap/>
+        <Transfer/>
+        </Provider>
     
+      </div>
+    );
+  };
      
-  );
-};
+  
+
 
 export default LoadWeb3;

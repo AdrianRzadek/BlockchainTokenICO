@@ -1,6 +1,6 @@
 import React, { useEffect, useCallback } from 'react';
 import p5 from 'p5';
-import loadingInfo from "../Components/LoadWeb3"
+
 import "../App.scss"
 const LoadingScreen = ({loadingInfo}) => {
   const flyBoxCount = 20;
@@ -74,6 +74,7 @@ const LoadingScreen = ({loadingInfo}) => {
       new p5(sketch);
     }, [sketch]);
 
+    
       // Use the loadingInfo prop here
       return (
         <div className="LoadingScreen">
