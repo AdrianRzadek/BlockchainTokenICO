@@ -5,30 +5,19 @@ import LoadingScreen from "./LoadingScreen"
 import "../App.scss";
 import LoadLogo from './LoadLogo';
 import BuyTokens from './BuyTokens';
-import Swap from './Swap';
-import Transfer from './Transfer';
-import LoadBlockchainData from './LoadBlockchainData';
+
 import { Provider } from 'react-redux';
 import store from './store';
+import { useDispatch, useSelector } from 'react-redux';
+import { setAddressSigner,  setIsLoading, setLoadingInfo } from './actions';
 
 const LoadWeb3 = () => {
-  const [addressSigner, setAddressSigner] = useState('');
-  const [signer, setSigner] = useState(null);
-  const [provider, setProvider] = useState(null);
-  const [web3, setWeb3] = useState(null);
-  const [dataLoaded, setDataLoaded] = useState(false);
-  const [loadingInfo, setLoadingInfo] = useState("Loading...");
-  const [isLoading, setIsLoading] = useState(true);
- 
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      !isLoading && setDataLoaded(true);
-    }, 2000);
+  const addressSigner = useSelector(state => state.addressSigner);
+  
+  const isLoading = useSelector(state => state.isLoading);
+  const loadingInfo = useSelector(state => state.loadingInfo);
 
-    // Cleanup function to clear the timer in case the component unmounts before loading is complete
-    return () => clearTimeout(timer);
-  }, []);
-
+  const dispatch = useDispatch();
 
   useEffect(() => {
     const loadWeb3 = async () => {
@@ -40,44 +29,31 @@ const LoadWeb3 = () => {
           await window.ethereum.request({ method: "eth_requestAccounts" });
           const signer = await provider.getSigner();
           const addressSigner = await signer.getAddress();
-          setAddressSigner(addressSigner);
-          setSigner(signer);
-          setProvider(provider);
+          dispatch(setAddressSigner(addressSigner));
+          
+         
           console.log(signer);
-          setIsLoading(false);
+          dispatch(setIsLoading(false));
         } catch (error) {
           console.error("Zaloguj się do zdecentralizowanej sieci");
-          setLoadingInfo("Zaloguj się do zdecentralizowanej sieci");
-          setIsLoading(true);
+          dispatch(setLoadingInfo("Zaloguj się do zdecentralizowanej sieci"));
+          dispatch(setIsLoading(true));
         }
-      } else if (window.web3) {
-        const provider = await new ethers.BrowserProvider(
-          window.web3.currentProvider);
-        setWeb3(provider);
-        setIsLoading(false);
+      
       } else {
-        setLoadingInfo("W przeglądarce nie wykryto plugina by połączyć z Ethereum , zainstaluj MetaMask!");
-        setIsLoading(true);
+        dispatch(setLoadingInfo("W przeglądarce nie wykryto plugina by połączyć z Ethereum , zainstaluj MetaMask!"));
+        dispatch(setIsLoading(true));
       }
-      setDataLoaded(true);
     };
     loadWeb3();
-    
-  }, []);
-
-  
+  }, [dispatch]);
 
   if (isLoading) {
- 
- return <LoadingScreen loadingInfo={loadingInfo} />;
-
-
+    return <LoadingScreen loadingInfo={loadingInfo} />;
   } else {
-
     return <MainComponent />;
-
   }
-   };  
+};
    
    const MainComponent = () => {
     // Your actual main component logic and content go here
@@ -86,8 +62,8 @@ const LoadWeb3 = () => {
         <Provider store={store}>
         <LoadLogo/>
         <BuyTokens/>
-        <Swap/>
-        <Transfer/>
+        {/* <Swap/>
+        <Transfer/> */}
         </Provider>
     
       </div>

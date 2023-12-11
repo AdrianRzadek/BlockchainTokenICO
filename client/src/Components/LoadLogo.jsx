@@ -1,5 +1,4 @@
 import React, { useEffect } from 'react';
-import LoadBlockchainData from './LoadBlockchainData';
 import {useSelector} from 'react-redux';  
 
 const LoadLogo = () => {
@@ -14,7 +13,7 @@ const LoadLogo = () => {
   
   useEffect(() => {
 const loadLogo = async () => {
-  
+
 
   try {
     const tokenAdded = localStorage.getItem("tokenAdded");

@@ -1,11 +1,16 @@
 import React, { useState } from 'react';
 import { ethers } from 'ethers';
-import LoadBlockchainData from './LoadBlockchainData';
-const BuyTokens = () => {
-  const [tokenPrice, setTokenPrice] = useState('');
-  const [addressSigner, setAddressSigner] = useState('');
-  const [loading, setLoading] = useState(false);
+import {  useSelector } from 'react-redux';
 
+const BuyTokens = () => {
+
+  const dappToken = useSelector((state) => state.dappToken);
+  const dappTokenSale = useSelector((state) => state.dappTokenSale);
+ const addressSigner = useSelector((state) => state.addressSigner);
+  const [loading, setLoading] = useState(false);
+  console.log(dappTokenSale);
+  console.log(dappTokenSale.dappTokenSalePrice);
+  console.log(dappToken)
   const buyTokens = async (event) => {
     event.preventDefault();
 
@@ -14,13 +19,13 @@ const BuyTokens = () => {
       const numberOfTokensBigInt = ethers.toBigInt(numberOfTokens);
       console.log("Buy Tokens Info:");
 
-      console.log(tokenPrice);
-      console.log("Value: " + numberOfTokensBigInt * tokenPrice);
+      console.log(dappTokenSale.dappTokenSalePrice);
+      console.log("Value: " + numberOfTokensBigInt * dappTokenSale.dappTokenSalePrice);
       console.log("Number of Tokens: " + numberOfTokensBigInt);
 
-      const value = tokenPrice * numberOfTokensBigInt;
+      const value = dappTokenSale.dappTokenSalePrice * numberOfTokensBigInt;
 
-      await LoadBlockchainData.dappTokenSale.buyTokens(numberOfTokensBigInt, {
+      await dappTokenSale.buyTokens(numberOfTokensBigInt, {
         address: addressSigner,
         value: value,
         gasLimit: 2000000,
@@ -45,9 +50,9 @@ const BuyTokens = () => {
        Token Sale Details 
       <h2>Token Sale</h2>
 
-      <p>Token Price: {tokenPrice} Wei</p>
-      <p>Token Sold: {LoadBlockchainData.tokensSold} </p>
-      <p>Tokens Available: {LoadBlockchainData.tokensAvailable}</p>
+      <p>Token Price: {dappTokenSale.dappTokenSalePrice} Wei</p>
+      <p>Token Sold: {dappTokenSale.dappTokensSold} </p>
+      <p>Tokens Available: {dappTokenSale.tokensAvailable}</p>
        Buy Tokens Form
       <form onSubmit={buyTokens}>
         <div className="form-group">

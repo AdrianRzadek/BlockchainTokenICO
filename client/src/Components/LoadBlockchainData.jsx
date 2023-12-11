@@ -7,8 +7,6 @@ import DappTokenSale from "../contracts/DappTokenSale.json";
 import Transactions from "../contracts/Transactions.json";
 import AirDrop from "../contracts/AirDrop.json";
 import contractAddress from "../contracts/contract-address.json";
-import LoadWeb3 from './LoadWeb3';
-import LoadLogo from './LoadLogo';
 
 const LoadBlockchainData = () => {
   const dispatch = useDispatch();
@@ -51,6 +49,7 @@ const LoadBlockchainData = () => {
             dispatch(setDappTokenSale(dappTokenSaleContract));
             dispatch(setDappToken(dappTokenContract));
             dispatch(setTransactions(transactionsContract));
+            console.log(dappTokenContract)
           } else {
             window.alert(
               'Smart contracts not deployed to the detected network.'
@@ -69,7 +68,7 @@ const LoadBlockchainData = () => {
     //   dappToken,
     //   transactions,
     // });
-  }, [dappTokenSale, dappToken, transactions]);
+  }, [dappTokenSale, dappToken, transactions,dispatch]);
 
 
 

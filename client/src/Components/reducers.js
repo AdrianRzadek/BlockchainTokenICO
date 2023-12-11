@@ -1,42 +1,87 @@
 // reducers.js
 import { combineReducers } from '@reduxjs/toolkit';
-import{SET_DAPP_TOKEN_SALE,SET_DAPP_TOKEN}from "./actions";
+import {
+  SET_DAPP_TOKEN_SALE,
+  SET_DAPP_TOKEN,
+  SET_TRANSACTIONS,
+  SET_IS_LOADING,
+  SET_ADDRESS_SIGNER,
+  SET_LOADING_INFO,
+} from "./actions";
+
 const initialState = {
-  dappTokenSale: {},
-  dappToken: {dappTokenDecimals: null,
-  dappTokenAddress: null,
-  dappTokenSymbol: null,},
-  transactions: {},
-  // Add more state variables
+  dappTokenSale: {
+    dappTokenSaleAddress: null,
+    dappTokenSalePrice: null,
+    dappTokenSaleTokensSold: null,
+    dappTokenSaleTokensAvailable: null,
+  },
+  dappToken: {
+    dappTokenDecimals: null,
+    dappTokenAddress: null,
+    dappTokenSymbol: null,
+    
+  },
+  transactions: { transactionsAddress : null },
+  isLoading: false,
+  addressSigner: null,
+  loadingInfo: null,
 };
 
 const dappTokenSaleReducer = (state = initialState.dappTokenSale, action) => {
-  switch (action.type) {
-    case SET_DAPP_TOKEN_SALE:
-      return action.payload;
-    default:
-      return state;
+  if (action.type === SET_DAPP_TOKEN_SALE) {
+    return action.payload;
   }
+  return state;
 };
 
 const dappTokenReducer = (state = initialState.dappToken, action) =>
   action.type === SET_DAPP_TOKEN ? action.payload : state;
 
 const transactionsReducer = (state = initialState.transactions, action) => {
-  // Ensure that the reducer returns the state if action type is not recognized
   switch (action.type) {
-    // Add more cases for specific actions if needed
+    case SET_TRANSACTIONS:
+      return { ...state, ...action.payload };
     default:
       return state;
   }
 };
 
-// Combine reducers
+const isLoadingReducer = (state = initialState.isLoading, action) => {
+  switch (action.type) {
+    case SET_IS_LOADING:
+      return action.payload.isLoading;
+    default:
+      return state;
+  }
+};
+
+const addressSignerReducer = (state = initialState.addressSigner, action) => {
+  switch (action.type) {
+    case SET_ADDRESS_SIGNER:
+      return action.payload.addressSigner;
+    default:
+      return state;
+  }
+};
+
+
+const loadingInfoReducer = (state = initialState.loadingInfo, action) => {
+  switch (action.type) {
+    case SET_LOADING_INFO:
+      return action.payload.loadingInfo;
+    default:
+      return state;
+  }
+};
+
 const rootReducer = combineReducers({
   dappTokenSale: dappTokenSaleReducer,
   dappToken: dappTokenReducer,
   transactions: transactionsReducer,
-  // Add more reducers for other state variables
+  isLoading: isLoadingReducer,
+  addressSigner: addressSignerReducer,
+  loadingInfo: loadingInfoReducer,
 });
 
 export default rootReducer;
