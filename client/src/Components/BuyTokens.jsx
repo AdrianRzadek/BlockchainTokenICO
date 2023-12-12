@@ -8,7 +8,7 @@ const BuyTokens = () => {
   const dappTokenSale = useSelector((state) => state.dappTokenSale);
  const addressSigner = useSelector((state) => state.addressSigner);
   const [loading, setLoading] = useState(false);
-  console.log(dappTokenSale);
+  console.log(dappTokenSale.dappTokenSaleTokensAvailable);
   console.log(dappTokenSale.dappTokenSalePrice);
   console.log(dappToken)
   const buyTokens = async (event) => {
@@ -52,7 +52,7 @@ const BuyTokens = () => {
 
       <p>Token Price: {dappTokenSale.dappTokenSalePrice} Wei</p>
       <p>Token Sold: {dappTokenSale.dappTokensSold} </p>
-      <p>Tokens Available: {dappTokenSale.tokensAvailable}</p>
+      <p>Tokens Available: {dappTokenSale.dappTokenSaleTokensAvailable}</p>
        Buy Tokens Form
       <form onSubmit={buyTokens}>
         <div className="form-group">

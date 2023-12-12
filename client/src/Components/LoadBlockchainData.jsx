@@ -46,7 +46,7 @@ const LoadBlockchainData = () => {
               signer
             );
 
-            dispatch(setDappTokenSale(dappTokenSaleContract));
+            dispatch(setDappTokenSale(dappTokenSaleContract, dappTokenContract));
             dispatch(setDappToken(dappTokenContract));
             dispatch(setTransactions(transactionsContract));
             console.log(dappTokenContract)

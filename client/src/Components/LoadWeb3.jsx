@@ -1,19 +1,19 @@
-import React, { useState, useEffect } from 'react';
+import React, {  useEffect } from 'react';
 import { ethers } from 'ethers';
 
 import LoadingScreen from "./LoadingScreen"
 import "../App.scss";
 import LoadLogo from './LoadLogo';
 import BuyTokens from './BuyTokens';
-
+import Swap from './Swap';
+//import AirDropComponent from './AirDropComponent';
 import { Provider } from 'react-redux';
 import store from './store';
 import { useDispatch, useSelector } from 'react-redux';
 import { setAddressSigner,  setIsLoading, setLoadingInfo } from './actions';
 
 const LoadWeb3 = () => {
-  const addressSigner = useSelector(state => state.addressSigner);
-  
+
   const isLoading = useSelector(state => state.isLoading);
   const loadingInfo = useSelector(state => state.loadingInfo);
 
@@ -62,8 +62,8 @@ const LoadWeb3 = () => {
         <Provider store={store}>
         <LoadLogo/>
         <BuyTokens/>
-        {/* <Swap/>
-        <Transfer/> */}
+        <Swap/>
+        {/* <Transfer/> */}
         </Provider>
     
       </div>

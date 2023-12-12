@@ -49,7 +49,7 @@ const loadLogo = async () => {
 }
 
     loadLogo();
-  }, []); // Include blockchainData as a dependency
+  }, [ dappToken.dappTokenAddress, dappToken.dappTokenDecimals, dappToken.dappTokenSymbol]); // Include blockchainData as a dependency
 
   return (
     <></>

@@ -20,6 +20,8 @@ const initialState = {
     dappTokenDecimals: null,
     dappTokenAddress: null,
     dappTokenSymbol: null,
+    dappTokenBalance: null,
+  
     
   },
   transactions: { transactionsAddress : null },

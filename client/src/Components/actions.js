@@ -6,23 +6,27 @@ export const SET_IS_LOADING = 'SET_IS_LOADING';
 export const SET_ADDRESS_SIGNER = 'SET_ADDRESS_SIGNER';
 export const SET_LOADING_INFO = 'SET_LOADING_INFO';
 
-export const setDappTokenSale = (dappTokenSale) => async (dispatch) => {
+export const setDappTokenSale = (dappTokenSale, dappToken) => async (dispatch) => {
  
    const tokensSold = await dappTokenSale.tokensSold();
    const sold = tokensSold.toString();
    const tokenPrice= await dappTokenSale.tokenPrice();
    const price = tokenPrice.toString();
     const target = dappTokenSale.target;
-  //const tokensAvailable = await dappTokenSale.tokensAvailable();
- //// const available = tokensAvailable.toString();
+    const tokensAvailable = await dappToken.balanceOf(
+     target
+    );
+    const available = tokensAvailable.toString();
+
   console.log(dappTokenSale)
+  console.log(dappToken)
   dispatch({
     type: SET_DAPP_TOKEN_SALE,
     payload: {
       dappTokenSaleAddress: target,
       dappTokenSaleTokensSold: sold,
       dappTokenSalePrice: price,
-    //  dappTokenSaleTokensAvailable: available,
+     dappTokenSaleTokensAvailable: available,
     },
   });
 };
@@ -31,6 +35,7 @@ export const setDappToken = (dappToken) => async (dispatch) => {
   const symbol = await dappToken.symbol();
   const decimals = await dappToken.decimals();
   const decimalsString = decimals.toString();
+
   console.log(dappToken)
   dispatch({
     type: SET_DAPP_TOKEN,
