@@ -11,6 +11,7 @@ import { Provider } from 'react-redux';
 import store from './store';
 import { useDispatch, useSelector } from 'react-redux';
 import { setAddressSigner,  setIsLoading, setLoadingInfo } from './actions';
+import LoadBlockchainData from './LoadBlockchainData';
 
 const LoadWeb3 = () => {
 
@@ -59,12 +60,11 @@ const LoadWeb3 = () => {
     // Your actual main component logic and content go here
     return (
       <div>
-        <Provider store={store}>
-        <LoadLogo/>
-        <BuyTokens/>
-        <Swap/>
-        {/* <Transfer/> */}
-        </Provider>
+  
+     
+        <LoadBlockchainData/>
+    
+  
     
       </div>
     );

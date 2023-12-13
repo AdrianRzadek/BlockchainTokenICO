@@ -1,19 +1,16 @@
 import React, { useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { setDappTokenSale, setDappToken, setTransactions } from './actions';
 import { ethers } from 'ethers';
 import DappToken from "../contracts/DappToken.json";
 import DappTokenSale from "../contracts/DappTokenSale.json";
 import Transactions from "../contracts/Transactions.json";
 import AirDrop from "../contracts/AirDrop.json";
 import contractAddress from "../contracts/contract-address.json";
+import BuyTokens from './BuyTokens';
+import { useState } from 'react';
 
 const LoadBlockchainData = () => {
-  const dispatch = useDispatch();
-  const dappTokenSale = useSelector((state) => state.dappTokenSale);
-  const dappToken = useSelector((state) => state.dappToken);
-  const transactions = useSelector((state) => state.transactions);
 
+  const [dappTokenSale, setDappTokenSale]= useState(null);
   useEffect(() => {
     async function loadBlockchainData() {
       try {
@@ -29,6 +26,7 @@ const LoadBlockchainData = () => {
               abiDappTokenSale,
               signer
             );
+           
 
             const addressDappToken = contractAddress.DappToken;
             const abiDappToken = DappToken.abi;
@@ -46,10 +44,10 @@ const LoadBlockchainData = () => {
               signer
             );
 
-            dispatch(setDappTokenSale(dappTokenSaleContract, dappTokenContract));
-            dispatch(setDappToken(dappTokenContract));
-            dispatch(setTransactions(transactionsContract));
-            console.log(dappTokenContract)
+          await setDappTokenSale(await dappTokenSaleContract);
+        console.log(dappTokenSaleContract.tokenPrice())
+              console.log(await dappTokenSale.tokenPrice())
+      
           } else {
             window.alert(
               'Smart contracts not deployed to the detected network.'
@@ -63,16 +61,21 @@ const LoadBlockchainData = () => {
 
     loadBlockchainData();
 
-    // console.log('Updated state values:', {
-    //   dappTokenSale,
-    //   dappToken,
-    //   transactions,
-    // });
-  }, [dappTokenSale, dappToken, transactions,dispatch]);
+ 
+  }, [dappTokenSale]);
+ console.log(dappTokenSale)
+
+  return (  <div>
+  
+   
+  
+     <BuyTokens dappTokenSale={dappTokenSale}/>
+    <Swap/>
+    {/* <Transfer/> */}
 
 
+  </div>);
 
-  return <></>; // Replace with your desired JSX code
 };
 
 export default LoadBlockchainData;

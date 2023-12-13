@@ -1,29 +1,35 @@
 import React, { useState } from "react";
 import { ethers } from "ethers";
-import LoadBlockchainData from "./LoadBlockchainData";
-
+import {  useSelector, useDispatch } from 'react-redux';
+import{setTokensValue} from './actions';
 
 const Swap = () => {
-  const [tokensExchange, setTokensExchange] = useState('');
-  const [etherExchange, setEtherExchange] = useState(LoadBlockchainData.tokenPrice);
+  const [tokensExchange, setTokensExchange] = useState(null);
 
+  const addressSigner = useSelector((state) => state.addressSigner);
+  const dappToken = useSelector((state) => state.dappToken);
+  const dappTokenSale = useSelector((state) => state.dappTokenSale);
+  const tokensValue = useSelector((state) => state.tokensValue);
+  const dispatch = useDispatch();
   const swap = async (event) => {
     event.preventDefault();
-    const amount = tokensExchange;
+    
+    const amount = tokensExchange * dappTokenSale.dappTokenSalePrice;
     const value = ethers.toBigInt(amount);
-
+    dispatch(setTokensValue(value));
+   console.log(value);
     try {
-      await LoadBlockchainData.dappToken.approve(
-        LoadBlockchainData.dappTokenSale.target,
+      await dappToken.approve(
+       dappTokenSale.target,
         value,
         {
-          from: LoadBlockchainData.addressSigner,
+          from: addressSigner,
           gas: 20000000,
         }
       );
 
-      await LoadBlockchainData.dappTokenSale.sellTokens(value, {
-        from: LoadBlockchainData.addressSigner,
+      await dappTokenSale.sellTokens(value, {
+        from: addressSigner,
         value: value,
         gas: 20000000,
       });
@@ -35,7 +41,7 @@ const Swap = () => {
   };
 
   return (
-    <div className="container">
+<div className="container">
       <div className="row">
         <div className="col-md-8">
           <p>Transactions:</p>
@@ -51,7 +57,7 @@ const Swap = () => {
             />
             <br />
             <span className="float-right text-muted">
-              Balance: {LoadBlockchainData.tokenPrice}
+              Balance: {dappTokenSale.dappTokenSalePrice}
             </span>
             <br />
             <input
@@ -59,7 +65,7 @@ const Swap = () => {
               id="etherExchange"
               className="form-control"
               placeholder="0"
-              value={etherExchange}
+              value={tokensValue}
               disabled
             />
             <br />

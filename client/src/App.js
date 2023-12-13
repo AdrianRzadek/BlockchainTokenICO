@@ -16,7 +16,7 @@ function App() {
        <Provider store={store}>
         
       <LoadWeb3 />  
-    <LoadBlockchainData/>
+
 
    </Provider>
        {/*   <h1>Dapp</h1>

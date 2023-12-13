@@ -7,20 +7,23 @@ import {
   SET_IS_LOADING,
   SET_ADDRESS_SIGNER,
   SET_LOADING_INFO,
+  SET_TOKENS_VALUE,
 } from "./actions";
 
 const initialState = {
   dappTokenSale: {
-    dappTokenSaleAddress: null,
-    dappTokenSalePrice: null,
-    dappTokenSaleTokensSold: null,
-    dappTokenSaleTokensAvailable: null,
+    // dappTokenSaleAddress: null,
+    // dappTokenSalePrice: null,
+    // dappTokenSaleTokensSold: null,
+    // dappTokenSaleTokensAvailable: null,
+    dappTokenSale: null,
   },
   dappToken: {
     dappTokenDecimals: null,
     dappTokenAddress: null,
     dappTokenSymbol: null,
     dappTokenBalance: null,
+    dappTokenApprove: null,
   
     
   },
@@ -28,14 +31,18 @@ const initialState = {
   isLoading: false,
   addressSigner: null,
   loadingInfo: null,
+  tokensEchange: null,
 };
 
-const dappTokenSaleReducer = (state = initialState.dappTokenSale, action) => {
-  if (action.type === SET_DAPP_TOKEN_SALE) {
-    return action.payload;
-  }
-  return state;
-};
+// const dappTokenSaleReducer = (state = initialState.dappTokenSale, action) => {
+//   if (action.type === SET_DAPP_TOKEN_SALE) {
+//     return {
+//       ...state,
+//       dappTokenSale: { ...state.dappTokenSale, ...action.payload.dappTokenSale },
+//     };
+//   }
+//   return state;
+// };
 
 const dappTokenReducer = (state = initialState.dappToken, action) =>
   action.type === SET_DAPP_TOKEN ? action.payload : state;
@@ -76,14 +83,23 @@ const loadingInfoReducer = (state = initialState.loadingInfo, action) => {
       return state;
   }
 };
+const tokensExchangeReducer = (state = initialState.tokensEchange, action) => {
+  switch (action.type) {
+    case SET_TOKENS_VALUE:
+      return action.payload;
+    default:
+      return state;
+  }
+};
 
 const rootReducer = combineReducers({
-  dappTokenSale: dappTokenSaleReducer,
+ // dappTokenSale: dappTokenSaleReducer,
   dappToken: dappTokenReducer,
   transactions: transactionsReducer,
   isLoading: isLoadingReducer,
   addressSigner: addressSignerReducer,
   loadingInfo: loadingInfoReducer,
+  tokensExchangeReducer: tokensExchangeReducer,
 });
 
 export default rootReducer;

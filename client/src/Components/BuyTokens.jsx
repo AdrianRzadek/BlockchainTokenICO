@@ -1,16 +1,13 @@
-import React, { useState } from 'react';
-import { ethers } from 'ethers';
-import {  useSelector } from 'react-redux';
+import React, { useEffect, useState,useCallback } from "react";
+import { ethers } from "ethers";
+import { useSelector } from "react-redux";
 
-const BuyTokens = () => {
-
-  const dappToken = useSelector((state) => state.dappToken);
-  const dappTokenSale = useSelector((state) => state.dappTokenSale);
- const addressSigner = useSelector((state) => state.addressSigner);
+const BuyTokens = ({ dappTokenSale }) => {
+  const addressSigner = useSelector((state) => state.addressSigner);
   const [loading, setLoading] = useState(false);
-  console.log(dappTokenSale.dappTokenSaleTokensAvailable);
-  console.log(dappTokenSale.dappTokenSalePrice);
-  console.log(dappToken)
+  const [useTokenPrice, setTokenPrice] = useState(null);
+
+
   const buyTokens = async (event) => {
     event.preventDefault();
 
@@ -18,12 +15,13 @@ const BuyTokens = () => {
       const numberOfTokens = event.target.numberOfTokens.value;
       const numberOfTokensBigInt = ethers.toBigInt(numberOfTokens);
       console.log("Buy Tokens Info:");
+      const tokenPrice = await dappTokenSale.tokenPrice();
+      setTokenPrice(tokenPrice);
+      console.log(await tokenPrice);
+      console.log("Value: " + numberOfTokensBigInt * tokenPrice);
+      //  console.log("Number of Tokens: " + numberOfTokensBigInt);
 
-      console.log(dappTokenSale.dappTokenSalePrice);
-      console.log("Value: " + numberOfTokensBigInt * dappTokenSale.dappTokenSalePrice);
-      console.log("Number of Tokens: " + numberOfTokensBigInt);
-
-      const value = dappTokenSale.dappTokenSalePrice * numberOfTokensBigInt;
+      const value = tokenPrice * numberOfTokensBigInt;
 
       await dappTokenSale.buyTokens(numberOfTokensBigInt, {
         address: addressSigner,
@@ -40,38 +38,55 @@ const BuyTokens = () => {
     }
   };
 
+ 
+
+  useEffect(() => {
+    const fetchTokenPrice = async () => {
+      const newTokenPrice = await dappTokenSale.tokenPrice();
+      updateTokenPrice(newTokenPrice);
+    };
+  
+    fetchTokenPrice();
+  }, [dappTokenSale]);
+
+  const updateTokenPrice = (newTokenPrice) => {
+    setTokenPrice(newTokenPrice);
+  };
+
   return (
-  <div>
-  <p>Current Account: {addressSigner}</p>
+    <div>
+      <p>Current Account: {addressSigner}</p>
 
-<div className="container">
-  <div className="row">
-    <div className="col-md-8">
-       Token Sale Details 
-      <h2>Token Sale</h2>
-
-      <p>Token Price: {dappTokenSale.dappTokenSalePrice} Wei</p>
-      <p>Token Sold: {dappTokenSale.dappTokensSold} </p>
-      <p>Tokens Available: {dappTokenSale.dappTokenSaleTokensAvailable}</p>
-       Buy Tokens Form
-      <form onSubmit={buyTokens}>
-        <div className="form-group">
-          <input
-            type="number"
-            id="numberOfTokens"
-            className="form-control"
-            placeholder="Number of Tokens"
-            required
-          />
+      <div className="container">
+        <div className="row">
+          <div className="col-md-8">
+            Token Sale Details
+            <h2>Token Sale</h2>
+  
+          <p>Token Price: {useTokenPrice.toString()}</p>
+        
+      
+            <p>Token Sold: </p>
+            <p>Tokens Available: </p>
+            Buy Tokens Form
+            <form onSubmit={buyTokens}>
+              <div className="form-group">
+                <input
+                  type="number"
+                  id="numberOfTokens"
+                  className="form-control"
+                  placeholder="Number of Tokens"
+                  required
+                />
+              </div>
+              <button type="submit" className="btn btn-primary">
+                Buy Tokens
+              </button>
+            </form>
+          </div>
         </div>
-        <button type="submit" className="btn btn-primary">
-          Buy Tokens
-        </button>
-      </form>
+      </div>
     </div>
-  </div>
-</div>
-  </div>
   );
 };
 
