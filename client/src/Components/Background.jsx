@@ -1,15 +1,17 @@
 import React, { useState, useEffect, useRef } from 'react';
-import BIRDS from 'vanta/dist/vanta.birds.min';
-import * as THREE from 'three'; // Import Three.js
+import { VantaBirds } from 'vanta/dist/vanta.birds.min';
+import * as THREE from 'three';
 
 const Background = (props) => {
   const [vantaEffect, setVantaEffect] = useState(null);
-  const myRef = useRef(null);
+  const vantaRef = useRef(null);
 
   useEffect(() => {
     if (!vantaEffect) {
-      setVantaEffect(BIRDS({
-        el: myRef.current
+      setVantaEffect(VantaBirds({
+        el: vantaRef.current,
+        THREE: THREE,
+        birdSize: 2,
       }));
     }
 
@@ -19,9 +21,8 @@ const Background = (props) => {
   }, [vantaEffect]);
 
   return (
-    <div ref={myRef}>
-      Foreground content goes here
-
+    <div className="vanta" ref={vantaRef}>
+      <span>Foreground content goes here</span>
     </div>
   );
 };
