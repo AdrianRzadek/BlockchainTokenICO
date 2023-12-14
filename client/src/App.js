@@ -19,17 +19,7 @@ function App() {
 
 
    </Provider>
-       {/*   <h1>Dapp</h1>
-       <BuyTokens />
-      <br />
-      <br />
-       <Transfer />
-      <br />
-      <br />
-      <Swap/>
-      <br />
-      <br />
-       <AirDropComponent />    */} 
+     
     </div>
   );
 }

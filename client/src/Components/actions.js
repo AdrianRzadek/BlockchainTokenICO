@@ -7,57 +7,32 @@ export const SET_ADDRESS_SIGNER = 'SET_ADDRESS_SIGNER';
 export const SET_LOADING_INFO = 'SET_LOADING_INFO';
 export const SET_TOKENS_VALUE = 'SET_TOKENS_VALUE';
 
-/*export const setDappTokenSale = (dappTokenSale, dappToken) => async (dispatch) => {
- 
-  const DappTokenSale = dappTokenSale.toString();
-  //  const tokensSold = await dappTokenSale.tokensSold();
-  //  const sold = tokensSold.toString();
-  //  const tokenPrice= await dappTokenSale.tokenPrice();
-  //  const price = tokenPrice.toString();
-  //   const target = dappTokenSale.target;
-  //   const tokensAvailable = await dappToken.balanceOf(
-  //    target
-  //   );
-  //   const available = tokensAvailable.toString();
-  //  const buyTokens = await dappTokenSale.buyTokens(null);
-  //  const buy= buyTokens.toString();
 
-  //console.log(dappToken)
-  dispatch({
-    type: SET_DAPP_TOKEN_SALE,
-    payload: {
-    //  dappTokenSaleAddress: target,
-    //  dappTokenSaleTokensSold: sold,
-    //  dappTokenSalePrice: price,
-   //  dappTokenSaleTokensAvailable: available,
-    DappTokenSale: DappTokenSale
-    },
-  });
+
+export const setTokenSale = (dappTokenSale) => async (dispatch) => {
+  try {
+    const tokenPrice = await dappTokenSale.tokenPrice();
+    const price = tokenPrice.toString();
+    console.log('Token Price:', price);
+
+    dispatch({
+      type: SET_DAPP_TOKEN_SALE,
+      payload: {
+        TokenSale: { Price: price },
+      },
+    });
+  } catch (error) {
+    console.error('Error setting token sale:', error);
+  }
 };
-*/
-
-// export const setDappTokenSale = (dappTokenSale) => async (dispatch) => {
- 
-//   const DappTokenSale = JSON.stringify(dappTokenSale);
 
 
-//   dispatch({
-//     type: SET_DAPP_TOKEN_SALE,
-//     payload: {
-
-//     dappTokenSale: DappTokenSale
-//     }
-//   });
-
-// };
 
 export const setDappToken = (dappToken) => async (dispatch) => {
   const symbol = await dappToken.symbol();
   const decimals = await dappToken.decimals();
   const decimalsString = decimals.toString();
- // const approveTarget = await dappToken.approve();
-  ///const approve = await approveTarget.toString();
-  //console.log(dappToken)
+
   dispatch({
     type: SET_DAPP_TOKEN,
     payload: {

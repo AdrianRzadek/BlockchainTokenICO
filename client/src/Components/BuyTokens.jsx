@@ -1,11 +1,14 @@
-import React, { useEffect, useState,useCallback } from "react";
+import React, { useEffect, useState,useCallback} from "react";
 import { ethers } from "ethers";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch  } from "react-redux";
 
 const BuyTokens = ({ dappTokenSale }) => {
   const addressSigner = useSelector((state) => state.addressSigner);
+  const tokenSalePrice = useSelector((state) => state.TokenSale);
   const [loading, setLoading] = useState(false);
-  const [useTokenPrice, setTokenPrice] = useState(null);
+  const [useTokenPrice, setTokenPrice] = useState('');
+
+const dispatch = useDispatch();
 
 
   const buyTokens = async (event) => {
@@ -15,7 +18,7 @@ const BuyTokens = ({ dappTokenSale }) => {
       const numberOfTokens = event.target.numberOfTokens.value;
       const numberOfTokensBigInt = ethers.toBigInt(numberOfTokens);
       console.log("Buy Tokens Info:");
-      const tokenPrice = await dappTokenSale.tokenPrice();
+      const tokenPrice = await tokenSalePrice.Price
       setTokenPrice(tokenPrice);
       console.log(await tokenPrice);
       console.log("Value: " + numberOfTokensBigInt * tokenPrice);
@@ -40,19 +43,28 @@ const BuyTokens = ({ dappTokenSale }) => {
 
  
 
-  useEffect(() => {
-    const fetchTokenPrice = async () => {
-      const newTokenPrice = await dappTokenSale.tokenPrice();
-      updateTokenPrice(newTokenPrice);
-    };
+//   useEffect(() => {
+//     const fetchTokenPrice = async () => {
+//       try {
+//       if (dappTokenSale) {
+     
+//       const newTokenPrice = await dappTokenSale.tokenPrice();
+//       await updateTokenPrice(await newTokenPrice);
+   
+//     } 
+//      }catch (error) {
+//       console.error('Error fetching token price:', error);
+//      }
+//   };
   
-    fetchTokenPrice();
-  }, [dappTokenSale]);
+//     fetchTokenPrice();
+//   }, [dappTokenSale]);
 
-  const updateTokenPrice = (newTokenPrice) => {
-    setTokenPrice(newTokenPrice);
-  };
-
+//   const updateTokenPrice = (newTokenPrice) => {
+//     setTokenPrice(newTokenPrice);
+//   };
+ const price=tokenSalePrice.Price
+console.log(price)
   return (
     <div>
       <p>Current Account: {addressSigner}</p>
@@ -63,7 +75,7 @@ const BuyTokens = ({ dappTokenSale }) => {
             Token Sale Details
             <h2>Token Sale</h2>
   
-          <p>Token Price: {useTokenPrice.toString()}</p>
+          <p>Token Price: {price}</p>
         
       
             <p>Token Sold: </p>

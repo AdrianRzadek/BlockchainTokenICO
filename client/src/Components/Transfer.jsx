@@ -1,9 +1,10 @@
 import React from 'react';
 import { ethers } from 'ethers';
-import LoadBlockchainData from './LoadBlockchainData';
 
+import { useSelector, useDispatch  } from "react-redux";
 
-const Transfer = () => {
+const Transfer = (transfers, dappToken) => {
+  const addressSigner = useSelector((state) => state.addressSigner);
 
 const transfer = async (event) => {
   event.preventDefault();
@@ -11,11 +12,11 @@ const transfer = async (event) => {
   const amount = await event.target.amount.value;
   const message = await event.target.message.value;
   const value = await ethers.toBigInt(amount);
-  console.log(LoadBlockchainData.addressSigner);
+  console.log(addressSigner);
   console.log(reciver);
-  await LoadBlockchainData.dappToken.approve(LoadBlockchainData.transaction.target, value);
-  await LoadBlockchainData.transaction.sendTransaction(reciver, value, message, {
-    from: LoadBlockchainData.addressSigner,
+  await dappToken.approve(transfer.transaction.target, value);
+  await transfers.transaction.sendTransaction(reciver, value, message, {
+    from: addressSigner,
     value: value,
     gas: 200000000,
   });

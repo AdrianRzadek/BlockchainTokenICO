@@ -12,6 +12,7 @@ import store from './store';
 import { useDispatch, useSelector } from 'react-redux';
 import { setAddressSigner,  setIsLoading, setLoadingInfo } from './actions';
 import LoadBlockchainData from './LoadBlockchainData';
+import Background from './Background';
 
 const LoadWeb3 = () => {
 
@@ -63,7 +64,7 @@ const LoadWeb3 = () => {
   
      
         <LoadBlockchainData/>
-    
+        <Background/>
   
     
       </div>

@@ -6,11 +6,20 @@ import Transactions from "../contracts/Transactions.json";
 import AirDrop from "../contracts/AirDrop.json";
 import contractAddress from "../contracts/contract-address.json";
 import BuyTokens from './BuyTokens';
+import Swap from './Swap';
+import Transfer from './Transfer';
 import { useState } from 'react';
-
+import { useDispatch  } from "react-redux";
+import {setTokenSale} from './actions';
+import { Provider } from 'react-redux';
+import store from './store';
+import LoadLogo from './LoadLogo';
 const LoadBlockchainData = () => {
 
   const [dappTokenSale, setDappTokenSale]= useState(null);
+  const [dappToken, setDappToken]= useState(null);
+  const [transfers, setTransfers]= useState(null);
+  const dispatch = useDispatch();
   useEffect(() => {
     async function loadBlockchainData() {
       try {
@@ -43,10 +52,12 @@ const LoadBlockchainData = () => {
               abiTransactions,
               signer
             );
-
-          await setDappTokenSale(await dappTokenSaleContract);
-        console.log(dappTokenSaleContract.tokenPrice())
-              console.log(await dappTokenSale.tokenPrice())
+              setTransfers(transactionsContract);
+        setDappTokenSale(dappTokenSaleContract);
+         dispatch(setTokenSale(dappTokenSaleContract)); 
+         await setDappToken(await dappTokenContract);
+          //console.log(dappTokenSaleContract.tokenPrice())
+             // console.log(await dappTokenSale.tokenPrice())
       
           } else {
             window.alert(
@@ -62,19 +73,19 @@ const LoadBlockchainData = () => {
     loadBlockchainData();
 
  
-  }, [dappTokenSale]);
- console.log(dappTokenSale)
+  }, [dappTokenSale, dappToken]);
+ //console.log(dappTokenSale)
 
-  return (  <div>
-  
-   
-  
-     <BuyTokens dappTokenSale={dappTokenSale}/>
-    <Swap/>
-    {/* <Transfer/> */}
-
-
-  </div>);
+ return (
+  <>
+    <Provider store={store}>
+      <LoadLogo />
+      <BuyTokens dappTokenSale={dappTokenSale} />
+      <Swap dappTokenSale={dappTokenSale} dappToken={dappToken} />
+       <Transfer transfers={transfers} dappToken={dappToken}/> 
+    </Provider>
+  </>
+);
 
 };
 

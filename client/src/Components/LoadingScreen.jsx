@@ -73,6 +73,15 @@ const LoadingScreen = ({loadingInfo}) => {
     useEffect(() => {
       new p5(sketch);
     }, [sketch]);
+    
+    useEffect(() => {
+      const myp5 = new p5(sketch);
+  
+      // Cleanup function
+      return () => {
+        myp5.remove();
+      };
+    }, [sketch]);
 
     
       // Use the loadingInfo prop here

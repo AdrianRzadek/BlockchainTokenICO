@@ -1,20 +1,23 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { ethers } from "ethers";
 import {  useSelector, useDispatch } from 'react-redux';
 import{setTokensValue} from './actions';
 
-const Swap = () => {
-  const [tokensExchange, setTokensExchange] = useState(null);
+const Swap = (dappTokenSale, dappToken) => {
+  const [tokensExchange, setTokensExchange] = useState('');
 
   const addressSigner = useSelector((state) => state.addressSigner);
-  const dappToken = useSelector((state) => state.dappToken);
-  const dappTokenSale = useSelector((state) => state.dappTokenSale);
+  const Price = useSelector((state) => state.TokenSale);
+ 
   const tokensValue = useSelector((state) => state.tokensValue);
   const dispatch = useDispatch();
+  console.log(Price)
   const swap = async (event) => {
     event.preventDefault();
+    console.log(Price)
     
-    const amount = tokensExchange * dappTokenSale.dappTokenSalePrice;
+
+    const amount = tokensExchange * Price.Price;
     const value = ethers.toBigInt(amount);
     dispatch(setTokensValue(value));
    console.log(value);
@@ -40,6 +43,8 @@ const Swap = () => {
     }
   };
 
+
+
   return (
 <div className="container">
       <div className="row">
@@ -57,7 +62,7 @@ const Swap = () => {
             />
             <br />
             <span className="float-right text-muted">
-              Balance: {dappTokenSale.dappTokenSalePrice}
+              Balance: {}
             </span>
             <br />
             <input

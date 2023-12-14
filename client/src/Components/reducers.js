@@ -1,4 +1,3 @@
-// reducers.js
 import { combineReducers } from '@reduxjs/toolkit';
 import {
   SET_DAPP_TOKEN_SALE,
@@ -8,15 +7,11 @@ import {
   SET_ADDRESS_SIGNER,
   SET_LOADING_INFO,
   SET_TOKENS_VALUE,
-} from "./actions";
+} from './actions';
 
 const initialState = {
-  dappTokenSale: {
-    // dappTokenSaleAddress: null,
-    // dappTokenSalePrice: null,
-    // dappTokenSaleTokensSold: null,
-    // dappTokenSaleTokensAvailable: null,
-    dappTokenSale: null,
+  TokenSale: {
+    Price: null,
   },
   dappToken: {
     dappTokenDecimals: null,
@@ -24,33 +19,42 @@ const initialState = {
     dappTokenSymbol: null,
     dappTokenBalance: null,
     dappTokenApprove: null,
-  
-    
   },
-  transactions: { transactionsAddress : null },
+  transactions: { transactionsAddress: null },
   isLoading: false,
   addressSigner: null,
   loadingInfo: null,
-  tokensEchange: null,
+  tokensExchange: null,
 };
 
-// const dappTokenSaleReducer = (state = initialState.dappTokenSale, action) => {
-//   if (action.type === SET_DAPP_TOKEN_SALE) {
-//     return {
-//       ...state,
-//       dappTokenSale: { ...state.dappTokenSale, ...action.payload.dappTokenSale },
-//     };
-//   }
-//   return state;
-// };
+const dappTokenSaleReducer = (state = initialState.TokenSale, action) => {
+  switch (action.type) {
+    case SET_DAPP_TOKEN_SALE:
+      return {
+        ...state,
+        ...action.payload.TokenSale,
+      };
+    default:
+      return state;
+  }
+};
 
-const dappTokenReducer = (state = initialState.dappToken, action) =>
-  action.type === SET_DAPP_TOKEN ? action.payload : state;
+const dappTokenReducer = (state = initialState.dappToken, action) => {
+  switch (action.type) {
+    case SET_DAPP_TOKEN:
+      return action.payload;
+    default:
+      return state;
+  }
+};
 
 const transactionsReducer = (state = initialState.transactions, action) => {
   switch (action.type) {
     case SET_TRANSACTIONS:
-      return { ...state, ...action.payload };
+      return {
+        ...state,
+        ...action.payload,
+      };
     default:
       return state;
   }
@@ -74,7 +78,6 @@ const addressSignerReducer = (state = initialState.addressSigner, action) => {
   }
 };
 
-
 const loadingInfoReducer = (state = initialState.loadingInfo, action) => {
   switch (action.type) {
     case SET_LOADING_INFO:
@@ -83,7 +86,8 @@ const loadingInfoReducer = (state = initialState.loadingInfo, action) => {
       return state;
   }
 };
-const tokensExchangeReducer = (state = initialState.tokensEchange, action) => {
+
+const tokensExchangeReducer = (state = initialState.tokensExchange, action) => {
   switch (action.type) {
     case SET_TOKENS_VALUE:
       return action.payload;
@@ -93,13 +97,13 @@ const tokensExchangeReducer = (state = initialState.tokensEchange, action) => {
 };
 
 const rootReducer = combineReducers({
- // dappTokenSale: dappTokenSaleReducer,
+  TokenSale: dappTokenSaleReducer,
   dappToken: dappTokenReducer,
   transactions: transactionsReducer,
   isLoading: isLoadingReducer,
   addressSigner: addressSignerReducer,
   loadingInfo: loadingInfoReducer,
-  tokensExchangeReducer: tokensExchangeReducer,
+  tokensExchange: tokensExchangeReducer,
 });
 
 export default rootReducer;
