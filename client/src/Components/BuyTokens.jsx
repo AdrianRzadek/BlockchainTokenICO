@@ -8,7 +8,8 @@ const [TokenPrice, setTokenPrice] = useState('');
 //const [usePrice, setPrice] = useState('');
 const [TokensSold, setTokensSold] = useState('');
 const [tokensAvaiable, setTokensAvaiable] = useState('');
-  useEffect(() => {
+const [AddressProvider, setAddressProvider] = useState('');
+useEffect(() => {
     async function fetchData() {
       if(price) {
       const price = await dappTokenSale.tokenPrice();
@@ -42,6 +43,17 @@ const [tokensAvaiable, setTokensAvaiable] = useState('');
 }
 fetchData();
 }, [dappToken]);
+
+
+useEffect(() => {
+  async function fetchData() {
+    if(provider) {
+      const addressProvider = provider && provider.addressProvider;
+  setAddressProvider(await addressProvider.toString());
+}
+}
+fetchData();
+}, [provider]);
 
  // console.log( tp);
 
@@ -79,12 +91,12 @@ fetchData();
 
 //console.log(tokensAvaiable)
 
-
-  const addressProvider = provider && provider.addressProvider;
+console.log(AddressProvider)
+  //const addressProvider = provider && provider.addressProvider;
 
   return (
     <div>
-      <p>Current Account: {addressProvider}</p>
+      <p>Current Account: {AddressProvider}</p>
 
       <div className="container">
         <div className="row">
