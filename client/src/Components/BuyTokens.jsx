@@ -18,12 +18,13 @@ const dispatch = useDispatch();
       const numberOfTokens = event.target.numberOfTokens.value;
       const numberOfTokensBigInt = ethers.toBigInt(numberOfTokens);
       console.log("Buy Tokens Info:");
-      const tokenPrice = await tokenSalePrice.Price
+      const tokenPrice = await ethers.toBigInt(tokenSalePrice.Price)
       setTokenPrice(tokenPrice);
       console.log(await tokenPrice);
+      console.log(await numberOfTokens);
       console.log("Value: " + numberOfTokensBigInt * tokenPrice);
       //  console.log("Number of Tokens: " + numberOfTokensBigInt);
-
+      console.log("address signer " + addressSigner)
       const value = tokenPrice * numberOfTokensBigInt;
 
       await dappTokenSale.buyTokens(numberOfTokensBigInt, {
@@ -64,7 +65,7 @@ const dispatch = useDispatch();
 //     setTokenPrice(newTokenPrice);
 //   };
  const price=tokenSalePrice.Price
-console.log(price)
+//console.log(price)
   return (
     <div>
       <p>Current Account: {addressSigner}</p>

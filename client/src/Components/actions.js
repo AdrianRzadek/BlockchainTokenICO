@@ -13,7 +13,7 @@ export const setTokenSale = (dappTokenSale) => async (dispatch) => {
   try {
     const tokenPrice = await dappTokenSale.tokenPrice();
     const price = tokenPrice.toString();
-    console.log('Token Price:', price);
+    //console.log('Token Price:', price);
 
     dispatch({
       type: SET_DAPP_TOKEN_SALE,

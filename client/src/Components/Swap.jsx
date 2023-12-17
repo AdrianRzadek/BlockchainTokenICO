@@ -11,7 +11,8 @@ const Swap = (dappTokenSale, dappToken) => {
  
   const tokensValue = useSelector((state) => state.tokensValue);
   const dispatch = useDispatch();
-  console.log(Price)
+  //console.log(Price)
+
   const swap = async (event) => {
     event.preventDefault();
     console.log(Price)
