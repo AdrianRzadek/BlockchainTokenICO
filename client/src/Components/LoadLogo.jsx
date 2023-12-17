@@ -10,9 +10,9 @@ const LoadLogo = (dappToken) => {
   useEffect(() => {
 const loadLogo = async () => {
 
-  console.log(await dappToken.symbol);
-  console.log(await dappToken.target);
-  console.log(await dappToken.decimals);
+ // console.log(await dappToken.symbol);
+ // console.log(await dappToken.target);
+ // console.log(await dappToken.decimals);
   try {
 
 
@@ -23,9 +23,9 @@ const loadLogo = async () => {
     const tokenAdded = localStorage.getItem("tokenAdded");
     const storedTokenAddress = localStorage.getItem("tokenAddress");
    if(dappToken.symbol && dappToken.target && dappToken.decimals){
-    console.log(await dappToken.symbol);
-    console.log(await dappToken.target);
-    console.log(await dappToken.decimals);
+   // console.log(await dappToken.symbol);
+   // console.log(await dappToken.target);
+  //  console.log(await dappToken.decimals);
   
     if (!tokenAdded || storedTokenAddress !== dappToken.target) {
       const wasAdded = await window.ethereum.request({
@@ -58,7 +58,7 @@ const loadLogo = async () => {
 }
 
     loadLogo();
-  }, [dappToken]); // Include blockchainData as a dependency
+  }, []); // Include blockchainData as a dependency
 
   return (
     <></>

@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { ethers } from "ethers";
 import DappToken from "../contracts/DappToken.json";
 import DappTokenSale from "../contracts/DappTokenSale.json";
@@ -8,17 +8,18 @@ import contractAddress from "../contracts/contract-address.json";
 import BuyTokens from "./BuyTokens";
 import Swap from "./Swap";
 import Transfer from "./Transfer";
-import { useState } from "react";
-// import { useDispatch } from "react-redux";
-// import { setTokenSale } from "./actions";
+
 
 import LoadLogo from "./LoadLogo";
+
 const LoadBlockchainData = (addressProvider) => {
   const [dappTokenSale, setDappTokenSale] = useState();
   const [dappToken, setDappToken] = useState();
   const [dappTokenSymbol, setDappTokenSymbol] = useState();
   const [dappTokenDecimals, setDappTokenDecimals] = useState();
   const [dappTokenTarget, setDappTokenTarget] = useState();
+  const [dappTokenSalePrice, setDappTokenSalePrice] = useState();
+  const [AddressSigner, setAddressSigner] = useState();
   const [transfers, setTransfers] = useState();
  // const dispatch = useDispatch();
   useEffect(() => {
@@ -86,13 +87,21 @@ const LoadBlockchainData = (addressProvider) => {
     }
   }, [dappToken]);
 
-//console.log( dappTokenTarget);
+
+  
+  useEffect(() => {
+    if (dappTokenSale) {
+      setAddressSigner(addressProvider);
+      setDappTokenSalePrice(dappTokenSale.tokenPrice());
+    }
+  }, [dappTokenSale, addressProvider]);
+
 
   return (
     <>
   
         <LoadLogo target={dappTokenTarget} symbol={dappTokenSymbol} decimals={dappTokenDecimals} />
-        <BuyTokens dappTokenSale={dappTokenSale} />
+        <BuyTokens dappTokenSale={dappTokenSale} provider={AddressSigner} price={dappTokenSalePrice}/>
         <Swap dappTokenSale={dappTokenSale} dappToken={dappToken} />
         <Transfer transfers={transfers} dappToken={dappToken} />
      
