@@ -103,7 +103,7 @@ const LoadBlockchainData = (addressProvider) => {
     <>
   
         <LoadLogo target={dappTokenTarget} symbol={dappTokenSymbol} decimals={dappTokenDecimals} />
-        <BuyTokens dappTokenSale={dappTokenSale} provider={AddressSigner} price={dappTokenSalePrice} sold={TokensSold}/>
+        <BuyTokens dappToken={dappToken} dappTokenSale={dappTokenSale} provider={AddressSigner} price={dappTokenSalePrice} sold={TokensSold}/>
         <Swap dappTokenSale={dappTokenSale} dappToken={dappToken} />
         <Transfer transfers={transfers} dappToken={dappToken} />
      

@@ -1,24 +1,24 @@
 import React, { useEffect, useState } from "react";
 import { ethers } from "ethers";
 
-const BuyTokens = ({ dappTokenSale, price, provider, sold }) => {
+const BuyTokens = ({ dappToken, dappTokenSale, price, provider, sold }) => {
 
   const [loading, setLoading] = useState(false);
-const [usetokenPrice, setTokenPrice] = useState('');
-const [usePrice, setPrice] = useState('');
+const [TokenPrice, setTokenPrice] = useState('');
+//const [usePrice, setPrice] = useState('');
 const [TokensSold, setTokensSold] = useState('');
+const [tokensAvaiable, setTokensAvaiable] = useState('');
   useEffect(() => {
     async function fetchData() {
       if(price) {
       const price = await dappTokenSale.tokenPrice();
-      setTokenPrice(await price);
-     const Price = await usetokenPrice.toString();
-      setPrice(Price);
+      setTokenPrice(await price.toString());
+
       }
     }
   
     fetchData();
-  }, [price, usetokenPrice]);
+  }, [price, TokenPrice]);
 
   useEffect(() => {
     async function fetchData() {
@@ -31,6 +31,17 @@ const [TokensSold, setTokensSold] = useState('');
   
     fetchData();
   }, [sold]);
+
+  useEffect(() => {
+    async function fetchData() {
+      if(dappToken) {
+  const tokensAvailable = await dappToken.balanceOf(
+    dappTokenSale.target);
+    setTokensAvaiable(await tokensAvailable.toString());
+  }
+}
+fetchData();
+}, [dappToken]);
 
  // console.log( tp);
 
@@ -66,7 +77,7 @@ const [TokensSold, setTokensSold] = useState('');
   };
  
 
-//console.log(TokensSold)
+//console.log(tokensAvaiable)
 
 
   const addressProvider = provider && provider.addressProvider;
@@ -80,9 +91,9 @@ const [TokensSold, setTokensSold] = useState('');
           <div className="col-md-8">
             Token Sale Details
             <h2>Token Sale</h2>
-            <p>Token Price: {usePrice}</p>
+            <p>Token Price: {TokenPrice}</p>
             <p>Token Sold:{TokensSold} </p>
-            <p>Tokens Available: </p>
+            <p>Tokens Available: {tokensAvaiable}</p>
             Buy Tokens Form
             <form onSubmit={buyTokens}>
               <div className="form-group">
