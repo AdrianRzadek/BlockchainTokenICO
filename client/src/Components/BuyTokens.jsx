@@ -1,19 +1,38 @@
 import React, { useEffect, useState } from "react";
 import { ethers } from "ethers";
 
-const BuyTokens = ({ dappTokenSale, price, provider }) => {
+const BuyTokens = ({ dappTokenSale, price, provider, sold }) => {
 
   const [loading, setLoading] = useState(false);
 const [usetokenPrice, setTokenPrice] = useState('');
-
+const [usePrice, setPrice] = useState('');
+const [TokensSold, setTokensSold] = useState('');
   useEffect(() => {
     async function fetchData() {
-      setTokenPrice(await price.toString());
+      if(price) {
+      const price = await dappTokenSale.tokenPrice();
+      setTokenPrice(await price);
+     const Price = await usetokenPrice.toString();
+      setPrice(Price);
+      }
     }
   
     fetchData();
-  }, [price]);
-  console.log(usetokenPrice);
+  }, [price, usetokenPrice]);
+
+  useEffect(() => {
+    async function fetchData() {
+      if(sold) {
+      const tokensSold = await dappTokenSale.tokensSold();
+      await setTokensSold(await tokensSold.toString());
+   
+      }
+    }
+  
+    fetchData();
+  }, [sold]);
+
+ // console.log( tp);
 
   const buyTokens = async (event) => {
     event.preventDefault();
@@ -47,7 +66,7 @@ const [usetokenPrice, setTokenPrice] = useState('');
   };
  
 
-console.log(usetokenPrice)
+//console.log(TokensSold)
 
 
   const addressProvider = provider && provider.addressProvider;
@@ -61,8 +80,8 @@ console.log(usetokenPrice)
           <div className="col-md-8">
             Token Sale Details
             <h2>Token Sale</h2>
-            <p>Token Price: {usetokenPrice}</p>
-            <p>Token Sold: </p>
+            <p>Token Price: {usePrice}</p>
+            <p>Token Sold:{TokensSold} </p>
             <p>Tokens Available: </p>
             Buy Tokens Form
             <form onSubmit={buyTokens}>
