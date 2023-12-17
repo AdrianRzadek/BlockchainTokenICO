@@ -1,16 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { ethers } from "ethers";
-import {  useSelector, useDispatch } from 'react-redux';
-import{setTokensValue} from './actions';
 
 const Swap = (dappTokenSale, dappToken) => {
   const [tokensExchange, setTokensExchange] = useState('');
+  const [Price, setPrice] = useState('');
+  const [tokensValue, setTokensValue] = useState('');
+  const [addressSigner, setAddressSigner] = useState('');
+  
 
-  const addressSigner = useSelector((state) => state.addressSigner);
-  const Price = useSelector((state) => state.TokenSale);
- 
-  const tokensValue = useSelector((state) => state.tokensValue);
-  const dispatch = useDispatch();
   //console.log(Price)
 
   const swap = async (event) => {
@@ -20,7 +17,7 @@ const Swap = (dappTokenSale, dappToken) => {
 
     const amount = tokensExchange * Price.Price;
     const value = ethers.toBigInt(amount);
-    dispatch(setTokensValue(value));
+  setTokensValue(value);
    console.log(value);
     try {
       await dappToken.approve(

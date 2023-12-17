@@ -1,10 +1,10 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { ethers } from 'ethers';
 
-import { useSelector, useDispatch  } from "react-redux";
+
 
 const Transfer = (transfers, dappToken) => {
-  const addressSigner = useSelector((state) => state.addressSigner);
+ const [addressSigner, setAddressSigner] = useState();
 
 const transfer = async (event) => {
   event.preventDefault();

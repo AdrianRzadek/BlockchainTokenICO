@@ -3,16 +3,16 @@ import { ethers } from "ethers";
 
 import LoadingScreen from "./LoadingScreen";
 import "../App.scss";
-import { useDispatch, useSelector } from "react-redux";
-import { setIsLoading, setLoadingInfo } from "./actions";
+
+
 import LoadBlockchainData from "./LoadBlockchainData";
 import Background from "./Background";
 
 const LoadWeb3 = () => {
-  const isLoading = useSelector((state) => state.isLoading);
-  const loadingInfo = useSelector((state) => state.loadingInfo);
+
   const [addressProvider, setAddressProvider] = useState(null);
-  const dispatch = useDispatch();
+  const [isLoading, setIsLoading] = useState(true);
+  const [loadingInfo, setLoadingInfo] = useState("Ładowanie danych");
 
   useEffect(() => {
     const loadWeb3 = async () => {
@@ -27,23 +27,23 @@ const LoadWeb3 = () => {
           setAddressProvider(addressSigner);
 
           console.log(signer);
-          dispatch(setIsLoading(false));
+       setIsLoading(false);
         } catch (error) {
           console.error("Zaloguj się do zdecentralizowanej sieci");
-          dispatch(setLoadingInfo("Zaloguj się do zdecentralizowanej sieci"));
-          dispatch(setIsLoading(true));
+         (setLoadingInfo("Zaloguj się do zdecentralizowanej sieci"));
+        (setIsLoading(true));
         }
       } else {
-        dispatch(
+        (
           setLoadingInfo(
             "W przeglądarce nie wykryto plugina by połączyć z Ethereum , zainstaluj MetaMask!"
           )
         );
-        dispatch(setIsLoading(true));
+        (setIsLoading(true));
       }
     };
     loadWeb3();
-  }, [addressProvider, dispatch]);
+  }, [addressProvider]);
 
   if (isLoading) {
     return <LoadingScreen loadingInfo={loadingInfo} />;
