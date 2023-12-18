@@ -64,17 +64,18 @@ fetchData();
       const numberOfTokens = event.target.numberOfTokens.value;
       const numberOfTokensBigInt = ethers.toBigInt(numberOfTokens);
       console.log("Buy Tokens Info:");
-      const tokenPrice = await ethers.toBigInt(price);
-      setTokenPrice(tokenPrice);
+      const tokenPrice = await ethers.toBigInt(TokenPrice);
+   
       console.log(await tokenPrice);
-      console.log(await numberOfTokens);
-      console.log("Value: " + numberOfTokensBigInt * tokenPrice);
-      //  console.log("Number of Tokens: " + numberOfTokensBigInt);
-      console.log("address signer " + provider);
-      const value = tokenPrice * numberOfTokensBigInt;
+      console.log(await numberOfTokensBigInt);
 
+      console.log("Value: " + numberOfTokensBigInt * tokenPrice);
+      console.log("Number of Tokens: " + numberOfTokensBigInt);
+      console.log("address signer " + AddressProvider);
+      const value = tokenPrice * numberOfTokensBigInt;
+console.log(value)
       await dappTokenSale.buyTokens(numberOfTokensBigInt, {
-        address: provider,
+        address: AddressProvider,
         value: value,
         gasLimit: 2000000,
       });
@@ -91,7 +92,7 @@ fetchData();
 
 //console.log(tokensAvaiable)
 
-console.log(AddressProvider)
+//console.log(AddressProvider)
   //const addressProvider = provider && provider.addressProvider;
 
   return (
