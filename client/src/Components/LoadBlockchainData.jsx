@@ -97,7 +97,7 @@ const LoadBlockchainData = (addressProvider) => {
       setTokensSold(dappTokenSale.tokensSold());
     }
   }, [dappTokenSale, addressProvider]);
-//console.log(addressProvider)
+
 
   return (
     <>
