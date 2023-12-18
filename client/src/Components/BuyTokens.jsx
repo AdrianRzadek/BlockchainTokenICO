@@ -8,11 +8,15 @@ const BuyTokens = ({ dappToken, dappTokenSale, price, provider, sold }) => {
   const [TokensSold, setTokensSold] = useState("");
   const [tokensAvaiable, setTokensAvaiable] = useState("");
   const [AddressProvider, setAddressProvider] = useState("");
+  
+
+  
   useEffect(() => {
     async function fetchData() {
       if (price) {
         const price = await dappTokenSale.tokenPrice();
         setTokenPrice(await price.toString());
+      
       }
     }
 

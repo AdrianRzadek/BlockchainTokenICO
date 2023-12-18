@@ -1,21 +1,27 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { ethers } from 'ethers';
 
 
 
-const Transfer = (transfers, dappToken) => {
- const [addressSigner, setAddressSigner] = useState();
+const Transfer = ({transfers, dappToken, provider}) => {
+
+console.log(transfers)
+console.log(dappToken)
+console.log(provider) 
+const addressSigner = provider;
+console.log(addressSigner)
+const transfersTarget = transfers && transfers.target;
+console.log(transfersTarget);
 
 const transfer = async (event) => {
   event.preventDefault();
   const reciver = await event.target.reciver.value;
   const amount = await event.target.amount.value;
-  const message = await event.target.message.value;
   const value = await ethers.toBigInt(amount);
   console.log(addressSigner);
   console.log(reciver);
-  await dappToken.approve(transfer.transaction.target, value);
-  await transfers.transaction.sendTransaction(reciver, value, message, {
+  await dappToken.approve(transfersTarget, value);
+  await transfers.sendTransaction(reciver, value, {
     from: addressSigner,
     value: value,
     gas: 200000000,

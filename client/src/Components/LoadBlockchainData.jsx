@@ -91,21 +91,21 @@ const LoadBlockchainData = (addressProvider) => {
 
   
   useEffect(() => {
-    if (dappTokenSale) {
+    if (dappTokenSale || transfers) {
       setAddressSigner(addressProvider);
       setDappTokenSalePrice(dappTokenSale.tokenPrice());
       setTokensSold(dappTokenSale.tokensSold());
     }
   }, [dappTokenSale, addressProvider]);
 
-
+//console.log(transfers,dappToken,AddressSigner)
   return (
     <>
   
         <LoadLogo target={dappTokenTarget} symbol={dappTokenSymbol} decimals={dappTokenDecimals} />
         <BuyTokens dappToken={dappToken} dappTokenSale={dappTokenSale} provider={AddressSigner} price={dappTokenSalePrice} sold={TokensSold}/>
         <Swap dappTokenSale={dappTokenSale} dappToken={dappToken} />
-        <Transfer transfers={transfers} dappToken={dappToken} />
+        <Transfer transfers={transfers} dappToken={dappToken} provider={AddressSigner} />
      
     </>
   );

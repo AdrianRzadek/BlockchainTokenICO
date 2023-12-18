@@ -8,7 +8,7 @@ const LoadLogo = ({ target, symbol, decimals }) => {
   useEffect(() => {
     const loadLogo = async () => {
       try {
-        localStorage.clear();
+        //localStorage.clear();
        // 
         // if (!window.ethereum || !window.ethereum.request) {
         //   console.error("MetaMask not found or not connected.");
@@ -17,7 +17,7 @@ const LoadLogo = ({ target, symbol, decimals }) => {
         const Symbol = await symbol;
         const Decimals = await decimals;
         const Target = await target;
-        const DecimalsInt = Decimals.toString();
+        const DecimalsInt = Object.prototype.toString.call(Decimals);
         if(Symbol !== undefined && Decimals !== undefined && Target !== undefined) {
           console.log("Token Details:", Symbol, Target, Decimals);
          
