@@ -1,0 +1,53 @@
+@startuml
+
+class DappToken {
+    - name: string
+    - symbol: string
+    - standard: string
+    - decimals: uint8
+    - totalSupply: uint256
+    - owner: address
+    + Transfer(_from: address, _to: address, _value: uint256): void
+    + Approval(_owner: address, _spender: address, _value: uint256): void
+    + balanceOf: mapping(address, uint256)
+    + allowance: mapping(address, mapping(address, uint256))
+    + DappToken(_initialSupply: uint256)
+    + transfer(_to: address, _value: uint256): bool
+    + approve(_spender: address, _value: uint256): bool
+    + transferFrom(_from: address, _to: address, _value: uint256): bool
+    + mint(to: address, amount: uint256): void
+}
+
+class DappTokenSale {
+    - admin: address payable
+    - tokenContract: DappToken
+    - tokenPrice: uint256
+    - tokensSold: uint256
+    - rate: uint256
+    + Sell(_buyer: address, _amount: uint256): void
+    + Sold(account: address, tokenContract: address, amount: uint256, rate: uint256): void
+    + DappTokenSale(_tokenContract: DappToken, _tokenPrice: uint256)
+    + buyTokens(_numberOfTokens: uint256): void
+    + sellTokens(_amount: uint256): void
+    + endSale(): void
+    + receive(): void
+    + fallback(): void
+}
+
+class Transactions {
+    - TransactionCounter: uint256
+    - tokenContract: DappToken
+    - transactions: TransferStruct[]
+    + TransferStruct(sender: address, reciver: address, amount: uint256, message: string, timestamp: uint256): void
+    + sendTransaction(reciver: address payable, amount: uint256, message: string): void
+    + getAllTransactions(): TransferStruct[]
+    + getTransactionsCount(): uint256
+    + receive(): void
+    + fallback(): void
+}
+
+DappToken <-- DappTokenSale
+DappToken <-- Transactions
+Transactions <-- DappToken
+
+@enduml

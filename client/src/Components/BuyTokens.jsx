@@ -74,7 +74,7 @@ const BuyTokens = ({ dappToken, dappTokenSale, price, provider, sold }) => {
       const value = tokenPrice * numberOfTokensBigInt;
       console.log(value);
       await dappTokenSale.buyTokens(numberOfTokensBigInt, {
-        address: AddressProvider,
+        address: await AddressProvider,
         value: value,
         gasLimit: 2000000,
       });

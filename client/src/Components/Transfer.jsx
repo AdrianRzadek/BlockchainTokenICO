@@ -5,13 +5,13 @@ import { ethers } from 'ethers';
 
 const Transfer = ({transfers, dappToken, provider}) => {
 
-console.log(transfers)
-console.log(dappToken)
-console.log(provider) 
-const addressSigner = provider;
-console.log(addressSigner)
+//console.log(transfers)
+//console.log(dappToken)
+//console.log(provider) 
+const addressSigner = provider && provider.addressProvider;
+//console.log(addressSigner)
 const transfersTarget = transfers && transfers.target;
-console.log(transfersTarget);
+//console.log(transfersTarget);
 
 const transfer = async (event) => {
   event.preventDefault();
@@ -22,7 +22,7 @@ const transfer = async (event) => {
   console.log(reciver);
   await dappToken.approve(transfersTarget, value);
   await transfers.sendTransaction(reciver, value, {
-    from: addressSigner,
+    from: await addressSigner,
     value: value,
     gas: 200000000,
   });

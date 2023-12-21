@@ -1,22 +1,43 @@
 import React, { useState, useEffect } from "react";
 import { ethers } from "ethers";
 
-const Swap = (dappTokenSale, dappToken) => {
+const Swap = ({dappTokenSale, dappToken, provider, price}) => {
   const [tokensExchange, setTokensExchange] = useState('');
-  const [Price, setPrice] = useState('');
+  const [TokenPrice, setTokenPrice] = useState("");
   const [tokensValue, setTokensValue] = useState('');
-  const [addressSigner, setAddressSigner] = useState('');
+
   
 
-  //console.log(Price)
+
+
+
+
+useEffect(() => {
+  async function fetchData() {
+    if (price) {
+      const price = await dappTokenSale.tokenPrice();
+      setTokenPrice(await price.toString());
+    
+    }
+  }
+
+  fetchData();
+}, [price, dappTokenSale]);
+    
+
+
+
+ // console.log(TokenPrice)
 
   const swap = async (event) => {
     event.preventDefault();
-    console.log(Price)
-    
-
-    const amount = tokensExchange * Price.Price;
-    const value = ethers.toBigInt(amount);
+    console.log(price)
+    const addressSigner = await provider && provider.addressSigner;
+    const amount = ethers.toBigInt(tokensExchange) * ethers.toBigInt(TokenPrice);
+    console.log(tokensExchange)
+    console.log(amount);
+    const value = ethers.toBigInt(tokensExchange) ;
+    console.log(value);
   setTokensValue(value);
    console.log(value);
     try {
@@ -24,13 +45,13 @@ const Swap = (dappTokenSale, dappToken) => {
        dappTokenSale.target,
         value,
         {
-          from: addressSigner,
+          from: await addressSigner,
           gas: 20000000,
         }
       );
 
       await dappTokenSale.sellTokens(value, {
-        from: addressSigner,
+        from: await addressSigner,
         value: value,
         gas: 20000000,
       });

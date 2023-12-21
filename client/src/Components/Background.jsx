@@ -11,9 +11,8 @@ const Background = (props) => {
       if (!vantaEffect) {
         setVantaEffect(WAVES({
           el: myRef.current,
-          THREE: THREE,
+          THREE: THREE ,
           p5:p5,
-         
           color: 0xff0000,
           backgroundColor: 0x0,
         }))

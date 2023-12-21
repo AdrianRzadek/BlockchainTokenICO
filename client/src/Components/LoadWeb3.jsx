@@ -25,9 +25,7 @@ const LoadWeb3 = () => {
           const signer = await provider.getSigner();
           const addressSigner = await signer.getAddress();
           setAddressProvider(addressSigner);
-
-          console.log(signer);
-       setIsLoading(false);
+          setIsLoading(false);
         } catch (error) {
           console.error("Zaloguj się do zdecentralizowanej sieci");
          (setLoadingInfo("Zaloguj się do zdecentralizowanej sieci"));

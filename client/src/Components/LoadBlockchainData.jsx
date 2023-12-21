@@ -8,8 +8,6 @@ import contractAddress from "../contracts/contract-address.json";
 import BuyTokens from "./BuyTokens";
 import Swap from "./Swap";
 import Transfer from "./Transfer";
-
-
 import LoadLogo from "./LoadLogo";
 
 const LoadBlockchainData = (addressProvider) => {
@@ -98,13 +96,14 @@ const LoadBlockchainData = (addressProvider) => {
     }
   }, [dappTokenSale, addressProvider]);
 
-//console.log(transfers,dappToken,AddressSigner)
+
+
   return (
     <>
   
         <LoadLogo target={dappTokenTarget} symbol={dappTokenSymbol} decimals={dappTokenDecimals} />
         <BuyTokens dappToken={dappToken} dappTokenSale={dappTokenSale} provider={AddressSigner} price={dappTokenSalePrice} sold={TokensSold}/>
-        <Swap dappTokenSale={dappTokenSale} dappToken={dappToken} />
+        <Swap dappTokenSale={dappTokenSale} dappToken={dappToken} provider={AddressSigner} price={dappTokenSalePrice}/>
         <Transfer transfers={transfers} dappToken={dappToken} provider={AddressSigner} />
      
     </>
