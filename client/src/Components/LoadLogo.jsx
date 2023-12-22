@@ -5,8 +5,13 @@ const LoadLogo = ({ target, symbol, decimals }) => {
     "https://img.freepik.com/premium-zdjecie/akwarela-malarstwo-fossa_721965-64.jpg?w=826";
 
   const [pageRefreshed, setPageRefreshed] = useState(false);
+  const [tokenAdded, setTokenAdded] = useState(false);
+  const [storedTokenAddress, setStoredTokenAddress] = useState("");
+
+
 
   useEffect(() => {
+    if(target && symbol && decimals) {
     const loadLogo = async () => {
       try {
         console.log("try");
@@ -15,8 +20,8 @@ const LoadLogo = ({ target, symbol, decimals }) => {
         const Target = await target;
         const DecimalsInt = Number(Decimals);
 
-        const tokenAdded = localStorage.getItem("tokenAdded") === "true";
-        const storedTokenAddress = localStorage.getItem("tokenAddress");
+        setTokenAdded(localStorage.getItem("tokenAdded") === "true");
+        setStoredTokenAddress(localStorage.getItem("tokenAddress"));
         console.log(Symbol, Target, DecimalsInt);
         if (
           Symbol !== undefined &&
@@ -36,7 +41,7 @@ const LoadLogo = ({ target, symbol, decimals }) => {
               storedTokenAddress !== Target
             );
             // Check if the page was refreshed
-            if (pageRefreshed) {
+     
               const wasAdded = await window.ethereum.request({
                 method: "wallet_watchAsset",
                 params: {
@@ -47,7 +52,7 @@ const LoadLogo = ({ target, symbol, decimals }) => {
                     decimals: DecimalsInt,
                     image: tokenImage,
                   },
-                },
+                }
               });
               console.log(wasAdded);
 
@@ -65,14 +70,18 @@ const LoadLogo = ({ target, symbol, decimals }) => {
               "Token already added or the user was previously prompted."
             );
           }
-        }
+        
       } catch (error) {
         console.error("Error:", error);
       }
     };
 
     loadLogo();
-  }, [pageRefreshed, target, symbol, decimals]);
+
+  
+  }
+
+  }, [pageRefreshed, tokenAdded, storedTokenAddress]);
 
   useEffect(() => {
     const handleRefresh = () => {
@@ -86,7 +95,9 @@ const LoadLogo = ({ target, symbol, decimals }) => {
       window.removeEventListener("beforeunload", handleRefresh);
       window.removeEventListener("load", handleRefresh);
     };
+
   }, []);
+
 
   return <></>;
 };
