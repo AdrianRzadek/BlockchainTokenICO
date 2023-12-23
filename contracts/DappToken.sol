@@ -43,6 +43,9 @@ contract DappToken {
     constructor(uint256 _initialSupply) {
         balanceOf[msg.sender] = _initialSupply;
         totalSupply = _initialSupply;
+        // Assign the contract deployer as the owner //new
+        owner = msg.sender;
+        
     }
 
 

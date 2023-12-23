@@ -1,87 +1,71 @@
 import React, { useEffect, useState } from "react";
 
-const LoadLogo = ({ target, symbol, decimals }) => {
+const LoadLogo = ({ target, symbol, decimals, logoState }) => {
   const tokenImage =
     "https://img.freepik.com/premium-zdjecie/akwarela-malarstwo-fossa_721965-64.jpg?w=826";
 
   const [pageRefreshed, setPageRefreshed] = useState(false);
   const [tokenAdded, setTokenAdded] = useState(false);
   const [storedTokenAddress, setStoredTokenAddress] = useState("");
-
-
+  const [hasLogoAdded, setHasLogoAdded] = useState(false);
 
   useEffect(() => {
-    if(target && symbol && decimals) {
     const loadLogo = async () => {
       try {
-        console.log("try");
-        const Symbol = await symbol;
-        const Decimals = await decimals;
-        const Target = await target;
-        const DecimalsInt = Number(Decimals);
+        if (target !== undefined && symbol !== undefined && decimals !== undefined) {
+          const Symbol = await symbol;
+          const Decimals = await decimals;
+          const Target = await target;
+          const DecimalsInt = Number(Decimals);
 
-        setTokenAdded(localStorage.getItem("tokenAdded") === "true");
-        setStoredTokenAddress(localStorage.getItem("tokenAddress"));
-        console.log(Symbol, Target, DecimalsInt);
-        if (
-          Symbol !== undefined &&
-          !isNaN(DecimalsInt) &&
-          Target !== undefined
-        ) {
-          console.log("if");
-          console.log("Token Details:", Symbol, Target, DecimalsInt);
+          setTokenAdded(localStorage.getItem("tokenAdded") === "true");
+          setStoredTokenAddress(localStorage.getItem("tokenAddress"));
 
-          console.log("LocalStorage Values:", tokenAdded, storedTokenAddress);
-          console.log("Condition:", !tokenAdded, storedTokenAddress !== Target);
-
-          if (!tokenAdded || storedTokenAddress !== Target) {
-            console.log(
-              "Condition:",
-              !tokenAdded,
-              storedTokenAddress !== Target
-            );
-            // Check if the page was refreshed
-     
-              const wasAdded = await window.ethereum.request({
-                method: "wallet_watchAsset",
-                params: {
-                  type: "ERC20",
-                  options: {
-                    address: Target,
-                    symbol: Symbol,
-                    decimals: DecimalsInt,
-                    image: tokenImage,
+          if (
+            Symbol !== undefined &&
+            !isNaN(DecimalsInt) &&
+            Target !== undefined
+          ) {
+            if (!tokenAdded || storedTokenAddress !== Target) {
+          
+                const wasAdded = await window.ethereum.request({
+                  method: "wallet_watchAsset",
+                  params: {
+                    type: "ERC20",
+                    options: {
+                      address: Target,
+                      symbol: Symbol,
+                      decimals: DecimalsInt,
+                      image: tokenImage,
+                    },
                   },
-                }
-              });
-              console.log(wasAdded);
+                });
 
-              if (wasAdded) {
-                console.log("Thanks for your interest!");
-                localStorage.clear();
-                localStorage.setItem("tokenAdded", "true");
-                localStorage.setItem("tokenAddress", target);
-              } else {
-                console.log("Your loss!");
-              }
+                if (wasAdded) {
+                  console.log("Thanks for your interest!");
+                  localStorage.clear();
+                  localStorage.setItem("tokenAdded", "true");
+                  localStorage.setItem("tokenAddress", target);
+                
+                } else {
+                  console.log("Your loss!");
+                  return;
+                }
+              
             }
           } else {
             console.log(
               "Token already added or the user was previously prompted."
             );
           }
-        
+        }
       } catch (error) {
         console.error("Error:", error);
       }
     };
 
     loadLogo();
-
-  
-  }
-
-  }, [pageRefreshed, tokenAdded, storedTokenAddress]);
+  }, [logoState]);
 
   useEffect(() => {
     const handleRefresh = () => {
@@ -95,9 +79,7 @@ const LoadLogo = ({ target, symbol, decimals }) => {
       window.removeEventListener("beforeunload", handleRefresh);
       window.removeEventListener("load", handleRefresh);
     };
-
   }, []);
-
 
   return <></>;
 };

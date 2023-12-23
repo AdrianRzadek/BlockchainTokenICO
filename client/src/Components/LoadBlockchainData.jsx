@@ -20,7 +20,7 @@ const LoadBlockchainData = (addressProvider) => {
   const [AddressSigner, setAddressSigner] = useState();
   const [TokensSold, setTokensSold] = useState();
   const [transfers, setTransfers] = useState();
- // const dispatch = useDispatch();
+ const [logoState, setLogoState] = useState(false);
   useEffect(() => {
     async function loadBlockchainData() {
       try {
@@ -78,11 +78,26 @@ const LoadBlockchainData = (addressProvider) => {
 
   useEffect(() => {
     if (dappToken) {
-      // Check if dappToken and symbol property are defined
-     // console.log("DappToken symbol:", dappToken.symbol()); // Access dappToken directly
-      setDappTokenSymbol(dappToken.symbol());
-      setDappTokenDecimals(dappToken.decimals());
-      setDappTokenTarget(dappToken.target);
+  
+      console.log(dappTokenSymbol, dappTokenDecimals, dappTokenTarget)
+        if (dappToken.symbol() !== undefined && dappToken.decimals() !== undefined && dappToken.target !== undefined) {
+        
+     
+         if(logoState === false){
+      
+          setDappTokenSymbol(dappToken.symbol());
+          setDappTokenDecimals(dappToken.decimals());
+          setDappTokenTarget(dappToken.target);
+         setLogoState(true);
+         }
+          
+        }
+    }
+  
+    else{
+      return ()=>{
+      }
+      
     }
   }, [dappToken]);
 
@@ -101,7 +116,7 @@ const LoadBlockchainData = (addressProvider) => {
   return (
     <>
   
-        <LoadLogo target={dappTokenTarget} symbol={dappTokenSymbol} decimals={dappTokenDecimals} />
+        <LoadLogo logoState={logoState} target={dappTokenTarget} symbol={dappTokenSymbol} decimals={dappTokenDecimals} />
         <BuyTokens dappToken={dappToken} dappTokenSale={dappTokenSale} provider={AddressSigner} price={dappTokenSalePrice} sold={TokensSold}/>
         <Swap dappTokenSale={dappTokenSale} dappToken={dappToken} provider={AddressSigner} price={dappTokenSalePrice}/>
         <Transfer transfers={transfers} dappToken={dappToken} provider={AddressSigner} />
