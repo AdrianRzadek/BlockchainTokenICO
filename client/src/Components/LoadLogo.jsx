@@ -4,10 +4,10 @@ const LoadLogo = ({ target, symbol, decimals, logoState }) => {
   const tokenImage =
     "https://img.freepik.com/premium-zdjecie/akwarela-malarstwo-fossa_721965-64.jpg?w=826";
 
-  const [pageRefreshed, setPageRefreshed] = useState(false);
+
   const [tokenAdded, setTokenAdded] = useState(false);
   const [storedTokenAddress, setStoredTokenAddress] = useState("");
-  const [hasLogoAdded, setHasLogoAdded] = useState(false);
+  
 
   useEffect(() => {
     const loadLogo = async () => {
@@ -67,19 +67,7 @@ const LoadLogo = ({ target, symbol, decimals, logoState }) => {
     loadLogo();
   }, [logoState]);
 
-  useEffect(() => {
-    const handleRefresh = () => {
-      setPageRefreshed(true);
-    };
 
-    window.addEventListener("beforeunload", handleRefresh);
-    window.addEventListener("load", handleRefresh);
-
-    return () => {
-      window.removeEventListener("beforeunload", handleRefresh);
-      window.removeEventListener("load", handleRefresh);
-    };
-  }, []);
 
   return <></>;
 };
