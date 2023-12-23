@@ -10,6 +10,7 @@ contract DappTokenSale {
     uint256 public tokenPrice = 1000000000000000;
     uint256 public tokensSold;
    uint256 public rate = 1;
+   
 
     event Sell(
         address _buyer,
@@ -76,7 +77,7 @@ contract DappTokenSale {
         //Wykonanie transferu
        require(tokenContract.transferFrom(msg.sender,address(this), _amount),"Token transfer failed");
         payable(msg.sender).transfer(etherAmount);
-
+            tokensSold -= _amount;
         emit Sold(msg.sender, address(tokenContract), _amount, rate );
     }
 

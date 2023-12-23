@@ -79,7 +79,7 @@ const LoadBlockchainData = (addressProvider) => {
   useEffect(() => {
     if (dappToken) {
   
-      console.log(dappTokenSymbol, dappTokenDecimals, dappTokenTarget)
+      //console.log(dappTokenSymbol, dappTokenDecimals, dappTokenTarget)
         if (dappToken.symbol() !== undefined && dappToken.decimals() !== undefined && dappToken.target !== undefined) {
         
      
