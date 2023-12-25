@@ -10,12 +10,20 @@ import Background from "./Background";
 
 const LoadWeb3 = () => {
 
-  const [addressProvider, setAddressProvider] = useState(null);
+  const [addressProvider, setAddressProvider] = useState('');
   const [isLoading, setIsLoading] = useState(true);
   const [loadingInfo, setLoadingInfo] = useState("Ładowanie danych");
 
   useEffect(() => {
     const loadWeb3 = async () => {
+      const checkAccountChange = () => {
+        window.ethereum.on("accountsChanged", (accounts) => {
+          // Handle account change here
+          console.log("Account changed:", accounts[0]);
+          setAddressProvider(accounts[0]);
+        });
+      };
+
       if (typeof window.ethereum !== "undefined") {
         try {
           const provider = await new ethers.BrowserProvider(
@@ -26,23 +34,23 @@ const LoadWeb3 = () => {
           const addressSigner = await signer.getAddress();
           setAddressProvider(addressSigner);
           setIsLoading(false);
+          checkAccountChange();
         } catch (error) {
           console.error("Zaloguj się do zdecentralizowanej sieci");
-         (setLoadingInfo("Zaloguj się do zdecentralizowanej sieci"));
-        (setIsLoading(true));
+          setLoadingInfo("Zaloguj się do zdecentralizowanej sieci");
+          setIsLoading(true);
         }
       } else {
-        (
-          setLoadingInfo(
-            "W przeglądarce nie wykryto plugina by połączyć z Ethereum , zainstaluj MetaMask!"
-          )
+        setLoadingInfo(
+          "W przeglądarce nie wykryto plugina by połączyć z Ethereum, zainstaluj MetaMask!"
         );
-        (setIsLoading(true));
+        setIsLoading(true);
       }
     };
     loadWeb3();
-  }, [addressProvider]);
+  }, []);
 
+  console.log(addressProvider)
   if (isLoading) {
     return <LoadingScreen loadingInfo={loadingInfo} />;
   } else {

@@ -54,7 +54,6 @@ const BuyTokens = ({ dappToken, dappTokenSale, price, provider, sold }) => {
     fetchData();
   }, [provider]);
 
-  // console.log( tp);
 
   const buyTokens = async (event) => {
     event.preventDefault();
