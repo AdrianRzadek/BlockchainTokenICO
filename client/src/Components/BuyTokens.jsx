@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { ethers } from "ethers";
-
+import Loading from "./Loading";
+import ProgressLabel from "./Progress";
 const BuyTokens = ({ dappToken, dappTokenSale, price, provider, sold }) => {
   const [loading, setLoading] = useState(false);
   const [TokenPrice, setTokenPrice] = useState("");
   //const [usePrice, setPrice] = useState('');
   const [TokensSold, setTokensSold] = useState("");
-  const [tokensAvaiable, setTokensAvaiable] = useState("");
+  const [tokensAvailable, setTokensAvailable] = useState("");
   const [AddressProvider, setAddressProvider] = useState("");
   
 
@@ -38,7 +39,7 @@ const BuyTokens = ({ dappToken, dappTokenSale, price, provider, sold }) => {
     async function fetchData() {
       if (dappToken) {
         const tokensAvailable = await dappToken.balanceOf(dappTokenSale.target);
-        setTokensAvaiable(await tokensAvailable.toString());
+        setTokensAvailable(await tokensAvailable.toString());
       }
     }
     fetchData();
@@ -57,7 +58,7 @@ const BuyTokens = ({ dappToken, dappTokenSale, price, provider, sold }) => {
 
   const buyTokens = async (event) => {
     event.preventDefault();
-
+    setLoading(true);
     try {
       const numberOfTokens = event.target.numberOfTokens.value;
       const numberOfTokensBigInt = ethers.toBigInt(numberOfTokens);
@@ -72,12 +73,14 @@ const BuyTokens = ({ dappToken, dappTokenSale, price, provider, sold }) => {
       console.log("address signer " + AddressProvider);
       const value = tokenPrice * numberOfTokensBigInt;
       console.log(value);
-      await dappTokenSale.buyTokens(numberOfTokensBigInt, {
+      const txBuy =await dappTokenSale.buyTokens(numberOfTokensBigInt, {
         address: await AddressProvider,
         value: value,
         gasLimit: 2000000,
       });
+      txBuy.wait();
 
+    
       //this.setState({ loading: false, numberOfTokens: 0 });
       setLoading(false);
     } catch (error) {
@@ -103,7 +106,7 @@ const BuyTokens = ({ dappToken, dappTokenSale, price, provider, sold }) => {
             <h2>Token Sale</h2>
             <p>Token Price: {TokenPrice}</p>
             <p>Token Sold:{TokensSold} </p>
-            <p>Tokens Available: {tokensAvaiable}</p>
+            <p>Tokens Available: {tokensAvailable}</p>
             Buy Tokens Form
             <form onSubmit={buyTokens}>
               <div className="form-group">
@@ -117,9 +120,12 @@ const BuyTokens = ({ dappToken, dappTokenSale, price, provider, sold }) => {
               </div>
               <button type="submit" className="btn btn-primary">
                 Buy Tokens
+               
               </button>
+            {loading && <Loading />}
             </form>
           </div>
+          <ProgressLabel tokensSold={TokensSold} tokensAvailable={tokensAvailable}/>
         </div>
       </div>
     </div>

@@ -286,7 +286,7 @@ const Background = () => {
 
   return (
     <div ref={myRef} className='Background'>
-      <canvas ref={combinedCanvasRef} style={{ position: 'absolute', top: 0, left: 0, zIndex: 0 }}></canvas>
+      <canvas ref={combinedCanvasRef} style={{ position: 'absolute', top: 0, left: 0, zIndex: 3 }}></canvas>
     </div>
   );
 };

@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { ethers } from "ethers";
-
+import Loading from "./Loading";
 const Swap = ({ dappTokenSale, dappToken, provider, price }) => {
   const [tokensExchange, setTokensExchange] = useState("");
   const [TokenPrice, setTokenPrice] = useState("");
   const [tokensValue, setTokensValue] = useState('');
-
+  const [loading, setLoading] = useState(false);
   useEffect(() => {
     async function fetchData() {
       if (price) {
@@ -30,6 +30,7 @@ const Swap = ({ dappTokenSale, dappToken, provider, price }) => {
   };
 
   const swap = async (event) => {
+    setLoading(true);
     event.preventDefault();
     console.log(price);
     const addressSigner = await provider && provider.addressSigner;
@@ -47,15 +48,17 @@ const Swap = ({ dappTokenSale, dappToken, provider, price }) => {
         gas: 20000000,
       });
 
-      await dappTokenSale.sellTokens(value, {
+     const txSell = await dappTokenSale.sellTokens(value, {
         from: await addressSigner,
         value: value,
         gas: 20000000,
       });
-
+      txSell.wait();
+      setLoading(false);
       console.log("Tokens approved and sold successfully!");
     } catch (error) {
       console.error("Error during token approval and sale:", error);
+      setLoading(false);
     }
   };
 
@@ -75,7 +78,7 @@ const Swap = ({ dappTokenSale, dappToken, provider, price }) => {
               onChange={updateTokensValue}
             />
             <br />
-            <span className="float-right text-muted">Balance: {}</span>
+            <span className="float-right text-muted">Balance: {tokensValue} wei</span>
             <br />
             <input
               type="text"
@@ -89,6 +92,7 @@ const Swap = ({ dappTokenSale, dappToken, provider, price }) => {
             <button type="submit" className="btn btn-primary">
               Wymień
             </button>
+            {loading && <Loading />}
           </form>
         </div>
       </div>
