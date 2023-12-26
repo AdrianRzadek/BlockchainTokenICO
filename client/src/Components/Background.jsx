@@ -113,6 +113,7 @@ const Background = () => {
 }
 
     const colorPicker = (function () {
+        
       var colors = ["#FF6138", "#FFBE53", "#2980B9", "#282741"];
       var index = 0;
       function next() {

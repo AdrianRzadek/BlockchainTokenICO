@@ -78,7 +78,7 @@ const Swap = ({ dappTokenSale, dappToken, provider, price }) => {
               onChange={updateTokensValue}
             />
             <br />
-            <span className="float-right text-muted">Balance: {tokensValue} wei</span>
+            <span className="float-right ">Balance: {tokensValue} wei</span>
             <br />
             <input
               type="text"
