@@ -9,7 +9,7 @@ const BuyTokens = ({ dappToken, dappTokenSale, price, provider, sold }) => {
   const [TokensSold, setTokensSold] = useState("");
   const [tokensAvailable, setTokensAvailable] = useState("");
   const [AddressProvider, setAddressProvider] = useState("");
-  
+  const [tokenSupply, setTokenSupply] = useState("");
 
   
   useEffect(() => {
@@ -40,6 +40,8 @@ const BuyTokens = ({ dappToken, dappTokenSale, price, provider, sold }) => {
       if (dappToken) {
         const tokensAvailable = await dappToken.balanceOf(dappTokenSale.target);
         setTokensAvailable(await tokensAvailable.toString());
+        const tokensSupply = await dappToken.totalSupply();
+        setTokenSupply(await tokensSupply.toString());
       }
     }
     fetchData();
@@ -97,14 +99,16 @@ const BuyTokens = ({ dappToken, dappTokenSale, price, provider, sold }) => {
 
   return (
     <div>
-      <p>Current Account: {AddressProvider}</p>
+     
 
       <div className="container">
         <div className="row">
           <div className="col-md-8">
+          <p>Current Account: {AddressProvider}</p>
             Token Sale Details
             <h2>Token Sale</h2>
             <p>Token Price: {TokenPrice}</p>
+            <p>Token Supply: {tokenSupply}</p>
             <p>Token Sold:{TokensSold} </p>
             <p>Tokens Available: {tokensAvailable}</p>
             Buy Tokens Form
@@ -125,7 +129,7 @@ const BuyTokens = ({ dappToken, dappTokenSale, price, provider, sold }) => {
             {loading && <Loading />}
             </form>
           </div>
-          <ProgressLabel tokensSold={TokensSold} tokensAvailable={tokensAvailable}/>
+          <ProgressLabel tokensSold={TokensSold} tokensAvailable={tokensAvailable} tokenSupply={tokenSupply}/>
         </div>
       </div>
     </div>

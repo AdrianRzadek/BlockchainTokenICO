@@ -21,6 +21,7 @@ const LoadBlockchainData = (addressProvider) => {
   const [TokensSold, setTokensSold] = useState();
   const [transfers, setTransfers] = useState();
  const [logoState, setLogoState] = useState(false);
+ const [tokenSupply, setTokenSupply] = useState();
   useEffect(() => {
     async function loadBlockchainData() {
       try {
@@ -108,6 +109,7 @@ const LoadBlockchainData = (addressProvider) => {
       setAddressSigner(addressProvider);
       setDappTokenSalePrice(dappTokenSale.tokenPrice());
       setTokensSold(dappTokenSale.tokensSold());
+      setTokenSupply(dappToken.totalSupply());
     }
   }, [dappTokenSale, addressProvider]);
 
@@ -117,7 +119,7 @@ const LoadBlockchainData = (addressProvider) => {
     <>
   
         <LoadLogo logoState={logoState} target={dappTokenTarget} symbol={dappTokenSymbol} decimals={dappTokenDecimals} />
-        <BuyTokens dappToken={dappToken} dappTokenSale={dappTokenSale} provider={AddressSigner} price={dappTokenSalePrice} sold={TokensSold}/>
+        <BuyTokens dappToken={dappToken} dappTokenSale={dappTokenSale} provider={AddressSigner} price={dappTokenSalePrice} sold={TokensSold} tokenSupply={tokenSupply}/>
         <Swap dappTokenSale={dappTokenSale} dappToken={dappToken} provider={AddressSigner} price={dappTokenSalePrice}/>
         <Transfer transfers={transfers} dappToken={dappToken} provider={AddressSigner} />
      

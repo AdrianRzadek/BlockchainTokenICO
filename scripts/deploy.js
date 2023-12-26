@@ -8,7 +8,7 @@ async function main() {
     console.log("Deploying the contracts with the account:", address);
 
     const DappToken = await ethers.getContractFactory("DappToken");
-    const dappToken = await DappToken.deploy(1000000)
+    const dappToken = await DappToken.deploy(1000)
     await dappToken.waitForDeployment()
     console.log("Token address:", dappToken.target);
 
@@ -31,7 +31,7 @@ async function main() {
     await airDrop.waitForDeployment()
     console.log("AirDrop address:", airDrop.target);
     //Token transfer to sale contract
-    await dappToken.transfer(dappTokenSale.target, '1000000');
+    await dappToken.transfer(dappTokenSale.target, '1000');
 
     saveClientFiles(dappToken, dappTokenSale, transactions, airDrop);
 }

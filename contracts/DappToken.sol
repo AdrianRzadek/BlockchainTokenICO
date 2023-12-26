@@ -13,7 +13,7 @@ contract DappToken {
     //decimals
     uint8 public constant decimals = 0;
     //max/total supply
-    uint256 public totalSupply = 1000000;
+    uint256 public totalSupply = 1000;
 
     // An address type variable is used to store ethereum accounts.
     address public owner;
