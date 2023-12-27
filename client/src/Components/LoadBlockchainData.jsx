@@ -8,6 +8,7 @@ import contractAddress from "../contracts/contract-address.json";
 import BuyTokens from "./BuyTokens";
 import Swap from "./Swap";
 import Transfer from "./Transfer";
+import AirDropToken from "./AirDrop";
 import LoadLogo from "./LoadLogo";
 
 const LoadBlockchainData = (addressProvider) => {
@@ -20,15 +21,16 @@ const LoadBlockchainData = (addressProvider) => {
   const [AddressSigner, setAddressSigner] = useState();
   const [TokensSold, setTokensSold] = useState();
   const [transfers, setTransfers] = useState();
- const [logoState, setLogoState] = useState(false);
- const [tokenSupply, setTokenSupply] = useState();
+  const [logoState, setLogoState] = useState(false);
+  const [tokenSupply, setTokenSupply] = useState();
+  const [airDrop, setAirDrop] = useState();
   useEffect(() => {
     async function loadBlockchainData() {
       try {
         if (typeof window.ethereum !== "undefined") {
           const provider = new ethers.BrowserProvider(window.ethereum);
           const signer = await provider.getSigner();
-     
+
           if (DappTokenSale && DappToken && Transactions && AirDrop) {
             const addressDappTokenSale = contractAddress.DappTokenSale;
             const abiDappTokenSale = DappTokenSale.abi;
@@ -53,16 +55,19 @@ const LoadBlockchainData = (addressProvider) => {
               abiTransactions,
               signer
             );
+
+            const addressAirDrop = contractAddress.AirDrop;
+            const abiAirDrop = AirDrop.abi;
+            const airDropContract = new ethers.Contract(
+              addressAirDrop,
+              abiAirDrop,
+              signer
+            );
             setTransfers(transactionsContract);
             setDappTokenSale(dappTokenSaleContract);
-            //dispatch(setTokenSale(dappTokenSaleContract));
-
-            const loadedDappToken = dappTokenContract; // Store in a local variable
-            setDappToken(loadedDappToken);
-
-           // console.log(await dappToken.symbol());
-            // console.log(dappTokenSaleContract.tokenPrice())
-            //  console.log(await dappTokenSale.tokenPrice())
+            //const loadedDappToken = dappTokenContract; // Store in a local variable
+            setDappToken(dappTokenContract);
+            setAirDrop(airDropContract);
           } else {
             window.alert(
               "Smart contracts not deployed to the detected network."
@@ -79,50 +84,67 @@ const LoadBlockchainData = (addressProvider) => {
 
   useEffect(() => {
     if (dappToken) {
-  
-      //console.log(dappTokenSymbol, dappTokenDecimals, dappTokenTarget)
-        if (dappToken.symbol() !== undefined && dappToken.decimals() !== undefined && dappToken.target !== undefined) {
-        
-     
-         if(logoState === false){
-      
+      if (
+        dappToken.symbol() !== undefined &&
+        dappToken.decimals() !== undefined &&
+        dappToken.target !== undefined
+      ) {
+        if (logoState === false) {
           setDappTokenSymbol(dappToken.symbol());
           setDappTokenDecimals(dappToken.decimals());
           setDappTokenTarget(dappToken.target);
-         setLogoState(true);
-         }
-          
+          setLogoState(true);
         }
-    }
-  
-    else{
-      return ()=>{
       }
-      
+    } else {
+      return () => {};
     }
   }, [dappToken]);
 
-
-  
   useEffect(() => {
     if (dappTokenSale || transfers) {
       setAddressSigner(addressProvider);
       setDappTokenSalePrice(dappTokenSale.tokenPrice());
       setTokensSold(dappTokenSale.tokensSold());
       setTokenSupply(dappToken.totalSupply());
+      const x =dappTokenSale.runner.provider;
+      const y =x.getBlockNumber();
+     // console.log(y)
     }
   }, [dappTokenSale, addressProvider]);
 
-
-
   return (
     <>
-  
-        <LoadLogo logoState={logoState} target={dappTokenTarget} symbol={dappTokenSymbol} decimals={dappTokenDecimals} />
-        <BuyTokens dappToken={dappToken} dappTokenSale={dappTokenSale} provider={AddressSigner} price={dappTokenSalePrice} sold={TokensSold} tokenSupply={tokenSupply}/>
-        <Swap dappTokenSale={dappTokenSale} dappToken={dappToken} provider={AddressSigner} price={dappTokenSalePrice}/>
-        <Transfer transfers={transfers} dappToken={dappToken} provider={AddressSigner} />
-     
+      <LoadLogo
+        logoState={logoState}
+        target={dappTokenTarget}
+        symbol={dappTokenSymbol}
+        decimals={dappTokenDecimals}
+      />
+      <BuyTokens
+        dappToken={dappToken}
+        dappTokenSale={dappTokenSale}
+        provider={AddressSigner}
+        price={dappTokenSalePrice}
+        sold={TokensSold}
+        tokenSupply={tokenSupply}
+      />
+      <Swap
+        dappTokenSale={dappTokenSale}
+        dappToken={dappToken}
+        provider={AddressSigner}
+        price={dappTokenSalePrice}
+      />
+      <Transfer
+        transfers={transfers}
+        dappToken={dappToken}
+        provider={AddressSigner}
+      />
+      <AirDropToken
+        airDrop={airDrop}
+        dappTokenSale={dappTokenSale}
+        provider={AddressSigner}
+      /> 
     </>
   );
 };
