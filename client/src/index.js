@@ -1,12 +1,9 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import './index.css';
+import './index.scss';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
-import LoadWeb3 from './Components/LoadWeb3';
-import LoadingScreen from './Components/LoadingScreen';
-import LoadBlockchainData from './Components/LoadBlockchainData';
-import LoadLogo from './Components/LoadLogo';
+
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>

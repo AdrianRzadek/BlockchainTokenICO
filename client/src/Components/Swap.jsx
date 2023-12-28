@@ -1,26 +1,26 @@
 import React, { useState, useEffect } from "react";
 import { ethers } from "ethers";
 import Loading from "./Loading";
-const Swap = ({ dappTokenSale, dappToken, provider, price }) => {
+const Swap = ({ transactions, fossaToken, provider, price }) => {
   const [tokensExchange, setTokensExchange] = useState("");
   const [TokenPrice, setTokenPrice] = useState("");
-  const [tokensValue, setTokensValue] = useState('');
+  const [tokensValue, setTokensValue] = useState("");
   const [loading, setLoading] = useState(false);
   useEffect(() => {
     async function fetchData() {
       if (price) {
-        const price = await dappTokenSale.tokenPrice();
+        const price = await transactions.tokenPrice();
         setTokenPrice(await price.toString());
       }
     }
 
     fetchData();
-  }, [price, dappTokenSale]);
+  }, [price, transactions]);
 
   const updateTokensValue = (event) => {
     const newValue = event.target.value;
     setTokensExchange(newValue);
-  
+
     if (newValue === "") {
       setTokensValue("");
     } else {
@@ -33,8 +33,9 @@ const Swap = ({ dappTokenSale, dappToken, provider, price }) => {
     setLoading(true);
     event.preventDefault();
     console.log(price);
-    const addressSigner = await provider && provider.addressSigner;
-    const amount = ethers.toBigInt(tokensExchange) * ethers.toBigInt(TokenPrice);
+    const addressSigner = (await provider) && provider.addressSigner;
+    const amount =
+      ethers.toBigInt(tokensExchange) * ethers.toBigInt(TokenPrice);
     console.log(tokensExchange);
     console.log(amount);
     const value = ethers.toBigInt(tokensExchange);
@@ -43,12 +44,12 @@ const Swap = ({ dappTokenSale, dappToken, provider, price }) => {
     console.log(tokensValue);
 
     try {
-      await dappToken.approve(dappTokenSale.target, value, {
+      await fossaToken.approve(transactions.target, value, {
         from: await addressSigner,
         gas: 20000000,
       });
 
-     const txSell = await dappTokenSale.sellTokens(value, {
+      const txSell = await transactions.sellTokens(value, {
         from: await addressSigner,
         value: value,
         gas: 20000000,

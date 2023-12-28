@@ -1,13 +1,13 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.22;
 
-import "./DappToken.sol";
+import "./FossaToken.sol";
 import "@openzeppelin/contracts/utils/cryptography/MerkleProof.sol";
 import "hardhat/console.sol";
 
 contract AirDrop {
     // Token contract reference
-    DappToken public immutable tokenContract;
+    FossaToken public immutable tokenContract;
 
     // Merkle root for the airdrop
     bytes32 public immutable root;
@@ -25,7 +25,7 @@ contract AirDrop {
     event checkRoot(bytes32 root);
 
     // Constructor to initialize the contract with token contract, Merkle root, and reward amount
-    constructor(DappToken _tokenContract, bytes32 _root, uint256 _rewardAmount) {
+    constructor(FossaToken _tokenContract, bytes32 _root, uint256 _rewardAmount) {
         tokenContract = _tokenContract;
         root = _root;
         rewardAmount = _rewardAmount;

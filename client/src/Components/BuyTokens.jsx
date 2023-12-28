@@ -2,50 +2,47 @@ import React, { useEffect, useState } from "react";
 import { ethers } from "ethers";
 import Loading from "./Loading";
 import ProgressLabel from "./Progress";
-const BuyTokens = ({ dappToken, dappTokenSale, price, provider, sold }) => {
+const BuyTokens = ({ fossaToken, transactions, price, provider, sold }) => {
   const [loading, setLoading] = useState(false);
   const [TokenPrice, setTokenPrice] = useState("");
-  //const [usePrice, setPrice] = useState('');
   const [TokensSold, setTokensSold] = useState("");
   const [tokensAvailable, setTokensAvailable] = useState("");
   const [AddressProvider, setAddressProvider] = useState("");
   const [tokenSupply, setTokenSupply] = useState("");
 
-  
   useEffect(() => {
     async function fetchData() {
       if (price) {
-        const price = await dappTokenSale.tokenPrice();
+        const price = await transactions.tokenPrice();
         setTokenPrice(await price.toString());
-      
       }
     }
 
     fetchData();
-  }, [price, TokenPrice, dappTokenSale]);
+  }, [price, TokenPrice, transactions]);
 
   useEffect(() => {
     async function fetchData() {
       if (sold) {
-        const tokensSold = await dappTokenSale.tokensSold();
+        const tokensSold = await transactions.tokensSold();
         await setTokensSold(await tokensSold.toString());
       }
     }
 
     fetchData();
-  }, [sold, TokensSold, dappTokenSale]);
+  }, [sold, TokensSold, transactions]);
 
   useEffect(() => {
     async function fetchData() {
-      if (dappToken) {
-        const tokensAvailable = await dappToken.balanceOf(dappTokenSale.target);
+      if (fossaToken) {
+        const tokensAvailable = await fossaToken.balanceOf(transactions.target);
         setTokensAvailable(await tokensAvailable.toString());
-        const tokensSupply = await dappToken.totalSupply();
+        const tokensSupply = await fossaToken.totalSupply();
         setTokenSupply(await tokensSupply.toString());
       }
     }
     fetchData();
-  }, [dappToken, dappTokenSale]);
+  }, [fossaToken, transactions]);
 
   useEffect(() => {
     async function fetchData() {
@@ -56,7 +53,6 @@ const BuyTokens = ({ dappToken, dappTokenSale, price, provider, sold }) => {
     }
     fetchData();
   }, [provider]);
-
 
   const buyTokens = async (event) => {
     event.preventDefault();
@@ -75,14 +71,13 @@ const BuyTokens = ({ dappToken, dappTokenSale, price, provider, sold }) => {
       console.log("address signer " + AddressProvider);
       const value = tokenPrice * numberOfTokensBigInt;
       console.log(value);
-      const txBuy =await dappTokenSale.buyTokens(numberOfTokensBigInt, {
+      const txBuy = await transactions.buyTokens(numberOfTokensBigInt, {
         address: await AddressProvider,
         value: value,
         gasLimit: 2000000,
       });
       txBuy.wait();
 
-    
       //this.setState({ loading: false, numberOfTokens: 0 });
       setLoading(false);
     } catch (error) {
@@ -99,12 +94,10 @@ const BuyTokens = ({ dappToken, dappTokenSale, price, provider, sold }) => {
 
   return (
     <div>
-     
-
       <div className="container">
         <div className="row">
           <div className="col-md-8">
-          <p>Current Account: {AddressProvider}</p>
+            <p>Current Account: {AddressProvider}</p>
             Token Sale Details
             <h2>Token Sale</h2>
             <p>Token Price: {TokenPrice}</p>
@@ -124,12 +117,15 @@ const BuyTokens = ({ dappToken, dappTokenSale, price, provider, sold }) => {
               </div>
               <button type="submit" className="btn btn-primary">
                 Buy Tokens
-               
               </button>
-            {loading && <Loading />}
+              {loading && <Loading />}
             </form>
           </div>
-          <ProgressLabel tokensSold={TokensSold} tokensAvailable={tokensAvailable} tokenSupply={tokenSupply}/>
+          <ProgressLabel
+            tokensSold={TokensSold}
+            tokensAvailable={tokensAvailable}
+            tokenSupply={tokenSupply}
+          />
         </div>
       </div>
     </div>

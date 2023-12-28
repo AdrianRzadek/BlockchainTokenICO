@@ -9,27 +9,27 @@ async function main() {
     const address = await deployer.getAddress();
     console.log("Deploying the contracts with the account:", address);
 
-    const DappToken = await ethers.getContractFactory("DappToken");
-    const dappToken = await DappToken.deploy(1000)
-    await dappToken.waitForDeployment()
-    console.log("Token address:", dappToken.target);
+    const FossaToken = await ethers.getContractFactory("FossaToken");
+    const fossaToken = await FossaToken.deploy(1000)
+    await fossaToken.waitForDeployment()
+    console.log("Token address:", fossaToken.target);
 
     const tokenPrice = ethers.parseEther("1"); // Convert 1 Ether to Wei
 
-    const DappTokenSale = await ethers.getContractFactory("DappTokenSale");
-    const dappTokenSale = await DappTokenSale.deploy(dappToken.target, tokenPrice);
-    await dappTokenSale.waitForDeployment()
-    console.log("DappTokenSale address:", dappTokenSale.target);
-   // console.log("DappTokenSale token price:", dappTokenSale);
     const Transactions = await ethers.getContractFactory("Transactions");
-    const transactions = await Transactions.deploy(dappToken.target);
+    const transactions = await Transactions.deploy(fossaToken.target, tokenPrice);
     await transactions.waitForDeployment()
     console.log("Transactions address:", transactions.target);
+   // console.log("Transactions token price:", transactions);
+    const Transfers = await ethers.getContractFactory("Transfers");
+    const transfers = await Transfers.deploy(fossaToken.target);
+    await transfers.waitForDeployment()
+    console.log("Transfers address:", transfers.target);
     // AirDrop deploy
    // contractBlocknumber = await ethers.provider.getBlockNumber();
     //blockNumberEnd= 40;
-   // const filter = dappTokenSale.filters.Buy();
-   // const results = await dappTokenSale.queryFilter(filter, contractBlocknumber, blockNumberEnd);
+   // const filter = transactions.filters.Buy();
+   // const results = await transactions.queryFilter(filter, contractBlocknumber, blockNumberEnd);
    // console.log("blockNumberCutoff:", blockNumberEnd);
    // console.log("contractBlocknumber:", contractBlocknumber);
     const signers = await ethers.getSigners();
@@ -45,13 +45,13 @@ async function main() {
     console.log("Merkle Root:", root);
     const rewardAmount= 500;
     const AirDrop = await ethers.getContractFactory("AirDrop");
-    const airDrop = await AirDrop.deploy(dappToken.target, root, rewardAmount);
+    const airDrop = await AirDrop.deploy(fossaToken.target, root, rewardAmount);
     await airDrop.waitForDeployment()
     console.log("AirDrop address:", airDrop.target);
     //Token transfer to sale contract
-    await dappToken.transfer(dappTokenSale.target, '1000');
+    await fossaToken.transfer(transactions.target, '1000');
 
-    saveClientFiles(dappToken, dappTokenSale, transactions, airDrop);
+    saveClientFiles(fossaToken, transactions, transfers, airDrop);
 
     const indexedAddresses = {}
     signers.map((s, index) => indexedAddresses[index] = s.address);
@@ -62,7 +62,7 @@ async function main() {
 
 }
 
-function saveClientFiles(dappToken, dappTokenSale, transactions, airDrop) {
+function saveClientFiles(fossaToken, transactions, transfers, airDrop) {
     const contractsDir = path.join(__dirname, "..", "client", "src", "contracts");
 
     if (!fs.existsSync(contractsDir)) {
@@ -70,9 +70,9 @@ function saveClientFiles(dappToken, dappTokenSale, transactions, airDrop) {
     }
 
     const contractAddresses = {
-        DappToken: dappToken.target,
-        DappTokenSale: dappTokenSale.target,
+        FossaToken: fossaToken.target,
         Transactions: transactions.target,
+        Transfers: transfers.target,
         AirDrop: airDrop.target,
     };
 
@@ -81,22 +81,22 @@ function saveClientFiles(dappToken, dappTokenSale, transactions, airDrop) {
         JSON.stringify(contractAddresses,  undefined, 2)
     );
 
-    const DappTokenArtifact = artifacts.readArtifactSync("DappToken");
-    const DappTokenSaleArtifact = artifacts.readArtifactSync("DappTokenSale");
+    const FossaTokenArtifact = artifacts.readArtifactSync("FossaToken");
     const TransactionsArtifact = artifacts.readArtifactSync("Transactions");
+    const TransfersArtifact = artifacts.readArtifactSync("Transfers");
     const AirDropArtifact = artifacts.readArtifactSync("AirDrop");
 
     fs.writeFileSync(
-        path.join(contractsDir, "DappToken.json"),
-        JSON.stringify(DappTokenArtifact, null, 2)
-    );
-    fs.writeFileSync(
-        path.join(contractsDir, "DappTokenSale.json"),
-        JSON.stringify(DappTokenSaleArtifact, null, 2)
+        path.join(contractsDir, "FossaToken.json"),
+        JSON.stringify(FossaTokenArtifact, null, 2)
     );
     fs.writeFileSync(
         path.join(contractsDir, "Transactions.json"),
         JSON.stringify(TransactionsArtifact, null, 2)
+    );
+    fs.writeFileSync(
+        path.join(contractsDir, "Transfers.json"),
+        JSON.stringify(TransfersArtifact, null, 2)
     );
      fs.writeFileSync(
          path.join(contractsDir, "AirDrop.json"),

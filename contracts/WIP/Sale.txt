@@ -1,8 +1,8 @@
-// SPDX-License-Identifier: MIT
+//SPDX-License-Identifier: MIT
 pragma solidity ^0.8.22;
 
-//import "./DappToken.sol";
-/*
+import "./DappToken.sol";
+
 contract DappTokenSaleFactory {
     event TokenSaleCreated(address indexed tokenSale, address indexed tokenContract, uint256 tokenPrice);
 
@@ -22,7 +22,7 @@ contract DappTokenSale {
     bool public isPaused;
     bool public isSaleEnded;
 
-    event Sell(address indexed buyer, uint256 amount);
+    event Buy(address indexed buyer, uint256 amount);
     event TokensSold(address indexed account, address indexed tokenContract, uint256 amount);
     event TokensWithdrawn(address indexed account, uint256 amount);
 
@@ -67,7 +67,7 @@ contract DappTokenSale {
 
         tokensSold += _numberOfTokens;
         balances[msg.sender] += _numberOfTokens;
-        emit Sell(msg.sender, _numberOfTokens);
+        emit Buy(msg.sender, _numberOfTokens);
     }
 
     function sellTokens(uint256 _amount) public payable whenNotPaused whenSaleNotEnded {
@@ -123,4 +123,4 @@ contract DappTokenSale {
     receive() external payable {}
 
     fallback() external payable {}
-}*/
+}

@@ -1,48 +1,104 @@
-// SPDX-License-Identifier: MIT 
+// SPDX-License-Identifier: MIT
 pragma solidity ^0.8.22;
-import "./DappToken.sol";
 
-contract Transactions{
+import "./FossaToken.sol";
+import "hardhat/console.sol";
 
-    uint256 TransactionCounter;
-    DappToken public tokenContract;
+contract Transactions {
+    address payable public admin;
+    FossaToken public tokenContract;
+    uint256 public tokenPrice = 1000000000000000;
+    uint256 public tokensSold;
 
-      constructor(DappToken _tokenContract) 
-     {
-    
+    event Buy(
+        address _buyer,
+        uint256 _amount
+    );
+   
+      event Sold(
+        address _account,
+        address _tokenContract,
+        uint256 _amount
+      
+    );
+
+    constructor(FossaToken _tokenContract, uint256 _tokenPrice) {
+        //Assign an admin
+        admin = payable(msg.sender);
         //Token Contract
         tokenContract = _tokenContract;
-        
+
+        //Token Price
+        tokenPrice = _tokenPrice;
     }
 
+    // buy tokens
+
+    function buyTokens(uint256 _numberOfTokens) public payable {
+        
    
 
-    struct TransferStruct{
-        address sender;
-        address reciver;
-        uint amount;
-      
-        
+        //require that value is equal to tokens
+        require(
+            msg.value == (_numberOfTokens * tokenPrice),
+            "Incorrect value sent"
+        );
+        //require that contract has enought tokens
+       
+        require(
+            tokenContract.balanceOf(address(this)) >= _numberOfTokens,
+            "Not enough tokens available"
+        );
+
+        require(
+            tokenContract.transfer(msg.sender, _numberOfTokens),
+            "Token transfer failed"
+        );
+        //Keep track of tokenSold
+        tokensSold += _numberOfTokens;
+        //Trigger Sell event
+        emit Buy(msg.sender, _numberOfTokens);
+        // emit TokensPurchased(msg.sender, address(tokenContract), _numberOfTokens, tokenPrice);
     }
 
-        TransferStruct[] transactions;
+     
+    function sellTokens(uint256 _amount) public payable{
+        
+         // nie można sprzedać więcej niż się ma
+        require(tokenContract.balanceOf(msg.sender) >= _amount, "Insufficient token balance");
+        
+       
+        
+    // Require that Swap has enough Ether
+    require(address(this).balance >= _amount, "Insufficient Ether balance");
 
-        function sendTransaction(address payable reciver, uint amount) public payable{
-            TransactionCounter += 1;
-            transactions.push(TransferStruct(msg.sender, reciver, amount));
-            require(tokenContract.transferFrom(msg.sender, reciver, amount), "Token transfer failed");
-  
-        }
+        //Wykonanie transferu
+       require(tokenContract.transferFrom(msg.sender,address(this), _amount),"Token transfer failed");
+        //przelicznik wymiany
+        uint256 etherAmount = _amount*tokenPrice;
+        payable(msg.sender).transfer(etherAmount);
+        tokensSold -= _amount;
+        emit Sold(msg.sender, address(tokenContract), _amount );
+    }
 
-         function getAllTransactions() public view returns (TransferStruct[] memory){
-            return transactions;
-        }
 
-         function getTransactionsCount() public view returns (uint256) {
-            return TransactionCounter;
-        }
+    //ending token sale
+    function endSale() public payable {
+        //require admin
+        require(msg.sender == admin, "Only the admin can end the sale");
+        //transfer remaining dapp tokens to admin
+        require(
+            tokenContract.transfer(
+                admin,
+                tokenContract.balanceOf(address(this))
+            ),
+            "Token transfer to admin failed"
+        );
+        //zwrot do admina reszty
+        admin.transfer(address(this).balance);
+    }
 
-         receive() external payable {}
+    receive() external payable {}
 
-         fallback() external payable {}
+    fallback() external payable {}
 }

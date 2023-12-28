@@ -3,7 +3,7 @@ pragma solidity ^0.8.22;
 
 import "hardhat/console.sol";
 
-contract DappToken {
+contract FossaToken {
     //name
     string public name = "FossaToken";
     //symbol
@@ -14,7 +14,6 @@ contract DappToken {
     uint8 public constant decimals = 0;
     //max/total supply
     uint256 public totalSupply = 1000;
-
     // An address type variable is used to store ethereum accounts.
     address public owner;
 
@@ -23,7 +22,7 @@ contract DappToken {
     event Transfer(
      address indexed _from,
      address indexed _to,
-     uint256 value
+     uint256 _value
      );
 
       //I OWNER APPROVE ACCOUNT B to approve value

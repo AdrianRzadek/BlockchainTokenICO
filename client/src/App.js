@@ -1,5 +1,6 @@
 import React from "react";
 import "./App.scss";
+
 import LoadWeb3 from "./Components/LoadWeb3";
 
 function App() {
