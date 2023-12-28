@@ -9,18 +9,17 @@ contract DappTokenSale {
     DappToken public tokenContract;
     uint256 public tokenPrice = 1000000000000000;
     uint256 public tokensSold;
-   uint256 public rate = 1;
-   
 
-    event Sell(
+    event Buy(
         address _buyer,
         uint256 _amount
     );
+   
       event Sold(
         address account,
         address tokenContract,
-        uint256 amount,
-        uint256 rate
+        uint256 amount
+      
     );
 
     constructor(DappToken _tokenContract, uint256 _tokenPrice) {
@@ -37,7 +36,7 @@ contract DappTokenSale {
 
     function buyTokens(uint256 _numberOfTokens) public payable {
         
-      //  uint256 tokenAmount = msg.value * rate;
+   
 
         //require that value is equal to tokens
         require(
@@ -45,7 +44,7 @@ contract DappTokenSale {
             "Incorrect value sent"
         );
         //require that contract has enought tokens
-        console.log(tokenContract.balanceOf(address(this)));
+       
         require(
             tokenContract.balanceOf(address(this)) >= _numberOfTokens,
             "Not enough tokens available"
@@ -58,7 +57,7 @@ contract DappTokenSale {
         //Keep track of tokenSold
         tokensSold += _numberOfTokens;
         //Trigger Sell event
-        emit Sell(msg.sender, _numberOfTokens);
+        emit Buy(msg.sender, _numberOfTokens);
         // emit TokensPurchased(msg.sender, address(tokenContract), _numberOfTokens, tokenPrice);
     }
 
@@ -66,19 +65,20 @@ contract DappTokenSale {
     function sellTokens(uint256 _amount) public payable{
         
          // nie można sprzedać więcej niż się ma
-        require(tokenContract.balanceOf(msg.sender) >= _amount);
+        require(tokenContract.balanceOf(msg.sender) >= _amount, "Insufficient token balance");
         
-        //przelicznik wymiany
-        uint256 etherAmount = _amount*tokenPrice;
+       
         
     // Require that Swap has enough Ether
-    require(address(this).balance >= _amount, "Swap has not enought eth");
+    require(address(this).balance >= _amount, "Insufficient Ether balance");
 
         //Wykonanie transferu
        require(tokenContract.transferFrom(msg.sender,address(this), _amount),"Token transfer failed");
+        //przelicznik wymiany
+        uint256 etherAmount = _amount*tokenPrice;
         payable(msg.sender).transfer(etherAmount);
-            tokensSold -= _amount;
-        emit Sold(msg.sender, address(tokenContract), _amount, rate );
+        tokensSold -= _amount;
+        emit Sold(msg.sender, address(tokenContract), _amount );
     }
 
 

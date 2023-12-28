@@ -21,16 +21,15 @@ contract Transactions{
         address sender;
         address reciver;
         uint amount;
-        string message;
-        uint256 timestamp;
+      
         
     }
 
         TransferStruct[] transactions;
 
-        function sendTransaction(address payable reciver, uint amount, string memory message) public payable{
+        function sendTransaction(address payable reciver, uint amount) public payable{
             TransactionCounter += 1;
-            transactions.push(TransferStruct(msg.sender, reciver, amount, message, block.timestamp));
+            transactions.push(TransferStruct(msg.sender, reciver, amount));
             require(tokenContract.transferFrom(msg.sender, reciver, amount), "Token transfer failed");
   
         }

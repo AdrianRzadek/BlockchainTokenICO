@@ -20,7 +20,11 @@ contract DappToken {
 
      //Transfer
 
-    event Transfer(address indexed _from, address indexed _to, uint256 value);
+    event Transfer(
+     address indexed _from,
+     address indexed _to,
+     uint256 value
+     );
 
       //I OWNER APPROVE ACCOUNT B to approve value
     event Approval(
@@ -53,7 +57,7 @@ contract DappToken {
         
         //without decimals in token value
         //uint256 value = _value*10;
-        console.log(_value);
+        //console.log(_value);
         //exception if account doesn't exist
         require(balanceOf[msg.sender] >= _value, "Insufficient balance");
 

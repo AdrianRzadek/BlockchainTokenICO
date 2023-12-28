@@ -1,4 +1,6 @@
 const { ethers} = require("hardhat");
+const keccak256 = require("keccak256");
+const { MerkleTree } = require('merkletreejs');
 const path = require("path");
 const fs = require("fs");
 
@@ -24,8 +26,24 @@ async function main() {
     await transactions.waitForDeployment()
     console.log("Transactions address:", transactions.target);
     // AirDrop deploy
+   // contractBlocknumber = await ethers.provider.getBlockNumber();
+    //blockNumberEnd= 40;
+   // const filter = dappTokenSale.filters.Buy();
+   // const results = await dappTokenSale.queryFilter(filter, contractBlocknumber, blockNumberEnd);
+   // console.log("blockNumberCutoff:", blockNumberEnd);
+   // console.log("contractBlocknumber:", contractBlocknumber);
+    const signers = await ethers.getSigners();
+    const signersAddresses = await signers.map((s) => s.address);
+   // console.log('results: ',results)
+    //console.log(signers)
+    const leafBuffer = await signersAddresses.map(x => keccak256(x));
+    console.log("Leafs:", leafBuffer);
+    const leafNodes = await leafBuffer.map(buffer => '0x' + buffer.toString('hex'));
+    console.log("LeafNodes:", leafNodes);
+    const merkleTree = await new MerkleTree(leafNodes, keccak256, { sortPairs: true });
+    const root = merkleTree.getHexRoot();
+    console.log("Merkle Root:", root);
     const rewardAmount= 500;
-    const root = "0x0000000000000000000000000000000000000000000000000000000000000000";
     const AirDrop = await ethers.getContractFactory("AirDrop");
     const airDrop = await AirDrop.deploy(dappToken.target, root, rewardAmount);
     await airDrop.waitForDeployment()
@@ -34,6 +52,14 @@ async function main() {
     await dappToken.transfer(dappTokenSale.target, '1000');
 
     saveClientFiles(dappToken, dappTokenSale, transactions, airDrop);
+
+    const indexedAddresses = {}
+    signers.map((s, index) => indexedAddresses[index] = s.address);
+
+  const serializedAddresses = JSON.stringify(indexedAddresses);
+
+  fs.writeFileSync("client/src/contracts/wallet-address.json", serializedAddresses);
+
 }
 
 function saveClientFiles(dappToken, dappTokenSale, transactions, airDrop) {
@@ -78,6 +104,9 @@ function saveClientFiles(dappToken, dappTokenSale, transactions, airDrop) {
      );
 }
 
+
+  
+ 
 main()
   .then(() => process.exit(0))
   .catch((error) => {

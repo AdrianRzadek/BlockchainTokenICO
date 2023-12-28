@@ -29,9 +29,11 @@
     "@openzeppelin/contracts": "^5.0.1",
     "@openzeppelin/merkle-tree": "^1.0.5",
     "big-integer": "^1.6.52",
+    "buffer": "^6.0.3",
+    "Buffer": "^0.0.0",
+    "crypto-js": "^4.2.0",
     "ethers": "^6.9.1",
     "keccak256": "^1.0.6",
     "merkletreejs": "^0.3.11"
- 
   }
 }
