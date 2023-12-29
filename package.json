@@ -9,7 +9,7 @@
   "devDependencies": {
     "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
     "@nomicfoundation/hardhat-toolbox": "^4.0.0",
-    "hardhat": "^2.19.3",
+    "hardhat": "^2.19.4",
     "mocha": "^10.2.0"
   },
   "scripts": {
@@ -30,8 +30,8 @@
     "@openzeppelin/merkle-tree": "^1.0.5",
     "big-integer": "^1.6.52",
     "buffer": "^6.0.3",
-    "Buffer": "^0.0.0",
     "crypto-js": "^4.2.0",
+    "dotenv": "^16.3.1",
     "ethers": "^6.9.1",
     "keccak256": "^1.0.6",
     "merkletreejs": "^0.3.11"

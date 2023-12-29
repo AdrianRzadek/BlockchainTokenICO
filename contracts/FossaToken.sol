@@ -1,67 +1,58 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.22;
+pragma solidity ^0.8.23;
 
 import "hardhat/console.sol";
 
 contract FossaToken {
-    //name
+    // Name of the token
     string public name = "FossaToken";
-    //symbol
+    // Symbol of the token
     string public symbol = "FOSSA";
-    //standard
-    string public standard = "Fossa Token v1.0";
-    //decimals
+    // Standard of the token
+    string public standard = "FossaToken v1.0";
+    // Decimals of the token
     uint8 public constant decimals = 0;
-    //max/total supply
-    uint256 public totalSupply = 1000;
-    // An address type variable is used to store ethereum accounts.
+    // Total supply of the token
+    uint256 public totalSupply ;
+    // Owner of the contract
     address public owner;
 
-     //Transfer
-
+     // Event emitted when tokens are transferred
     event Transfer(
-     address indexed _from,
-     address indexed _to,
-     uint256 _value
-     );
+        address indexed _from,
+        address indexed _to,
+        uint256 _value
+    );
 
-      //I OWNER APPROVE ACCOUNT B to approve value
+    // Event emitted when an approval is made
     event Approval(
         address indexed _owner,
         address indexed _spender,
         uint256 _value
     );
 
-
-    //ballance of our address
+    // Mapping of token balances for each address
     mapping(address => uint256) public balanceOf;
-    //allowance of remaining token to withdraw
-    //account A approve account B to spend amount of C tokens
+    // Mapping of allowances for each address
     mapping(address => mapping(address => uint256)) public allowance;
 
-    //constractor
-    //set the total number of tokens
-    //Read the total number of tokens
-
+    // Constructor
     constructor(uint256 _initialSupply) {
         balanceOf[msg.sender] = _initialSupply;
         totalSupply = _initialSupply;
-        // Assign the contract deployer as the owner //new
+        // Assign the contract deployer as the owner
         owner = msg.sender;
-        
     }
 
-
+    /**
+     * Transfer tokens from the sender's address to the specified address.
+     * @param _to The address to transfer tokens to.
+     * @param _value The amount of tokens to transfer.
+     * @return Returns true if the transfer is successful, otherwise false.
+     */
     function transfer(address _to, uint256 _value) public returns (bool) {
-        
-        //without decimals in token value
-        //uint256 value = _value*10;
-        //console.log(_value);
-        //exception if account doesn't exist
         require(balanceOf[msg.sender] >= _value, "Insufficient balance");
 
-        //return true/false
-        //transfer the balance event
         balanceOf[msg.sender] -= _value;
         balanceOf[_to] += _value;
 
@@ -69,51 +60,56 @@ contract FossaToken {
         return true;
     }
 
-    //approve
+    /**
+     * Approve the specified address to spend the sender's tokens.
+     * @param _spender The address to approve.
+     * @param _value The amount of tokens to approve.
+     * @return Returns true if the approval is successful, otherwise false.
+     */
     function approve(address _spender, uint256 _value) public returns (bool) {
-        
         require(_spender != address(0), "Invalid spender address");
-      
-        
+
         allowance[msg.sender][_spender] = _value;
         emit Approval(msg.sender, _spender, _value);
         return true;
     }
 
-    //transferFrom
+    /**
+     * Transfer tokens from one address to another.
+     * @param _from The address to transfer tokens from.
+     * @param _to The address to transfer tokens to.
+     * @param _value The amount of tokens to transfer.
+     * @return Returns true if the transfer is successful, otherwise false.
+     */
     function transferFrom(
         address _from,
         address _to,
         uint256 _value
     ) public returns (bool) {
-        //require _from has enaught tokens
         require(_value <= balanceOf[_from]);
-        //require allowance is big enought
-        require(_value <= allowance[_from][msg.sender],"allowance is not big enought");
-        //change the balance
+        require(_value <= allowance[_from][msg.sender], "Allowance is not big enough");
+
         balanceOf[_from] -= _value;
         balanceOf[_to] += _value;
-        //update the allowance
+
         allowance[_from][msg.sender] -= _value;
-        //transfer event
+
         emit Transfer(_from, _to, _value);
-        //return true/false
         return true;
     }
-    
-   function mint(address to, uint256 amount) public {
-        // Only allow the contract owner (or another authorized entity) to mint
-        // You might want to implement access control here
-        require(msg.sender == owner, "Only owner can mint");
 
-        // Ensure the minted amount is non-zero
+    /**
+     * Mint new tokens and update the balance of the specified address.
+     * Only the contract owner (or another authorized entity) can mint new tokens.
+     * @param to The address to mint tokens to.
+     * @param amount The amount of tokens to mint.
+     */
+    function mint(address to, uint256 amount) public {
+        require(msg.sender == owner, "Only owner can mint");
         require(amount > 0, "Mint amount must be greater than zero");
 
-        // Mint new tokens and update the balance
         balanceOf[to] += amount;
 
-        // Emit a transfer event
         emit Transfer(address(0), to, amount);
     }
 }
-
