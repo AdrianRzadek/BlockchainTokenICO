@@ -1,0 +1,44 @@
+@startuml
+
+left to right direction
+
+actor Użytkownik as user
+actor Kontrakt as contract
+actor InnyKontrakt as otherContract
+
+package "Funkcje Tokena" {
+  usecase "Wysyłanie tokena" as sendToken
+  usecase "Otrzymywanie tokena" as receiveToken
+  usecase "Wymiana tokena" as exchangeToken
+  usecase "Zakup tokena" as purchaseToken
+  usecase "Sprzedaż tokena" as sellToken
+  usecase "Interakcja z innym kontraktem" as interactWithContract
+  usecase "Token jako waluta" as useAsCurrency
+  usecase "Zbieranie funduszy (ICO)" as ico
+  usecase "Model transferu" as transferModel
+}
+
+user --> sendToken
+user --> receiveToken
+user --> exchangeToken
+user --> purchaseToken
+user --> sellToken
+user --> interactWithContract
+user --> useAsCurrency
+user --> ico
+user --> transferModel
+
+contract --> sendToken
+contract --> receiveToken
+contract --> exchangeToken
+contract --> interactWithContract
+contract --> useAsCurrency
+
+otherContract --> interactWithContract
+
+
+user --> createICO
+user --> manageICO
+user --> icoReports
+
+@enduml

@@ -1,6 +1,6 @@
 const { ethers} = require("hardhat");
-const keccak256 = require("keccak256");
-const { MerkleTree } = require('merkletreejs');
+// const keccak256 = require("keccak256");
+// const { MerkleTree } = require('merkletreejs');
 const path = require("path");
 const fs = require("fs");
 
@@ -32,38 +32,38 @@ async function main() {
    // const results = await transactions.queryFilter(filter, contractBlocknumber, blockNumberEnd);
    // console.log("blockNumberCutoff:", blockNumberEnd);
    // console.log("contractBlocknumber:", contractBlocknumber);
-    const signers = await ethers.getSigners();
-    const signersAddresses = await signers.map((s) => s.address);
-   // console.log('results: ',results)
-    //console.log(signers)
-    const leafBuffer = await signersAddresses.map(x => keccak256(x));
-    console.log("Leafs:", leafBuffer);
-    const leafNodes = await leafBuffer.map(buffer => '0x' + buffer.toString('hex'));
-    console.log("LeafNodes:", leafNodes);
-    const merkleTree = await new MerkleTree(leafNodes, keccak256, { sortPairs: true });
-    const root = merkleTree.getHexRoot();
-    console.log("Merkle Root:", root);
-    const rewardAmount= 500;
-    const AirDrop = await ethers.getContractFactory("AirDrop");
-    const airDrop = await AirDrop.deploy(fossaToken.target, root, rewardAmount);
-    await airDrop.waitForDeployment()
-    console.log("AirDrop address:", airDrop.target);
+//     const signers = await ethers.getSigners();
+//     const signersAddresses = await signers.map((s) => s.address);
+//    // console.log('results: ',results)
+//     //console.log(signers)
+//     const leafBuffer = await signersAddresses.map(x => keccak256(x));
+//     console.log("Leafs:", leafBuffer);
+//     const leafNodes = await leafBuffer.map(buffer => '0x' + buffer.toString('hex'));
+//     console.log("LeafNodes:", leafNodes);
+//     const merkleTree = await new MerkleTree(leafNodes, keccak256, { sortPairs: true });
+//     const root = merkleTree.getHexRoot();
+//     console.log("Merkle Root:", root);
+//     const rewardAmount= 500;
+//     const AirDrop = await ethers.getContractFactory("AirDrop");
+//     const airDrop = await AirDrop.deploy(fossaToken.target, root, rewardAmount);
+//     await airDrop.waitForDeployment()
+//     console.log("AirDrop address:", airDrop.target);
     //Token transfer to sale contract
     await fossaToken.transfer(transactions.target, '1000');
 
-    saveClientFiles(fossaToken, transactions, transfers, airDrop);
+    saveClientFiles(fossaToken, transactions, transfers);
 
-    const indexedAddresses = {}
-    signers.map((s, index) => indexedAddresses[index] = s.address);
+//     const indexedAddresses = {}
+//     signers.map((s, index) => indexedAddresses[index] = s.address);
 
-  const serializedAddresses = JSON.stringify(indexedAddresses);
+//   const serializedAddresses = JSON.stringify(indexedAddresses);
 
-  fs.writeFileSync("client/src/contracts/wallet-address.json", serializedAddresses);
+//   fs.writeFileSync("src/contracts/wallet-address.json", serializedAddresses);
 
 }
 
-function saveClientFiles(fossaToken, transactions, transfers, airDrop) {
-    const contractsDir = path.join(__dirname, "..", "client", "src", "contracts");
+function saveClientFiles(fossaToken, transactions, transfers) {
+    const contractsDir = path.join(__dirname, "..", "src", "contracts");
 
     if (!fs.existsSync(contractsDir)) {
         fs.mkdirSync(contractsDir);
@@ -73,7 +73,7 @@ function saveClientFiles(fossaToken, transactions, transfers, airDrop) {
         FossaToken: fossaToken.target,
         Transactions: transactions.target,
         Transfers: transfers.target,
-        AirDrop: airDrop.target,
+       // AirDrop: airDrop.target,
     };
 
     fs.writeFileSync(
@@ -84,7 +84,7 @@ function saveClientFiles(fossaToken, transactions, transfers, airDrop) {
     const FossaTokenArtifact = artifacts.readArtifactSync("FossaToken");
     const TransactionsArtifact = artifacts.readArtifactSync("Transactions");
     const TransfersArtifact = artifacts.readArtifactSync("Transfers");
-    const AirDropArtifact = artifacts.readArtifactSync("AirDrop");
+    //const AirDropArtifact = artifacts.readArtifactSync("AirDrop");
 
     fs.writeFileSync(
         path.join(contractsDir, "FossaToken.json"),
@@ -98,10 +98,10 @@ function saveClientFiles(fossaToken, transactions, transfers, airDrop) {
         path.join(contractsDir, "Transfers.json"),
         JSON.stringify(TransfersArtifact, null, 2)
     );
-     fs.writeFileSync(
-         path.join(contractsDir, "AirDrop.json"),
-         JSON.stringify(AirDropArtifact, null, 2)
-     );
+    //  fs.writeFileSync(
+    //      path.join(contractsDir, "AirDrop.json"),
+    //      JSON.stringify(AirDropArtifact, null, 2)
+    //  );
 }
 
 

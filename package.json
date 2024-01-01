@@ -1,39 +1,57 @@
 {
-  "name": "dapp",
-  "description": "This project demonstrates a basic Hardhat use case. It comes with a sample contract, a test for that contract, and a script that deploys that contract.",
-  "version": "1.0.0",
+  "name": "client",
+  "version": "0.1.0",
+  "private": true,
   "main": "hardhat.config.js",
-  "directories": {
-    "test": "test"
+  "dependencies": {
+    "@nomicfoundation/solidity-analyzer": "^0.1.1",
+    "@testing-library/react": "^14.1.2",
+    "@testing-library/user-event": "^14.5.1",
+    "animejs": "^3.2.2",
+    "bootstrap": "^5.3.2",
+    "dotenv": "^16.3.1",
+    "ethers": "^6.9.1",
+    "p5": "^1.9.0",
+    "react": "^18.2.0",
+    "react-bootstrap": "^2.9.2",
+    "react-dom": "^18.2.0",
+    "react-scripts": "5.0.1",
+    "three": "^0.160.0",
+    "vanta": "^0.5.24",
+    "web-vitals": "^3.5.0",
+    "webpack": "^5.89.0"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject"
+  },
+  "eslintConfig": {
+    "extends": [
+      "react-app",
+      "react-app/jest"
+    ]
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
   },
   "devDependencies": {
+    "@babel/eslint-parser": "^7.23.3",
+    "@babel/parser": "^7.23.6",
     "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
+    "node-polyfill-webpack-plugin": "^3.0.0",
     "@nomicfoundation/hardhat-toolbox": "^4.0.0",
     "hardhat": "^2.19.4",
     "mocha": "^10.2.0"
-  },
-  "scripts": {
-    "test": "mocha"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/AdrianRzadek/Dapp.git"
-  },
-  "author": "Adrian Rzadek",
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/AdrianRzadek/Dapp/issues"
-  },
-  "homepage": "https://github.com/AdrianRzadek/Dapp#readme",
-  "dependencies": {
-    "@openzeppelin/contracts": "^5.0.1",
-    "@openzeppelin/merkle-tree": "^1.0.5",
-    "big-integer": "^1.6.52",
-    "buffer": "^6.0.3",
-    "crypto-js": "^4.2.0",
-    "dotenv": "^16.3.1",
-    "ethers": "^6.9.1",
-    "keccak256": "^1.0.6",
-    "merkletreejs": "^0.3.11"
   }
 }

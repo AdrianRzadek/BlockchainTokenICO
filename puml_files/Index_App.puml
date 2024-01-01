@@ -1,0 +1,13 @@
+@startuml IndexApp
+!define RECTANGLE component
+
+
+RECTANGLE index << JavaScript >>
+RECTANGLE App <<React Komponent >>
+RECTANGLE LoadWeb3 <<React Komponent >>
+
+index --> App
+App --> LoadWeb3
+
+
+@enduml

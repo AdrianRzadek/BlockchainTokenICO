@@ -15,7 +15,7 @@ require('dotenv').config();
         count: 20,
         passphrase: "",
       },
-      chainId: 1337, 
+      chainId: 31337, 
     },
     mainnet: {
       url: "https://mainnet.infura.io/v3/INFURA_API_KEY",
