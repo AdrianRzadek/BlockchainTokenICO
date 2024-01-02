@@ -38,4 +38,7 @@ require('dotenv').config();
       },
     },
   },
+  paths: {
+    artifacts: './artifacts',
+  },
 };

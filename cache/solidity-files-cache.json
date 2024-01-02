@@ -1,38 +1,6 @@
 {
   "_format": "hh-sol-cache-2",
   "files": {
-    "C:\\Users\\adria\\Documents\\GitHub\\Dapp\\contracts\\WIP\\AirDrop.sol": {
-      "lastModificationDate": 1704151258032,
-      "contentHash": "35e77a7aac958a352fa4004e96f16e20",
-      "sourceName": "contracts/WIP/AirDrop.sol",
-      "solcConfig": {
-        "version": "0.8.23",
-        "settings": {
-          "evmVersion": "shanghai",
-          "optimizer": {
-            "enabled": true,
-            "runs": 200
-          },
-          "outputSelection": {
-            "*": {
-              "*": [
-                "abi",
-                "evm.bytecode",
-                "evm.deployedBytecode",
-                "evm.methodIdentifiers",
-                "metadata"
-              ],
-              "": [
-                "ast"
-              ]
-            }
-          }
-        }
-      },
-      "imports": [],
-      "versionPragmas": [],
-      "artifacts": []
-    },
     "C:\\Users\\adria\\Documents\\GitHub\\Dapp\\contracts\\FossaToken.sol": {
       "lastModificationDate": 1703853937245,
       "contentHash": "289c43b15cebf6c8f2a9a46f07ed9a4a",

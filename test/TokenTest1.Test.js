@@ -1,13 +1,13 @@
 const { ethers } = require("hardhat");
 const { expect } = require("chai");
-
-describe("DappToken", function () {
+const {before} = require('mocha')
+describe("FossaTokenTest1", function () {
   let tokenInstance;
  
   before(async function () {
    
-    const DappToken = await ethers.getContractFactory("DappToken");
-    tokenInstance = await DappToken.deploy(1000000);
+    const FossaToken = await ethers.getContractFactory("FossaToken");
+    tokenInstance = await FossaToken.deploy(1000000);
     
   });
   

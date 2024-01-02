@@ -1,7 +1,7 @@
 const { expect } = require("chai");
 const { ethers } = require("hardhat");
-
-describe("DappTokenSale", () => {
+const {before} = require('mocha')
+describe("TransactionsTest1", () => {
   let tokenSaleInstance;
   let tokenInstance;
   let tokenPrice = 1000000000000000000n; // in wei
@@ -17,11 +17,11 @@ describe("DappTokenSale", () => {
     admin = adminSigner;
     buyer = buyerSigner;
 
-    const DappToken = await ethers.getContractFactory("DappToken");
-    const DappTokenSale = await ethers.getContractFactory("DappTokenSale");
+    const FossaToken = await ethers.getContractFactory("FossaToken");
+    const Transactions = await ethers.getContractFactory("Transactions");
 
-    tokenInstance = await DappToken.deploy(1000000); // Deploy your DappToken contract with an initial supply
-    tokenSaleInstance = await DappTokenSale.deploy(tokenInstance.target, tokenPrice);
+    tokenInstance = await FossaToken.deploy(1000000); // Deploy your FossaToken contract with an initial supply
+    tokenSaleInstance = await Transactions.deploy(tokenInstance.target, tokenPrice);
   });
 
   it("should allow a user to purchase tokens", async () => {

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { ethers } from "ethers";
 import Loading from "./Loading";
 import ProgressLabel from "./Progress";
+import ThreeModel from "./ThreeModel";
 const BuyTokens = ({ fossaToken, transactions, price, provider, sold }) => {
   const [loading, setLoading] = useState(false);
   const [TokenPrice, setTokenPrice] = useState("");
@@ -123,6 +124,7 @@ const BuyTokens = ({ fossaToken, transactions, price, provider, sold }) => {
             tokenSupply={tokenSupply}
           />
         </div>
+        <ThreeModel/>
       </div>
     </div>
   );
