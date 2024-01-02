@@ -64,40 +64,41 @@ const Swap = ({ transactions, fossaToken, provider, price }) => {
   };
 
   return (
-    <div className="container">
-      <div className="row">
-        <div className="col-md-8">
-          <p>Transactions:</p>
-          <form onSubmit={swap}>
-            <input
-              type="text"
-              id="tokensExchange"
-              className="form-control"
-              placeholder="TokensExchange"
-              required
-              value={tokensExchange}
-              onChange={updateTokensValue}
-            />
-            <br />
-            <span className="float-right ">Balance: {tokensValue} wei</span>
-            <br />
-            <input
-              type="text"
-              id="etherExchange"
-              className="form-control"
-              placeholder="0"
-              value={tokensValue}
-              disabled
-            />
-            <br />
-            <button type="submit" className="btn btn-primary">
-              Wymień
-            </button>
-            {loading && <Loading />}
-          </form>
-        </div>
+    <div className="container-fluid">
+    <div className="row justify-content-center">
+      <div className="col-md-4 offset-md-6">
+        <p className="text-center">Wymień:</p>
+        <form onSubmit={swap} className="text-center">
+          <input
+            type="text"
+            id="tokensExchange"
+            className="form-control"
+            placeholder="TokensExchange"
+            required
+            value={tokensExchange}
+            onChange={updateTokensValue}
+          />
+          <br />
+          <span>Balans: {tokensValue}</span>
+          <br />
+          <input
+            type="text"
+            id="etherExchange"
+            className="form-control"
+            placeholder="0"
+            value={tokensValue}
+            disabled
+          />
+          <br />
+          <button type="submit" className="btn btn-primary">
+            Wymień
+          </button>
+          {loading && <Loading />}
+        </form>
       </div>
     </div>
+  </div>
+  
   );
 };
 export default Swap;

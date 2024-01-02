@@ -3,12 +3,10 @@ import { ethers } from "ethers";
 import FossaToken from "../contracts/FossaToken.json";
 import Transactions from "../contracts/Transactions.json";
 import Transfers from "../contracts/Transfers.json";
-//import AirDrop from "../contracts/AirDrop.json";
 import contractAddress from "../contracts/contract-address.json";
 import BuyTokens from "./BuyTokens";
 import Swap from "./Swap";
 import Transfer from "./Transfer";
-//import AirDropToken from "./AirDrop";
 import LoadLogo from "./LoadLogo";
 
 const LoadBlockchainData = (addressProvider) => {
@@ -23,7 +21,7 @@ const LoadBlockchainData = (addressProvider) => {
   const [transfers, setTransfers] = useState();
   const [logoState, setLogoState] = useState(false);
   const [tokenSupply, setTokenSupply] = useState();
- // const [airDrop, setAirDrop] = useState();
+  // const [airDrop, setAirDrop] = useState();
   useEffect(() => {
     async function loadBlockchainData() {
       try {
@@ -56,17 +54,9 @@ const LoadBlockchainData = (addressProvider) => {
               signer
             );
 
-            // const addressAirDrop = contractAddress.AirDrop;
-            // const abiAirDrop = AirDrop.abi;
-            // const airDropContract = new ethers.Contract(
-            //   addressAirDrop,
-            //   abiAirDrop,
-            //   signer
-            // );
             setTransfers(transfersContract);
             setTransactions(transactionsContract);
             setFossaToken(fossaTokenContract);
-           // setAirDrop(airDropContract);
           } else {
             window.alert(
               "Smart contracts not deployed to the detected network."
@@ -106,7 +96,6 @@ const LoadBlockchainData = (addressProvider) => {
       setTransactionsPrice(transactions.price());
       setTokensSold(transactions.purchased());
       setTokenSupply(fossaToken.totalSupply());
- 
     }
   }, [transactions, addressProvider]);
 
@@ -126,18 +115,19 @@ const LoadBlockchainData = (addressProvider) => {
         sold={TokensSold}
         tokenSupply={tokenSupply}
       />
-      <Swap
-        transactions={transactions}
-        fossaToken={fossaToken}
-        provider={AddressSigner}
-        price={transactionsPrice}
-      />
+
       <Transfer
         transfers={transfers}
         fossaToken={fossaToken}
         provider={AddressSigner}
       />
 
+      <Swap
+        transactions={transactions}
+        fossaToken={fossaToken}
+        provider={AddressSigner}
+        price={transactionsPrice}
+      />
     </>
   );
 };

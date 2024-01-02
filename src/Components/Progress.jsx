@@ -2,15 +2,15 @@ import React from "react";
 import ProgressBar from "react-bootstrap/ProgressBar";
 import "../App.css";
 
-const ProgressLabel = ({ tokensSold, tokensAvailable, tokenSupply }) => {
+const ProgressLabel = ({ tokensSold, tokenSupply }) => {
   const valuePercentage = (tokensSold / tokenSupply) * 100;
 
   return (
-    <div className="progress-label">
-      <div className="progress-label-text">
+    <div className="row align-items-center justify-content-center min-vh-10">
+      <div className="col-md-10 col-lg-8 col-xl-6">
         Obecnie sprzedano: {valuePercentage}%
+        <ProgressBar now={valuePercentage} />
       </div>
-      <ProgressBar now={valuePercentage} />
     </div>
   );
 };

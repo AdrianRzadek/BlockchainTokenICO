@@ -74,8 +74,8 @@
       ]
     },
     "C:\\Users\\adria\\Documents\\GitHub\\Dapp\\contracts\\Transfers.sol": {
-      "lastModificationDate": 1703853946581,
-      "contentHash": "c8d55e872e6568649c7e3d4b6357bf27",
+      "lastModificationDate": 1704220182919,
+      "contentHash": "aee06d19af47a0da3c32f7d6990440f3",
       "sourceName": "contracts/Transfers.sol",
       "solcConfig": {
         "version": "0.8.23",

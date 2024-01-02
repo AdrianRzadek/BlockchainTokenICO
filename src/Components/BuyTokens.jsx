@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { ethers } from "ethers";
 import Loading from "./Loading";
 import ProgressLabel from "./Progress";
-
+import "../App.css";
 const BuyTokens = ({ fossaToken, transactions, price, provider, sold }) => {
   const [loading, setLoading] = useState(false);
   const [TokenPrice, setTokenPrice] = useState("");
@@ -91,17 +91,17 @@ const BuyTokens = ({ fossaToken, transactions, price, provider, sold }) => {
 
   return (
     <div>
-      <div className="container">
-        <div className="row">
-          <div className="col-md-8">
-            <p>Current Account: {AddressProvider}</p>
-            Token Sale Details
-            <h2>Token Sale</h2>
-            <p>Token Price: {TokenPrice}</p>
-            <p>Token Supply: {tokenSupply}</p>
-            <p>Token Sold:{TokensSold} </p>
-            <p>Tokens Available: {tokensAvailable}</p>
-            Buy Tokens Form
+       <div className="container-fluid text-center">
+      <div className="row align-items-center justify-content-center min-vh-10">
+        <div className="col-md-5">
+            <p>Obecnie podłączone konto: {AddressProvider}</p>
+            
+            <h2>Żeton FOSSA ICO</h2>
+            <p>Cena żetonu: {TokenPrice}</p>
+            <p>Całkowita ilość żetonów: {tokenSupply}</p>
+            {/* <p>Sprzedano: {TokensSold}</p> */}
+            <p>Dostępne żetony: {tokensAvailable}</p>
+            Kup
             <form onSubmit={buyTokens}>
               <div className="form-group">
                 <input
@@ -112,6 +112,7 @@ const BuyTokens = ({ fossaToken, transactions, price, provider, sold }) => {
                   required
                 />
               </div>
+              <br/>
               <button type="submit" className="btn btn-primary">
                 Buy Tokens
               </button>

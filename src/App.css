@@ -1,7 +1,6 @@
-
-
 .App {
-  text-align: center;
+
+  color:#ffffff;
 
 }
 .Background{
@@ -13,10 +12,8 @@
   z-index: -1; 
   background-color: #ffffff;
 }
-.zindex{
-  z-index: 2;
-}
 .LoadingScreen{
+  text-align: center;
   position: fixed;
   top: 0;
   left: 0;
@@ -29,11 +26,6 @@
   color: white;
   z-index: 1;
 
-}
-.vanta { 
-  min-height: 100%;
-  padding: 20px;
-  font-size: 24px;
 }
 
 .loading-container {
@@ -57,11 +49,15 @@
   margin-top: -25px;
   text-align: center;
 }
+.spinner-border {
+  color:red;
+ 
+}
 
 /* Add any additional styles for the spinner or its container here */
 
 html, body {
-  margin: 0;
+
   color:#ffffff;
   
 }

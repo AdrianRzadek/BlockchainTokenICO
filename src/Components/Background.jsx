@@ -1,17 +1,13 @@
-import React, { useEffect, useRef, useState } from "react";
-import * as THREE from "three";
-import NET from "vanta/dist/vanta.net.min";
+import React, { useEffect, useRef } from "react";
 import anime from "animejs/lib/anime.es.js";
 import "../App.css";
 
 const Background = () => {
-  const [vantaEffect, setVantaEffect] = useState(null);
-  const myRef = useRef(null);
-  const combinedCanvasRef = useRef(null);
+  const canvasRef = useRef(null);
   const ctxRef = useRef(null);
 
   const initCombinedAnimation = () => {
-    const c = combinedCanvasRef.current;
+    const c = canvasRef.current;
     const ctx = c.getContext("2d");
     ctxRef.current = ctx;
 
@@ -36,6 +32,7 @@ const Background = () => {
       document.addEventListener("touchstart", handleEvent);
       document.addEventListener("mousedown", handleEvent);
     }
+
     function handleEvent(e) {
       if (!ctxRef.current) return;
 
@@ -140,7 +137,6 @@ const Background = () => {
     };
 
     function handleEvent(e) {
-      // Check if ctx is still valid before using it
       if (!ctxRef.current) return;
 
       const currentColor = ctxRef.current.fillStyle;
@@ -240,6 +236,7 @@ const Background = () => {
       if (this.stroke) {
         ctxRef.current.strokeStyle = this.stroke.color;
         ctxRef.current.lineWidth = this.stroke.width;
+       
         ctxRef.current.stroke();
       }
       if (this.fill) {
@@ -265,31 +262,13 @@ const Background = () => {
   };
 
   useEffect(() => {
-    if (!vantaEffect) {
-      setVantaEffect(
-        NET({
-          el: myRef.current,
-          THREE: THREE,
-          backgroundColor: 0x00000000,
-          zIndex: 1,
-        })
-      );
-    }
-    return () => {
-      if (vantaEffect) vantaEffect.destroy();
-    };
-  }, [vantaEffect]);
-
-  useEffect(() => {
-    if (vantaEffect) {
-      initCombinedAnimation();
-    }
-  }, [vantaEffect]);
+    initCombinedAnimation();
+  }, []);
 
   return (
-    <div ref={myRef} className="Background">
+    <div className="Background">
       <canvas
-        ref={combinedCanvasRef}
+        ref={canvasRef}
         style={{ position: "absolute", top: 0, left: 0, zIndex: 3 }}
       ></canvas>
     </div>

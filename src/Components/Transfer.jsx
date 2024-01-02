@@ -6,9 +6,8 @@ const Transfer = ({ transfers, fossaToken, provider }) => {
   const [loading, setLoading] = useState(false);
 
   const addressSigner = provider && provider.addressProvider;
-  //console.log(addressSigner)
+
   const transfersTarget = transfers && transfers.target;
-  //console.log(transfersTarget);
 
   const transfer = async (event) => {
     setLoading(true);
@@ -19,7 +18,7 @@ const Transfer = ({ transfers, fossaToken, provider }) => {
     console.log(addressSigner);
     console.log(reciver);
     await fossaToken.approve(transfersTarget, value);
-    await transfers.sendTransaction(reciver, value, {
+    await transfers.transfer(reciver, value, {
       from: await addressSigner,
       value: value,
       gas: 200000000,
@@ -28,35 +27,42 @@ const Transfer = ({ transfers, fossaToken, provider }) => {
   };
 
   return (
-    <div className="container">
-      <div className="row">
-        <div className="col-md-8">
-          <p>Transactions:</p>
-          <form onSubmit={transfer}>
+   
+    <div className="container-fluid">
+       <br/><br/>
+    <div className="row justify-content-left">
+      <div className="col-md-4 text-center offset-md-1">
+        <p>Transfer:</p>
+        <form onSubmit={transfer}>
+          <div className="form-group">
             <input
               type="text"
               id="reciver"
               className="form-control"
-              placeholder="Address of reciver"
+              placeholder="Adres odbiorcy"
               required
             />
-
+          </div>
+          <br />
+          <div className="form-group">
             <input
               type="text"
               id="amount"
               className="form-control"
-              placeholder="Amount of Tokens"
+              placeholder="Ilość żetonów"
               required
             />
-
-            <button type="submit" className="btn btn-primary">
-              Wyślij
-            </button>
-            {loading && <Loading />}
-          </form>
-        </div>
+          </div>
+          <br />
+          <button type="submit" className="btn btn-primary">
+            Wyślij
+          </button>
+          {loading && <Loading />}
+        </form>
       </div>
     </div>
+  </div>
+  
   );
 };
 
