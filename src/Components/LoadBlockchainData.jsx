@@ -103,8 +103,8 @@ const LoadBlockchainData = (addressProvider) => {
   useEffect(() => {
     if (transactions || transfers) {
       setAddressSigner(addressProvider);
-      setTransactionsPrice(transactions.tokenPrice());
-      setTokensSold(transactions.tokensSold());
+      setTransactionsPrice(transactions.price());
+      setTokensSold(transactions.purchased());
       setTokenSupply(fossaToken.totalSupply());
  
     }
@@ -137,11 +137,7 @@ const LoadBlockchainData = (addressProvider) => {
         fossaToken={fossaToken}
         provider={AddressSigner}
       />
-      {/* <AirDropToken
-        airDrop={airDrop}
-        transactions={transactions}
-        provider={AddressSigner}
-      /> */}
+
     </>
   );
 };

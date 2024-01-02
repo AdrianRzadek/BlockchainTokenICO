@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { ethers } from "ethers";
 import Loading from "./Loading";
 import ProgressLabel from "./Progress";
-import ThreeModel from "./ThreeModel";
+
 const BuyTokens = ({ fossaToken, transactions, price, provider, sold }) => {
   const [loading, setLoading] = useState(false);
   const [TokenPrice, setTokenPrice] = useState("");
@@ -14,7 +14,7 @@ const BuyTokens = ({ fossaToken, transactions, price, provider, sold }) => {
   useEffect(() => {
     async function fetchData() {
       if (price) {
-        const price = await transactions.tokenPrice();
+        const price = await transactions.price();
         setTokenPrice(await price.toString());
       }
     }
@@ -25,7 +25,7 @@ const BuyTokens = ({ fossaToken, transactions, price, provider, sold }) => {
   useEffect(() => {
     async function fetchData() {
       if (sold) {
-        const tokensSold = await transactions.tokensSold();
+        const tokensSold = await transactions.purchased();
         await setTokensSold(await tokensSold.toString());
       }
     }
@@ -72,7 +72,7 @@ const BuyTokens = ({ fossaToken, transactions, price, provider, sold }) => {
       console.log("address signer " + AddressProvider);
       const value = tokenPrice * numberOfTokensBigInt;
       console.log(value);
-      const txBuy = await transactions.buyTokens(numberOfTokensBigInt, {
+      const txBuy = await transactions.purchase(numberOfTokensBigInt, {
         address: await AddressProvider,
         value: value,
         gasLimit: 2000000,
@@ -124,7 +124,6 @@ const BuyTokens = ({ fossaToken, transactions, price, provider, sold }) => {
             tokenSupply={tokenSupply}
           />
         </div>
-        <ThreeModel/>
       </div>
     </div>
   );

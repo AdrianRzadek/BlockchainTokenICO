@@ -1,8 +1,6 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.23;
 
-import "hardhat/console.sol";
-
 contract FossaToken {
     // Name of the token
     string public name = "FossaToken";
@@ -13,103 +11,109 @@ contract FossaToken {
     // Decimals of the token
     uint8 public constant decimals = 0;
     // Total supply of the token
-    uint256 public totalSupply ;
+    uint256 public totalSupply;
     // Owner of the contract
     address public owner;
+  
 
-     // Event emitted when tokens are transferred
-    event Transfer(
-        address indexed _from,
-        address indexed _to,
-        uint256 _value
-    );
-
-    // Event emitted when an approval is made
+    // Event emitted when tokens are transferred
+    event Transfer(address indexed _from, address indexed _to, uint256 _value);
     event Approval(
         address indexed _owner,
         address indexed _spender,
         uint256 _value
     );
 
-    // Mapping of token balances for each address
     mapping(address => uint256) public balanceOf;
-    // Mapping of allowances for each address
     mapping(address => mapping(address => uint256)) public allowance;
 
-    // Constructor
-    constructor(uint256 _initialSupply) {
-        balanceOf[msg.sender] = _initialSupply;
-        totalSupply = _initialSupply;
-        // Assign the contract deployer as the owner
-        owner = msg.sender;
+    modifier onlyOwner() {
+        require(msg.sender == owner, "Only the owner can call this function");
+        _;
     }
 
-    /**
-     * Transfer tokens from the sender's address to the specified address.
-     * @param _to The address to transfer tokens to.
-     * @param _value The amount of tokens to transfer.
-     * @return Returns true if the transfer is successful, otherwise false.
-     */
+    constructor(uint256 supply) {
+        owner = msg.sender;
+        balanceOf[owner] = supply;
+        totalSupply = supply;
+        
+    }
+
     function transfer(address _to, uint256 _value) public returns (bool) {
         require(balanceOf[msg.sender] >= _value, "Insufficient balance");
+        _transfer(msg.sender, _to, _value);
+        return true;
+    }
 
-        balanceOf[msg.sender] -= _value;
+    function _transfer(address _from, address _to, uint256 _value) internal {
+        require(_to != address(0), "Invalid recipient address");
+
+        balanceOf[_from] -= _value;
         balanceOf[_to] += _value;
 
-        emit Transfer(msg.sender, _to, _value);
-        return true;
+        emit Transfer(_from, _to, _value);
     }
+function approve(address _spender, uint256 _value) public returns (bool) {
+    require(_spender != address(0), "Invalid spender address");
 
-    /**
-     * Approve the specified address to spend the sender's tokens.
-     * @param _spender The address to approve.
-     * @param _value The amount of tokens to approve.
-     * @return Returns true if the approval is successful, otherwise false.
-     */
-    function approve(address _spender, uint256 _value) public returns (bool) {
-        require(_spender != address(0), "Invalid spender address");
+    // Ensure the allowance is set to a non-negative value
+    require(_value >= 0, "Negative allowance not allowed");
 
+    // If allowance was previously set, handle decrease in a gas-efficient way
+    if (_value < allowance[msg.sender][_spender]) {
+        allowance[msg.sender][_spender] = _value;
+    } else if (_value > allowance[msg.sender][_spender]) {
+        // If allowance is increased, update the allowance and emit Approval event
         allowance[msg.sender][_spender] = _value;
         emit Approval(msg.sender, _spender, _value);
-        return true;
     }
 
-    /**
-     * Transfer tokens from one address to another.
-     * @param _from The address to transfer tokens from.
-     * @param _to The address to transfer tokens to.
-     * @param _value The amount of tokens to transfer.
-     * @return Returns true if the transfer is successful, otherwise false.
-     */
+    return true;
+}
+
     function transferFrom(
         address _from,
         address _to,
         uint256 _value
     ) public returns (bool) {
-        require(_value <= balanceOf[_from]);
-        require(_value <= allowance[_from][msg.sender], "Allowance is not big enough");
+          // Ensure the transfer amount is non-zero
+    require(_value > 0, "Transfer amount must be greater than zero");
 
-        balanceOf[_from] -= _value;
-        balanceOf[_to] += _value;
+    // Ensure the source account has sufficient balance
+    require( balanceOf[_from] >= _value, "Insufficient balance");
+
+    // Ensure the allowance is set to a non-negative value
+    require(allowance[_from][msg.sender] >= _value, "Allowance is not big enough");
+
+    // Check for overflow or underflow in balance adjustment
+    require(balanceOf[_to] + _value > balanceOf[_to], "Overflow in destination balance");
+
+    // Check for overflow in allowance adjustment
+    require(allowance[_from][msg.sender] - _value <= allowance[_from][msg.sender], "Underflow in allowance");
+
 
         allowance[_from][msg.sender] -= _value;
 
-        emit Transfer(_from, _to, _value);
+        _transfer(_from, _to, _value);
+
+
         return true;
     }
 
-    /**
-     * Mint new tokens and update the balance of the specified address.
-     * Only the contract owner (or another authorized entity) can mint new tokens.
-     * @param to The address to mint tokens to.
-     * @param amount The amount of tokens to mint.
-     */
-    function mint(address to, uint256 amount) public {
-        require(msg.sender == owner, "Only owner can mint");
-        require(amount > 0, "Mint amount must be greater than zero");
-
-        balanceOf[to] += amount;
-
-        emit Transfer(address(0), to, amount);
+    // Owner can mint new tokens
+    function mint(uint256 _amount) public onlyOwner {
+        require(_amount > 0, "Minted amount must be greater than zero");
+        totalSupply += _amount;
+        balanceOf[owner] += _amount;
+        emit Transfer(address(0), owner, _amount);
     }
+
+    // Owner can transfer ownership
+    function transferOwnership(address newOwner) public onlyOwner {
+        require(newOwner != address(0), "Invalid new owner address");
+        owner = newOwner;
+    }
+
+     receive() external payable {}
+      fallback() external payable {}
 }

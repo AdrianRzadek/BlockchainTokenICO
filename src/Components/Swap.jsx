@@ -9,7 +9,7 @@ const Swap = ({ transactions, fossaToken, provider, price }) => {
   useEffect(() => {
     async function fetchData() {
       if (price) {
-        const price = await transactions.tokenPrice();
+        const price = await transactions.price();
         setTokenPrice(await price.toString());
       }
     }
@@ -49,7 +49,7 @@ const Swap = ({ transactions, fossaToken, provider, price }) => {
         gas: 20000000,
       });
 
-      const txSell = await transactions.sellTokens(value, {
+      const txSell = await transactions.swap(value, {
         from: await addressSigner,
         value: value,
         gas: 20000000,
