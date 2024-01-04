@@ -10,52 +10,58 @@ const LoadLogo = ({ target, symbol, decimals, logoState }) => {
   useEffect(() => {
     const loadLogo = async () => {
       try {
-        if (
-          target !== undefined &&
-          symbol !== undefined &&
-          decimals !== undefined
-        ) {
-          const Symbol = await symbol;
-          const Decimals = await decimals;
-          const Target = await target;
-          const DecimalsInt = Number(Decimals);
+        const isFirstVisit = sessionStorage.getItem("firstVisit") !== "true";
 
-          setTokenAdded(localStorage.getItem("tokenAdded") === "true");
-          setStoredTokenAddress(localStorage.getItem("tokenAddress"));
-
+        if (isFirstVisit) {
           if (
-            Symbol !== undefined &&
-            !isNaN(DecimalsInt) &&
-            Target !== undefined
+            target !== undefined &&
+            symbol !== undefined &&
+            decimals !== undefined
           ) {
-            if (!tokenAdded || storedTokenAddress !== Target) {
-              const wasAdded = await window.ethereum.request({
-                method: "wallet_watchAsset",
-                params: {
-                  type: "ERC20",
-                  options: {
-                    address: Target,
-                    symbol: Symbol,
-                    decimals: DecimalsInt,
-                    image: tokenImage,
-                  },
-                },
-              });
+            const Symbol = await symbol;
+            const Decimals = await decimals;
+            const Target = await target;
+            const DecimalsInt = Number(Decimals);
 
-              if (wasAdded) {
-                console.log("Thanks for your interest!");
-                localStorage.clear();
-                localStorage.setItem("tokenAdded", "true");
-                localStorage.setItem("tokenAddress", target);
-              } else {
-                console.log("Your loss!");
-                return;
+            setTokenAdded(localStorage.getItem("tokenAdded") === "true");
+            setStoredTokenAddress(localStorage.getItem("tokenAddress"));
+
+            if (
+              Symbol !== undefined &&
+              !isNaN(DecimalsInt) &&
+              Target !== undefined
+            ) {
+              if (!tokenAdded || storedTokenAddress !== Target) {
+                const wasAdded = await window.ethereum.request({
+                  method: "wallet_watchAsset",
+                  params: {
+                    type: "ERC20",
+                    options: {
+                      address: Target,
+                      symbol: Symbol,
+                      decimals: DecimalsInt,
+                      image: tokenImage,
+                    },
+                  },
+                });
+
+                if (wasAdded) {
+                  console.log("Thanks for your interest!");
+                  localStorage.setItem("tokenAdded", "true");
+                  localStorage.setItem("tokenAddress", target);
+                } else {
+                  console.log("Your loss!");
+                  return;
+                }
               }
+            } else {
+              console.log(
+                "Token already added or the user was previously prompted."
+              );
             }
-          } else {
-            console.log(
-              "Token already added or the user was previously prompted."
-            );
+
+            // Set the session variable to indicate the user has visited the site
+            sessionStorage.setItem("firstVisit", "true");
           }
         }
       } catch (error) {
@@ -63,6 +69,7 @@ const LoadLogo = ({ target, symbol, decimals, logoState }) => {
       }
     };
 
+    // Call loadLogo on each entry to the site
     loadLogo();
   }, [logoState]);
 

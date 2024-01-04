@@ -97,28 +97,31 @@ const BuyTokens = ({ fossaToken, transactions, price, provider, sold }) => {
             <p>Obecnie podłączone konto: {AddressProvider}</p>
             
             <h2>Żeton FOSSA ICO</h2>
-            <p>Cena żetonu: {TokenPrice}</p>
+            <p>Cena żetonu: {TokenPrice} Wei</p>
             <p>Całkowita ilość żetonów: {tokenSupply}</p>
             {/* <p>Sprzedano: {TokensSold}</p> */}
             <p>Dostępne żetony: {tokensAvailable}</p>
-            Kup
+          <p>Zakup</p>  
+            
             <form onSubmit={buyTokens}>
               <div className="form-group">
                 <input
                   type="number"
                   id="numberOfTokens"
                   className="form-control"
-                  placeholder="Number of Tokens"
+                  placeholder="Ilość żetonów"
                   required
                 />
               </div>
               <br/>
               <button type="submit" className="btn btn-primary">
-                Buy Tokens
+                Kup
               </button>
               {loading && <Loading />}
             </form>
+            <br/>
           </div>
+
           <ProgressLabel
             tokensSold={TokensSold}
             tokensAvailable={tokensAvailable}
