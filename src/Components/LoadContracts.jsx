@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import { ethers } from "ethers";
 import FossaToken from "../contracts/FossaToken.json";
 import Transactions from "../contracts/Transactions.json";
-import Transfers from "../contracts/Transfers.json";
 import contractAddress from "../contracts/contract-address.json";
 import Purchase from "./Purchase";
 import Swap from "./Swap";
@@ -18,7 +17,6 @@ const LoadContracts = (addressProvider) => {
   const [transactionsPrice, setTransactionsPrice] = useState();
   const [AddressSigner, setAddressSigner] = useState();
   const [TokensSold, setTokensSold] = useState();
-  const [transfers, setTransfers] = useState();
   const [logoState, setLogoState] = useState(false);
   const [Supply, setSupply] = useState();
 
@@ -29,7 +27,7 @@ const LoadContracts = (addressProvider) => {
           const provider = new ethers.BrowserProvider(window.ethereum);
           const signer = await provider.getSigner();
 
-          if (Transactions && FossaToken && Transfers) {
+          if (Transactions && FossaToken) {
             const addressTransactions = contractAddress.Transactions;
             const abiTransactions = Transactions.abi;
             const transactionsContract = new ethers.Contract(
@@ -46,15 +44,7 @@ const LoadContracts = (addressProvider) => {
               signer
             );
 
-            const addressTransfers = contractAddress.Transfers;
-            const abiTransfers = Transfers.abi;
-            const transfersContract = new ethers.Contract(
-              addressTransfers,
-              abiTransfers,
-              signer
-            );
-
-            setTransfers(transfersContract);
+           
             setTransactions(transactionsContract);
             setFossaToken(fossaTokenContract);
           } else {
@@ -91,7 +81,7 @@ const LoadContracts = (addressProvider) => {
   }, [fossaToken]);
 
   useEffect(() => {
-    if (transactions || transfers) {
+    if (transactions ) {
       setAddressSigner(addressProvider);
       setTransactionsPrice(transactions.price());
       setTokensSold(transactions.purchased());
@@ -117,7 +107,7 @@ const LoadContracts = (addressProvider) => {
       />
 
       <Transfer
-        transfers={transfers}
+       transactions={transactions}
         fossaToken={fossaToken}
         provider={AddressSigner}
       />

@@ -2,12 +2,12 @@ import React, { useState } from "react";
 import { ethers } from "ethers";
 import Loading from "./Loading";
 
-const Transfer = ({ transfers, fossaToken, provider }) => {
+const Transfer = ({ transactions, fossaToken, provider }) => {
   const [loading, setLoading] = useState(false);
 
   const addressSigner = provider && provider.addressProvider;
 
-  const transfersTarget = transfers && transfers.target;
+  const transactionsTarget = transactions && transactions.target;
 
   const transfer = async (event) => {
     setLoading(true);
@@ -17,8 +17,8 @@ const Transfer = ({ transfers, fossaToken, provider }) => {
     const value = await ethers.toBigInt(amount);
     console.log(addressSigner);
     console.log(reciver);
-    await fossaToken.approve(transfersTarget, value);
-    await transfers.transfer(reciver, value, {
+    await fossaToken.approve(transactionsTarget, value);
+    await transactions.transfer(reciver, value, {
       from: await addressSigner,
       value: value,
       gas: 200000000,

@@ -23,12 +23,9 @@ async function main() {
   //Token transfer to sale contract
   await fossaToken.transfer(transactions.target, "1000");
 
-  const Transfers = await ethers.getContractFactory("Transfers");
-  const transfers = await Transfers.deploy(fossaToken.target);
-  await transfers.waitForDeployment();
-  console.log("Transfers address:", transfers.target);
 
-  saveClientFiles(fossaToken, transactions, transfers);
+
+  saveClientFiles(fossaToken, transactions);
 
   const signers = await ethers.getSigners();
 
@@ -40,7 +37,7 @@ async function main() {
   fs.writeFileSync("src/contracts/wallet-address.json", serializedAddresses);
 }
 
-function saveClientFiles(fossaToken, transactions, transfers) {
+function saveClientFiles(fossaToken, transactions) {
   const contractsDir = path.join(__dirname, "..", "src", "contracts");
 
   if (!fs.existsSync(contractsDir)) {
@@ -50,7 +47,6 @@ function saveClientFiles(fossaToken, transactions, transfers) {
   const contractAddresses = {
     FossaToken: fossaToken.target,
     Transactions: transactions.target,
-    Transfers: transfers.target,
   };
 
   fs.writeFileSync(
@@ -60,7 +56,6 @@ function saveClientFiles(fossaToken, transactions, transfers) {
 
   const FossaTokenArtifact = artifacts.readArtifactSync("FossaToken");
   const TransactionsArtifact = artifacts.readArtifactSync("Transactions");
-  const TransfersArtifact = artifacts.readArtifactSync("Transfers");
 
   fs.writeFileSync(
     path.join(contractsDir, "FossaToken.json"),
@@ -70,10 +65,7 @@ function saveClientFiles(fossaToken, transactions, transfers) {
     path.join(contractsDir, "Transactions.json"),
     JSON.stringify(TransactionsArtifact, null, 2)
   );
-  fs.writeFileSync(
-    path.join(contractsDir, "Transfers.json"),
-    JSON.stringify(TransfersArtifact, null, 2)
-  );
+
 }
 
 main()
