@@ -2,22 +2,25 @@
 pragma solidity ^0.8.23;
 
 contract FossaToken {
+
+    // Owner of the contract
+    address public owner;
     // Name of the token
     string public name = "FossaToken";
     // Symbol of the token
     string public symbol = "FOSSA";
-    // Standard of the token
-    string public standard = "FossaToken v1.0";
     // Decimals of the token
     uint8 public constant decimals = 0;
     // Total supply of the token
     uint256 public totalSupply;
-    // Owner of the contract
-    address public owner;
+  
   
 
     // Event emitted when tokens are transferred
-    event Transfer(address indexed _from, address indexed _to, uint256 _value);
+    event Transfer(
+        address indexed _from,
+     address indexed _to, 
+     uint256 _value);
     event Approval(
         address indexed _owner,
         address indexed _spender,

@@ -2,79 +2,79 @@ const { ethers } = require("hardhat");
 const { expect } = require("chai");
 const {before} = require('mocha')
 describe("FossaTokenTest2", function () {
-  let tokenInstance;
+  let FossaTokenContract
   let accounts;
   before(async function () {
     accounts = await ethers.getSigners();
     const FossaToken = await ethers.getContractFactory("FossaToken");
-    tokenInstance = await FossaToken.deploy(1000000);
+    FossaTokenContract = await FossaToken.deploy(1000000);
     
   });
-  it("sets total supply and allocates initial supply", async function () {
-    const totalSupply = await tokenInstance.totalSupply();
+  it("Test sprawdza zaopatrzenie", async function () {
+    const totalSupply = await FossaTokenContract.totalSupply();
     expect(totalSupply).to.equal(1000000);
   
-    const adminBalance = await tokenInstance.balanceOf(accounts[0].address);
+    const adminBalance = await FossaTokenContract.balanceOf(accounts[0].address);
     expect(adminBalance).to.equal(1000000);
   });
   
-  it("transfers token ownership", async function () {
+  it("Test sprawdza poprawnośc transferu do właściciela", async function () {
     try {
-      await tokenInstance.transfer(accounts[0].address, 99999999n);
+      await FossaTokenContract.transfer(accounts[0].address, 99999999n);
       expect.fail("The transaction should have failed");
     } catch (error) {
       expect(error.message).to.include("revert");
     }
   
-    const transferSuccess = await tokenInstance.transfer(accounts[1].address, 250000n);
+    const transferSuccess = await FossaTokenContract.transfer(accounts[1].address, 250000n);
     await transferSuccess.wait();
   
-    const recipientBalance = await tokenInstance.balanceOf(accounts[1].address);
+    const recipientBalance = await FossaTokenContract.balanceOf(accounts[1].address);
     expect(recipientBalance).to.equal(250000n);
   
-    const senderBalance = await tokenInstance.balanceOf(accounts[0].address);
+    const senderBalance = await FossaTokenContract.balanceOf(accounts[0].address);
     expect(senderBalance).to.equal(750000n);
   });
   
-  it("approves tokens for delegated transfer", async function () {
-    const approvalSuccess = await tokenInstance.approve(accounts[1].address, 100);
+  it("Test sprawdza funkcję zatwierdzenia", async function () {
+    const approvalSuccess = await FossaTokenContract.approve(accounts[1].address, 100);
     await approvalSuccess.wait();
   
-    const allowance = await tokenInstance.allowance(accounts[0].address, accounts[1].address);
+    const allowance = await FossaTokenContract.allowance(accounts[0].address, accounts[1].address);
     expect(allowance).to.equal(100);
   });
   
-  it("handles delegated token transfers", async function () {
+  it("Test sprawdza scenariusz transakcji", async function () {
     const fromAccount = accounts[2];
     const toAccount = accounts[3];
     const spendingAccount = accounts[4];
-    await tokenInstance.connect(accounts[0]).transfer(fromAccount.address, 100);
+    await FossaTokenContract.connect(accounts[0]).transfer(fromAccount.address, 100);
 
-    await tokenInstance.connect(fromAccount).approve(spendingAccount.address, 10);
+    await FossaTokenContract.connect(fromAccount).approve(spendingAccount.address, 10);
     
     try {
-        await tokenInstance.connect(spendingAccount).transferFrom(fromAccount.address, toAccount.address, 9999);
+        await FossaTokenContract.connect(spendingAccount).transferFrom(fromAccount.address, toAccount.address, 9999);
         expect.fail("The transaction should have failed due to insufficient balance");
     } catch (error) {
         expect(error.message).to.include("revert");
     }
 
     try {
-        await tokenInstance.connect(spendingAccount).transferFrom(fromAccount.address, toAccount.address, 20);
+        await FossaTokenContract.connect(spendingAccount).transferFrom(fromAccount.address, toAccount.address, 20);
         expect.fail("The transaction should have failed due to exceeding allowance");
     } catch (error) {
         expect(error.message).to.include("revert");
     }
 
-    await tokenInstance.connect(spendingAccount).transferFrom(fromAccount.address, toAccount.address, 10);
+    await FossaTokenContract.connect(spendingAccount).transferFrom(fromAccount.address, toAccount.address, 10);
 
-    const recipientBalance = await tokenInstance.balanceOf(toAccount.address);
+    const recipientBalance = await FossaTokenContract.balanceOf(toAccount.address);
     expect(recipientBalance.toString()).to.equal("10");
 
-    const senderBalance = await tokenInstance.balanceOf(fromAccount.address);
+    const senderBalance = await FossaTokenContract.balanceOf(fromAccount.address);
     expect(senderBalance.toString()).to.equal("90");
 
-    const allowance = await tokenInstance.allowance(fromAccount.address, spendingAccount.address);
+    const allowance = await FossaTokenContract.allowance(fromAccount.address, spendingAccount.address);
     expect(allowance.toString()).to.equal("0");
 });
 

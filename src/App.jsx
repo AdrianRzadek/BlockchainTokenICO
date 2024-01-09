@@ -1,7 +1,7 @@
 import React from "react";
 import "./App.css";
 import 'bootstrap/dist/css/bootstrap.min.css';
-import LoadWeb3 from "./Components/LoadWeb3";
+import Web3Status from "./Components/Web3Status";
 
 function App() {
 
@@ -9,7 +9,7 @@ function App() {
     <div className="App">
 
         
-      <LoadWeb3 />  
+      <Web3Status/>  
 
 
      

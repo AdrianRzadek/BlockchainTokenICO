@@ -3,43 +3,43 @@ import { ethers } from "ethers";
 import Loading from "./Loading";
 import ProgressLabel from "./Progress";
 import "../App.css";
-const BuyTokens = ({ fossaToken, transactions, price, provider, sold }) => {
+const Purchase = ({ fossaToken, transactions, price, provider, sold }) => {
   const [loading, setLoading] = useState(false);
-  const [TokenPrice, setTokenPrice] = useState("");
-  const [TokensSold, setTokensSold] = useState("");
-  const [tokensAvailable, setTokensAvailable] = useState("");
+  const [Price, setPrice] = useState("");
+  const [SoldAmount, setSoldAmount] = useState("");
+  const [Available, setAvailable] = useState("");
   const [AddressProvider, setAddressProvider] = useState("");
-  const [tokenSupply, setTokenSupply] = useState("");
+  const [Supply, setSupply] = useState("");
 
   useEffect(() => {
     async function fetchData() {
       if (price) {
         const price = await transactions.price();
-        setTokenPrice(await price.toString());
+        setPrice(await price.toString());
       }
     }
 
     fetchData();
-  }, [price, TokenPrice, transactions]);
+  }, [price, Price, transactions]);
 
   useEffect(() => {
     async function fetchData() {
       if (sold) {
-        const tokensSold = await transactions.purchased();
-        await setTokensSold(await tokensSold.toString());
+        const Sold = await transactions.purchased();
+        await setSoldAmount(await Sold.toString());
       }
     }
 
     fetchData();
-  }, [sold, TokensSold, transactions]);
+  }, [sold, SoldAmount, transactions]);
 
   useEffect(() => {
     async function fetchData() {
       if (fossaToken) {
-        const tokensAvailable = await fossaToken.balanceOf(transactions.target);
-        setTokensAvailable(await tokensAvailable.toString());
+        const Available = await fossaToken.balanceOf(transactions.target);
+        setAvailable(await Available.toString());
         const tokensSupply = await fossaToken.totalSupply();
-        setTokenSupply(await tokensSupply.toString());
+        setSupply(await tokensSupply.toString());
       }
     }
     fetchData();
@@ -55,31 +55,30 @@ const BuyTokens = ({ fossaToken, transactions, price, provider, sold }) => {
     fetchData();
   }, [provider]);
 
-  const buyTokens = async (event) => {
+  const purchase = async (event) => {
     event.preventDefault();
     setLoading(true);
     try {
-      const numberOfTokens = event.target.numberOfTokens.value;
-      const numberOfTokensBigInt = ethers.toBigInt(numberOfTokens);
+      const amount = event.target.amount.value;
+      const amountBigInt = ethers.toBigInt(amount);
       console.log("Buy Tokens Info:");
-      const tokenPrice = await ethers.toBigInt(TokenPrice);
+      const priceBigInt = await ethers.toBigInt(Price);
 
-      console.log(await tokenPrice);
-      console.log(await numberOfTokensBigInt);
+      console.log(await priceBigInt);
+      console.log(await amountBigInt);
 
-      console.log("Value: " + numberOfTokensBigInt * tokenPrice);
-      console.log("Number of Tokens: " + numberOfTokensBigInt);
+      console.log("Value: " + amountBigInt * priceBigInt);
+      console.log("Number of Tokens: " + amountBigInt);
       console.log("address signer " + AddressProvider);
-      const value = tokenPrice * numberOfTokensBigInt;
+      const value = priceBigInt * amountBigInt;
       console.log(value);
-      const txBuy = await transactions.purchase(numberOfTokensBigInt, {
+      const txBuy = await transactions.purchase(amountBigInt, {
         address: await AddressProvider,
         value: value,
         gasLimit: 2000000,
       });
       txBuy.wait();
 
-      //this.setState({ loading: false, numberOfTokens: 0 });
       setLoading(false);
     } catch (error) {
       console.error(error);
@@ -97,17 +96,16 @@ const BuyTokens = ({ fossaToken, transactions, price, provider, sold }) => {
             <p>Obecnie podłączone konto: {AddressProvider}</p>
             
             <h2>Żeton FOSSA ICO</h2>
-            <p>Cena żetonu: {TokenPrice} Wei</p>
-            <p>Całkowita ilość żetonów: {tokenSupply}</p>
-            {/* <p>Sprzedano: {TokensSold}</p> */}
-            <p>Dostępne żetony: {tokensAvailable}</p>
+            <p>Cena żetonu: {Price} Wei</p>
+            <p>Całkowita ilość żetonów: {Supply}</p>
+            <p>Dostępne żetony: {Available}</p>
           <p>Zakup</p>  
             
-            <form onSubmit={buyTokens}>
+            <form onSubmit={purchase}>
               <div className="form-group">
                 <input
                   type="number"
-                  id="numberOfTokens"
+                  id="amount"
                   className="form-control"
                   placeholder="Ilość żetonów"
                   required
@@ -123,9 +121,8 @@ const BuyTokens = ({ fossaToken, transactions, price, provider, sold }) => {
           </div>
 
           <ProgressLabel
-            tokensSold={TokensSold}
-            tokensAvailable={tokensAvailable}
-            tokenSupply={tokenSupply}
+            soldAmount={SoldAmount}
+            supply={Supply}
           />
         </div>
       </div>
@@ -133,4 +130,4 @@ const BuyTokens = ({ fossaToken, transactions, price, provider, sold }) => {
   );
 };
 
-export default BuyTokens;
+export default Purchase;

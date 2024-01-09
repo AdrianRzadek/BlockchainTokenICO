@@ -88,7 +88,7 @@ const LoadingScreen = ({ loadingInfo }) => {
   useEffect(() => {
     const myP5 = new p5(sketch);
     return () => {
-      // Cleanup logic, if needed
+
       myP5.remove();
     };
   }, [sketch]);

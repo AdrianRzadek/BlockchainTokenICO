@@ -1,16 +1,16 @@
 import React, { useEffect, useState } from "react";
 import { ethers } from "ethers";
 import LoadingScreen from "./LoadingScreen";
-import LoadBlockchainData from "./LoadBlockchainData";
+import LoadContracts from "./LoadContracts";
 import Background from "./Background";
 
-const LoadWeb3 = () => {
+const Web3Status = () => {
   const [addressProvider, setAddressProvider] = useState("");
   const [isLoading, setIsLoading] = useState(true);
   const [loadingInfo, setLoadingInfo] = useState("Ładowanie danych");
 
   useEffect(() => {
-    const loadWeb3 = async () => {
+    const web3Status = async () => {
       //Sprawdza jakie konto jest podpięte przenieść niżej
       const checkAccountChange = () => {
         window.ethereum.on("accountsChanged", (accounts) => {
@@ -43,7 +43,7 @@ const LoadWeb3 = () => {
         setIsLoading(true);
       }
     };
-    loadWeb3();
+    web3Status();
   }, []);
 
   console.log(addressProvider);
@@ -52,11 +52,11 @@ const LoadWeb3 = () => {
   } else {
     return (
       <>
-        <LoadBlockchainData addressProvider={addressProvider} />
+        <LoadContracts addressProvider={addressProvider} />
         <Background />
       </>
     );
   }
 };
 
-export default LoadWeb3;
+export default Web3Status;

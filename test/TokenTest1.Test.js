@@ -2,22 +2,22 @@ const { ethers } = require("hardhat");
 const { expect } = require("chai");
 const {before} = require('mocha')
 describe("FossaTokenTest1", function () {
-  let tokenInstance;
+  let FossaTokenContract;
  
   before(async function () {
    
     const FossaToken = await ethers.getContractFactory("FossaToken");
-    tokenInstance = await FossaToken.deploy(1000000);
+    FossaTokenContract = await FossaToken.deploy(1000000);
     
   });
   
   
 
-  it("should initialize the contract with correct values", async () => {
-    const name = await tokenInstance.name();
-    const symbol = await tokenInstance.symbol();
-    const decimals = await tokenInstance.decimals();
-    const totalSupply = await tokenInstance.totalSupply();
+  it("Test sprawdza poprawność podstawowych wartości tokenu", async () => {
+    const name = await FossaTokenContract.name();
+    const symbol = await FossaTokenContract.symbol();
+    const decimals = await FossaTokenContract.decimals();
+    const totalSupply = await FossaTokenContract.totalSupply();
 
     expect(name).to.equal("FossaToken");
     expect(symbol).to.equal("FOSSA");
@@ -25,39 +25,39 @@ describe("FossaTokenTest1", function () {
     expect(totalSupply).to.equal(1000000n);
   });
 
-  it("should transfer tokens", async () => {
+  it("Test sprawdza funkcję transfer", async () => {
     const [sender, receiver] = await ethers.getSigners();
     const amount = 100n;
 
-    const balanceBeforeSender = await tokenInstance.balanceOf(sender.address);
-    const balanceBeforeReceiver = await tokenInstance.balanceOf(receiver.address);
+    const balanceBeforeSender = await FossaTokenContract.balanceOf(sender.address);
+    const balanceBeforeReceiver = await FossaTokenContract.balanceOf(receiver.address);
 
-    await tokenInstance.connect(sender).transfer(receiver.address, amount);
+    await FossaTokenContract.connect(sender).transfer(receiver.address, amount);
 
-    const balanceAfterSender = await tokenInstance.balanceOf(sender.address);
-    const balanceAfterReceiver = await tokenInstance.balanceOf(receiver.address);
+    const balanceAfterSender = await FossaTokenContract.balanceOf(sender.address);
+    const balanceAfterReceiver = await FossaTokenContract.balanceOf(receiver.address);
 
     expect(balanceBeforeSender -(amount)).to.equal(balanceAfterSender);
     expect(balanceBeforeReceiver +(amount)).to.equal(balanceAfterReceiver);
   });
 
-  it("should approve and transferFrom tokens", async () => {
+  it("Test sprawdza funkcje approve i transferFrom ", async () => {
     const [owner, spender, receiver] = await ethers.getSigners();
     const amount =50n;
 
-    const balanceOwnerBefore = await tokenInstance.balanceOf(owner.address);
-    const balanceReceiverBefore = await tokenInstance.balanceOf(receiver.address);
+    const balanceOwnerBefore = await FossaTokenContract.balanceOf(owner.address);
+    const balanceReceiverBefore = await FossaTokenContract.balanceOf(receiver.address);
 
-    await tokenInstance.connect(owner).approve(spender.address, amount);
-    const allowanceBefore = await tokenInstance.allowance(owner.address, spender.address);
+    await FossaTokenContract.connect(owner).approve(spender.address, amount);
+    const allowanceBefore = await FossaTokenContract.allowance(owner.address, spender.address);
 
     expect(allowanceBefore).to.equal(amount);
 
-    await tokenInstance.connect(spender).transferFrom(owner.address, receiver.address, amount);
+    await FossaTokenContract.connect(spender).transferFrom(owner.address, receiver.address, amount);
 
-    const allowanceAfter = await tokenInstance.allowance(owner.address, spender.address);
-    const balanceOwnerAfter = await tokenInstance.balanceOf(owner.address);
-    const balanceReceiverAfter = await tokenInstance.balanceOf(receiver.address);
+    const allowanceAfter = await FossaTokenContract.allowance(owner.address, spender.address);
+    const balanceOwnerAfter = await FossaTokenContract.balanceOf(owner.address);
+    const balanceReceiverAfter = await FossaTokenContract.balanceOf(receiver.address);
 
     expect(allowanceAfter).to.equal(0);
     expect(balanceOwnerAfter + (amount)).to.equal(balanceOwnerBefore);

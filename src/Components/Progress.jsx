@@ -2,8 +2,8 @@ import React from "react";
 import ProgressBar from "react-bootstrap/ProgressBar";
 import "../App.css";
 
-const ProgressLabel = ({ tokensSold, tokenSupply }) => {
-  const valuePercentage = (tokensSold / tokenSupply) * 100;
+const ProgressLabel = ({ soldAmount, supply }) => {
+  const valuePercentage = (soldAmount / supply) * 100;
 
   return (
     <div className="row align-items-center justify-content-center min-vh-10">

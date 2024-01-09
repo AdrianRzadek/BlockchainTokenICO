@@ -1,0 +1,26 @@
+@startuml
+
+actor User
+participant Wallet
+participant Browser
+participant HTML
+participant CSS
+participant JavaScript
+participant React
+participant Node
+participant Solidity
+
+User -> Wallet: Wykonuje transakcje
+Wallet -> Browser: Zarządza portfelem
+Browser -> HTML: Renderuje
+Browser -> CSS: Style
+Browser -> JavaScript: Interaktywność
+HTML -> React: Komponuje
+CSS -> React: Komponuje
+JavaScript -> React: Komponuje
+React --> Node: Wysyła dane przez JSON-RPC2.0
+Node -> Solidity: Przetwarza transakcje
+
+
+
+@enduml

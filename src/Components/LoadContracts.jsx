@@ -4,12 +4,12 @@ import FossaToken from "../contracts/FossaToken.json";
 import Transactions from "../contracts/Transactions.json";
 import Transfers from "../contracts/Transfers.json";
 import contractAddress from "../contracts/contract-address.json";
-import BuyTokens from "./BuyTokens";
+import Purchase from "./Purchase";
 import Swap from "./Swap";
 import Transfer from "./Transfer";
 import LoadLogo from "./LoadLogo";
 
-const LoadBlockchainData = (addressProvider) => {
+const LoadContracts = (addressProvider) => {
   const [transactions, setTransactions] = useState();
   const [fossaToken, setFossaToken] = useState();
   const [fossaTokenSymbol, setFossaTokenSymbol] = useState();
@@ -20,10 +20,10 @@ const LoadBlockchainData = (addressProvider) => {
   const [TokensSold, setTokensSold] = useState();
   const [transfers, setTransfers] = useState();
   const [logoState, setLogoState] = useState(false);
-  const [tokenSupply, setTokenSupply] = useState();
-  // const [airDrop, setAirDrop] = useState();
+  const [Supply, setSupply] = useState();
+
   useEffect(() => {
-    async function loadBlockchainData() {
+    async function loadContracts() {
       try {
         if (typeof window.ethereum !== "undefined") {
           const provider = new ethers.BrowserProvider(window.ethereum);
@@ -68,7 +68,7 @@ const LoadBlockchainData = (addressProvider) => {
       }
     }
 
-    loadBlockchainData();
+    loadContracts();
   }, [transactions, fossaToken]);
 
   useEffect(() => {
@@ -95,7 +95,7 @@ const LoadBlockchainData = (addressProvider) => {
       setAddressSigner(addressProvider);
       setTransactionsPrice(transactions.price());
       setTokensSold(transactions.purchased());
-      setTokenSupply(fossaToken.totalSupply());
+      setSupply(fossaToken.totalSupply());
     }
   }, [transactions, addressProvider]);
 
@@ -107,13 +107,13 @@ const LoadBlockchainData = (addressProvider) => {
         symbol={fossaTokenSymbol}
         decimals={fossaTokenDecimals}
       />
-      <BuyTokens
+      <Purchase
         fossaToken={fossaToken}
         transactions={transactions}
         provider={AddressSigner}
         price={transactionsPrice}
         sold={TokensSold}
-        tokenSupply={tokenSupply}
+        supply={Supply}
       />
 
       <Transfer
@@ -132,4 +132,4 @@ const LoadBlockchainData = (addressProvider) => {
   );
 };
 
-export default LoadBlockchainData;
+export default LoadContracts;

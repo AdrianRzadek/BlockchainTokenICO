@@ -2,8 +2,8 @@ const { expect } = require("chai");
 const { ethers } = require("hardhat");
 const { before } = require("mocha");
 describe("TransactionsTest2", () => {
-  let tokenSaleInstance;
-  let tokenInstance;
+  let TransactionsContract;
+  let FossaTokenContract;
   let tokenPrice = 1n; // in wei
   let owner;
   let buyer;
@@ -18,57 +18,57 @@ describe("TransactionsTest2", () => {
     const FossaToken = await ethers.getContractFactory("FossaToken");
     const Transactions = await ethers.getContractFactory("Transactions");
 
-    tokenInstance = await FossaToken.deploy(tokensAvailable); // Deploy your FossaToken contract with an initial supply
-    tokenSaleInstance = await Transactions.deploy(
-      tokenInstance.target,
+    FossaTokenContract = await FossaToken.deploy(tokensAvailable); // Deploy your FossaToken contract with an initial supply
+    TransactionsContract = await Transactions.deploy(
+      FossaTokenContract.target,
       tokenPrice
     );
-    tokenInstance.transfer(tokenSaleInstance.target, amount);
+    FossaTokenContract.transfer(TransactionsContract.target, amount);
   });
 
-  it("Should allow users to purchase tokens", async () => {
+  it("Test sprzedaży ", async () => {
     // Add balance verification, etc. according to your contract's logic and structure
-    const transaction = await tokenSaleInstance
+    const transaction = await TransactionsContract
       .connect(buyer)
-      .buyTokens(numberOfTokens, { value: tokenPrice * numberOfTokens });
+      .purchase(numberOfTokens, { value: tokenPrice * numberOfTokens });
 
-    const tokensSold = await tokenSaleInstance.tokensSold();
+    const tokensSold = await TransactionsContract.purchased();
     expect(tokensSold).to.equal(numberOfTokens);
 
-    const amount = await tokenSaleInstance.tokensSold();
+    const amount = await TransactionsContract.purchased();
     expect(amount).to.equal(numberOfTokens);
 
-    const balance = await tokenInstance.balanceOf(await buyer.getAddress());
+    const balance = await FossaTokenContract.balanceOf(await buyer.getAddress());
     expect(balance).to.equal(numberOfTokens);
   });
 
-  it("should sell tokens and transfer ether to the buyer", async function () {
+  it("Test sprawdza poprawność przesłanych wartości", async function () {
     // Approve the YourTokenSaleContract to spend tokens on behalf of the buyer
-    await tokenInstance
+    await FossaTokenContract
       .connect(owner)
-      .approve(tokenSaleInstance.target, numberOfTokens);
+      .approve(TransactionsContract.target, numberOfTokens);
 
-    const initialBuyerBalance = await tokenInstance.balanceOf(buyer.address);
-    console.log(initialBuyerBalance);
+    const initialBuyerBalance = await FossaTokenContract.balanceOf(buyer.address);
+    //console.log(initialBuyerBalance);
 
-    const initialContractBalance = await tokenInstance.balanceOf(
-      tokenSaleInstance.target
+    const initialContractBalance = await FossaTokenContract.balanceOf(
+      TransactionsContract.target
     );
-    console.log(initialContractBalance);
+   // console.log(initialContractBalance);
 
-    await tokenSaleInstance.connect(owner).sellTokens(numberOfTokens);
+    await TransactionsContract.connect(owner).swap(numberOfTokens);
 
-    const finalBuyerBalance = await tokenInstance.balanceOf(buyer.address);
-    const finalContractBalance = await tokenInstance.balanceOf(
-      tokenSaleInstance.target
+    const finalBuyerBalance = await FossaTokenContract.balanceOf(buyer.address);
+    const finalContractBalance = await FossaTokenContract.balanceOf(
+      TransactionsContract.target
     );
 
     // Check that the ether was transferred to the buyer
     expect(initialBuyerBalance).to.be.equal(finalBuyerBalance);
 
     // Check that the tokens were transferred to the contract
-    const contractTokenBalance = await tokenInstance.balanceOf(
-      tokenSaleInstance.target
+    const contractTokenBalance = await FossaTokenContract.balanceOf(
+      TransactionsContract.target
     );
     expect(contractTokenBalance).to.be.above(numberOfTokens);
 
@@ -77,27 +77,27 @@ describe("TransactionsTest2", () => {
     expect(finalContractBalance).to.equal(expectedContractBalance);
   });
 
-  it("facilitates token buying", async () => {
-    const transaction = await tokenSaleInstance
+  it("Test sprawdza poprawność transakcji", async () => {
+    const transaction = await TransactionsContract
       .connect(buyer)
-      .buyTokens(numberOfTokens, { value: numberOfTokens * tokenPrice });
+      .purchase(numberOfTokens, { value: numberOfTokens * tokenPrice });
     const receipt = await transaction.wait();
 
     expect(receipt.logs.length).to.equal(2);
 
   });
 
-  it("ends token sale", async () => {
-    await expect(tokenSaleInstance.connect(buyer).endSale()).to.be.revertedWith(
+  it("Test sprawdza czy sprzedaż istnieje", async () => {
+    await expect(TransactionsContract.connect(buyer).end()).to.be.revertedWith(
       "Only the admin can call this function"
     );
 
-    const adminBalance = await tokenInstance.balanceOf(
+    const adminBalance = await FossaTokenContract.balanceOf(
       await owner.getAddress()
     );
 
     expect(adminBalance).to.be.lessThanOrEqual(tokensAvailable);
-    const newPrice = await tokenSaleInstance.tokenPrice();
+    const newPrice = await TransactionsContract.price();
     expect(newPrice).to.equal(tokenPrice);
   });
 });

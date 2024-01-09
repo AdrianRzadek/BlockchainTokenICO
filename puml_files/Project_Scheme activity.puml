@@ -1,0 +1,32 @@
+@startuml
+
+!define RECTANGLE activity
+
+|User|
+start
+:Performs Transactions;
+|Wallet|
+:Manages Wallet;
+|Browser|
+:Renders;
+|Browser|
+:Styles;
+|Browser|
+:Interactivity;
+|FrontEnd|
+:Composes;
+|FrontEnd|
+:Composes;
+|FrontEnd|
+:Composes;
+|FrontEnd|
+:Composes;
+|BackEnd|
+:Sends Data;
+|BackEnd|
+:Processes Transactions;
+|SmartContract|
+stop
+
+
+@enduml

@@ -1,0 +1,13 @@
+@startuml
+
+
+SmartContractA -> SmartContractB: interakcja z ContractB
+
+SmartContractB: wykonuje zapytanie
+
+SmartContractB -> SmartContractA: zwraca odpowiedź
+
+SmartContractA: reaguje na odpowiedź
+
+
+@enduml

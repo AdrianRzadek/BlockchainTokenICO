@@ -1,0 +1,6 @@
+@startuml API
+
+Użytkownik->API
+API->JSONRPC2
+JSONRPC2->Node Ethereum
+@enduml

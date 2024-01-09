@@ -6,6 +6,7 @@ import "./FossaToken.sol";
 contract Transactions {
     address payable public admin;
     FossaToken public tokenContract;
+    uint256 public transfersCounter;
     uint256 public price = 1000000000000000;
     uint256 public purchased;
     uint256 public newValue;
@@ -15,7 +16,7 @@ contract Transactions {
     }
     SaleState public saleState = SaleState.Active;
 
-    event Buy(address indexed buyer, uint256 amount);
+    event Buy(address indexed account, uint256 amount);
     event Sell(
         address indexed account,
         address indexed tokenContract,
@@ -41,69 +42,100 @@ contract Transactions {
         // Token price
         price = _price;
     }
-
-    //Zakup tokenów
-    function purchase(uint256 amountOfTokens) external payable saleIsActive {
-        
-        require(
-            amountOfTokens > 0,
-            "Number of tokens must be greater than zero"
-        );
-
-        newValue = amountOfTokens * price;
-
-        require(
-            tokenContract.balanceOf(address(this)) >= amountOfTokens,
-            "Not enough tokens available"
-        );
-        require(msg.value == (newValue), "Incorrect value sent");
-        require(
-            tokenContract.transfer(msg.sender, amountOfTokens),
-            "Token transfer failed"
-        );
-
-        purchased += amountOfTokens;
-        emit Buy(msg.sender, amountOfTokens);
+     struct Transaction {
+        address account;
+        uint256 amountOfTokens;
+        uint256 etherValue;
     }
 
-    // Sell tokens
-  function swap(uint256 amountOfTokens) external payable saleIsActive {
-   
+    function purchase(uint256 amountOfTokens) external payable saleIsActive {
+        Transaction memory transaction = Transaction({
+            account: msg.sender,
+            amountOfTokens: amountOfTokens,
+            etherValue: amountOfTokens * price
+        });
 
-    // Ensure a non-zero amount of tokens is being swapped
-    require(amountOfTokens > 0, "Invalid token amount");
+        _executePurchase(transaction);
+    }
 
-    // Calculate the Ether amount based on the provided price
-    uint256 etherAmount = amountOfTokens * price;
+    function swap(uint256 amountOfTokens) external payable saleIsActive {
+        Transaction memory transaction = Transaction({
+            account: msg.sender,
+            amountOfTokens: amountOfTokens,
+            etherValue: amountOfTokens * price
+        });
 
-    // Check if the sender has enough tokens
-    require(
-        tokenContract.balanceOf(msg.sender) >= amountOfTokens,
-        "Insufficient token balance"
-    );
+        _executeSwap(transaction);
+    }
 
-    // Check if the contract has enough Ether to proceed with the swap
-    require(
-        address(this).balance >= etherAmount,
-        "Insufficient Ether balance in the contract"
-    );
+    function _executePurchase(Transaction memory transaction) private {
+        require(transaction.amountOfTokens > 0, "Number of tokens must be greater than zero");
+        require(tokenContract.balanceOf(address(this)) >= transaction.amountOfTokens, "Not enough tokens available");
+        require(msg.value == transaction.etherValue, "Incorrect value sent");
+        require(tokenContract.transfer(transaction.account, transaction.amountOfTokens), "Token transfer failed");
 
-    // Transfer tokens from the sender to the contract
-    require(
-        tokenContract.transferFrom(msg.sender, address(this), amountOfTokens),
-        "Token transfer failed"
-    );
+        purchased += transaction.amountOfTokens;
+        emit Buy(transaction.account, transaction.amountOfTokens);
+    }
 
-    // Transfer Ether from the contract to the sender
-    (bool success, ) = payable(msg.sender).call{value: etherAmount}("");
-    require(success, "Ether transfer failed");
+    function _executeSwap(Transaction memory transaction) private {
+        require(transaction.amountOfTokens > 0, "Invalid token amount");
+        require(tokenContract.balanceOf(transaction.account) >= transaction.amountOfTokens, "Insufficient token balance");
+        require(address(this).balance >= transaction.etherValue, "Insufficient Ether balance in the contract");
+        require(tokenContract.transferFrom(transaction.account, address(this), transaction.amountOfTokens), "Token transfer failed");
 
-    // Update the purchased variable
-    purchased -= amountOfTokens;
+        (bool success, ) = payable(transaction.account).call{value: transaction.etherValue}("");
+        require(success, "Ether transfer failed");
 
-    // Emit a Sell event
-    emit Sell(msg.sender, address(tokenContract), amountOfTokens);
-}
+        purchased -= transaction.amountOfTokens;
+
+        emit Sell(transaction.account, address(tokenContract), transaction.amountOfTokens);
+    }
+
+
+ struct TransferStruct {
+        address sender;
+        address receiver;
+        uint256 amount;
+    }
+
+    TransferStruct[] public transfers;
+
+    function transfer(
+        address payable _receiver,
+        uint256 _amount
+    ) public payable {
+        transfersCounter += 1;
+
+        // Add the transfer details to the transfers array
+        transfers.push(TransferStruct(msg.sender, _receiver, _amount));
+
+        // Ensure the token transfer is successful
+        require(
+            tokenContract.transferFrom(msg.sender, _receiver, _amount),
+            "Token transfer failed"
+        );
+    }
+
+  
+    function getAllTransactions()
+        public
+        view
+        returns (TransferStruct[] memory)
+    {
+        return transfers;
+    }
+
+
+    function getTransactionsCount() public view returns (uint256) {
+        return transfersCounter;
+    }
+
+    // Fallback function to receive Ether
+    receive() external payable {}
+
+    // Fallback function to receive Ether
+    fallback() external payable {}
 
     // End token sale
     function end() external onlyAdmin {
@@ -131,8 +163,7 @@ contract Transactions {
         admin.transfer(amountOfTokens);
     }
 
-    // Fallback function
-    receive() external payable {}
+
 
     // Circuit Breaker - Emergency stop
     function toggleSaleStatus() external onlyAdmin {
