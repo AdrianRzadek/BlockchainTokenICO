@@ -42,7 +42,8 @@ contract Transactions {
         // Token price
         price = _price;
     }
-     struct Transaction {
+
+    struct Transaction {
         address account;
         uint256 amountOfTokens;
         uint256 etherValue;
@@ -69,10 +70,23 @@ contract Transactions {
     }
 
     function _executePurchase(Transaction memory transaction) private {
-        require(transaction.amountOfTokens > 0, "Number of tokens must be greater than zero");
-        require(tokenContract.balanceOf(address(this)) >= transaction.amountOfTokens, "Not enough tokens available");
+        require(
+            transaction.amountOfTokens > 0,
+            "Number of tokens must be greater than zero"
+        );
+        require(
+            tokenContract.balanceOf(address(this)) >=
+                transaction.amountOfTokens,
+            "Not enough tokens available"
+        );
         require(msg.value == transaction.etherValue, "Incorrect value sent");
-        require(tokenContract.transfer(transaction.account, transaction.amountOfTokens), "Token transfer failed");
+        require(
+            tokenContract.transfer(
+                transaction.account,
+                transaction.amountOfTokens
+            ),
+            "Token transfer failed"
+        );
 
         purchased += transaction.amountOfTokens;
         emit Buy(transaction.account, transaction.amountOfTokens);
@@ -80,20 +94,39 @@ contract Transactions {
 
     function _executeSwap(Transaction memory transaction) private {
         require(transaction.amountOfTokens > 0, "Invalid token amount");
-        require(tokenContract.balanceOf(transaction.account) >= transaction.amountOfTokens, "Insufficient token balance");
-        require(address(this).balance >= transaction.etherValue, "Insufficient Ether balance in the contract");
-        require(tokenContract.transferFrom(transaction.account, address(this), transaction.amountOfTokens), "Token transfer failed");
+        require(
+            tokenContract.balanceOf(transaction.account) >=
+                transaction.amountOfTokens,
+            "Insufficient token balance"
+        );
+        require(
+            address(this).balance >= transaction.etherValue,
+            "Insufficient Ether balance in the contract"
+        );
+        require(
+            tokenContract.transferFrom(
+                transaction.account,
+                address(this),
+                transaction.amountOfTokens
+            ),
+            "Token transfer failed"
+        );
 
-        (bool success, ) = payable(transaction.account).call{value: transaction.etherValue}("");
+        (bool success, ) = payable(transaction.account).call{
+            value: transaction.etherValue
+        }("");
         require(success, "Ether transfer failed");
 
         purchased -= transaction.amountOfTokens;
 
-        emit Sell(transaction.account, address(tokenContract), transaction.amountOfTokens);
+        emit Sell(
+            transaction.account,
+            address(tokenContract),
+            transaction.amountOfTokens
+        );
     }
 
-
- struct TransferStruct {
+    struct TransferStruct {
         address sender;
         address receiver;
         uint256 amount;
@@ -117,7 +150,6 @@ contract Transactions {
         );
     }
 
-  
     function getAllTransactions()
         public
         view
@@ -125,7 +157,6 @@ contract Transactions {
     {
         return transfers;
     }
-
 
     function getTransactionsCount() public view returns (uint256) {
         return transfersCounter;
@@ -142,28 +173,23 @@ contract Transactions {
         require(saleState == SaleState.Active, "The sale is already ended");
 
         // Withdraw remaining tokens to admin
-        require(
-            tokenContract.transfer(
-                admin,
-                tokenContract.balanceOf(address(this))
-            ),
-            "Token transfer to admin failed"
-        );
+        tokenContract.transfer(admin, tokenContract.balanceOf(address(this)));
 
         // Withdraw remaining Ether to admin
-        admin.transfer(address(this).balance);
+        withdrawTokens();
 
         saleState = SaleState.Ended;
         emit SaleEnded();
     }
 
     // Withdraw Ether from the contract
-    function withdrawEther(uint256 amountOfTokens) external onlyAdmin {
-        require(address(this).balance >= amountOfTokens, "Insufficient Ether balance");
-        admin.transfer(amountOfTokens);
+    function withdrawTokens() internal onlyAdmin {
+        require(
+            address(this).balance >= tokenContract.balanceOf(address(this)),
+            "Insufficient Token balance"
+        );
+        admin.transfer(address(this).balance);
     }
-
-
 
     // Circuit Breaker - Emergency stop
     function toggleSaleStatus() external onlyAdmin {
