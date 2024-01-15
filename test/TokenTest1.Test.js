@@ -1,7 +1,7 @@
 const { ethers } = require("hardhat");
 const { expect } = require("chai");
 const {before} = require('mocha')
-describe("FossaTokenTest1", function () {
+describe("FossaTokenTest", function () {
   let FossaTokenContract;
   let accounts
   let owner;  
@@ -38,6 +38,8 @@ describe("FossaTokenTest1", function () {
     expect(decimals).to.equal(0);
     expect(totalSupply).to.equal(1000000n);
   });
+  
+
 
   it("Test sprawdza funkcję transfer", async () => {
 
@@ -50,7 +52,12 @@ describe("FossaTokenTest1", function () {
 
      const balanceBeforeBuyer = await FossaTokenContract.balanceOf(buyer.address);
     const balanceBeforeUser = await FossaTokenContract.balanceOf(user.address);
-
+    try {
+      await FossaTokenContract.transfer(owner.address, 99999999n);
+      expect.fail("The transaction should have failed");
+    } catch (error) {
+      expect(error.message).to.include("revert");
+    }
     await FossaTokenContract.connect(buyer).transfer(user.address, amount);
 
     const balanceAfterBuyer = await FossaTokenContract.balanceOf(buyer.address);
@@ -80,7 +87,7 @@ describe("FossaTokenTest1", function () {
   } catch (error) {
       expect(error.message).to.include("revert");
   }
-  
+
     await FossaTokenContract.connect(spender).transferFrom(owner.address, reciver.address, amount);
 
     const allowanceAfter = await FossaTokenContract.allowance(owner.address, spender.address);

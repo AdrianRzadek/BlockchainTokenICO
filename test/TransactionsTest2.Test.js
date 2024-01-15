@@ -44,7 +44,7 @@ describe("TransactionsTest2", () => {
     expect(balance).to.equal(TokensAmount);
   });
 
-  it("Test sprawdza sprzedaż tokenów przez uzytkownika", async function () {
+  it("Test sprawdza sprzedaż tokenów przez użytkownika", async function () {
     // Approve the YourTokenSaleContract to spend tokens on behalf of the buyer
     await FossaTokenContract.connect(buyer).approve(
       TransactionsContract.target,
