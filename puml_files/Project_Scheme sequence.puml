@@ -1,26 +1,29 @@
-@startuml
+@startuml Projekt_Schema
 
-actor User
-participant Wallet
-participant Browser
+actor Użytkownik
+participant Portfel
+participant Strona_Internetowa
+participant Przeglądarka
 participant HTML
 participant CSS
-participant JavaScript
 participant React
-participant Node
-participant Solidity
+participant Blockchain_Node
+participant Smart_Contract
 
-User -> Wallet: Wykonuje transakcje
-Wallet -> Browser: Zarządza portfelem
-Browser -> HTML: Renderuje
-Browser -> CSS: Style
-Browser -> JavaScript: Interaktywność
-HTML -> React: Komponuje
-CSS -> React: Komponuje
-JavaScript -> React: Komponuje
-React --> Node: Wysyła dane przez JSON-RPC2.0
-Node -> Solidity: Przetwarza transakcje
-
-
+Użytkownik -> Strona_Internetowa: Dokonuje interakcji
+Strona_Internetowa -> Przeglądarka
+Przeglądarka -> HTML: Renderuje
+Przeglądarka -> CSS: Style
+Przeglądarka -> React: Interaktywność
+HTML -> Strona_Internetowa: Komponuje
+CSS -> Strona_Internetowa: Komponuje
+React -> Strona_Internetowa: Komponuje
+Strona_Internetowa -> Portfel: Uruchamia interakcję z portfelem
+Użytkownik -> Portfel: Zarządza portfelem
+Portfel -> Przeglądarka: Wykonuje transakcje
+Przeglądarka <-> Blockchain_Node: Wysyła dane przez JSON-RPC2.0
+Blockchain_Node -> Smart_Contract: Przetwarza transakcje
+Smart_Contract -> Blockchain_Node : Zwraca odpowiedź
+Przeglądarka -> Portfel: Zwraca odpowiedź
 
 @enduml
