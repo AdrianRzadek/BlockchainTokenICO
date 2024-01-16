@@ -31,7 +31,7 @@ contract FossaToken {
     mapping(address => mapping(address => uint256)) public allowance;
 
     modifier onlyOwner() {
-        require(msg.sender == owner, "Only the owner can call this function");
+        require(msg.sender == owner, "Tylko wlasciciel moze wywolac");
         _;
     }
 
@@ -43,13 +43,13 @@ contract FossaToken {
     }
 
     function transfer(address _to, uint256 _value) public returns (bool) {
-        require(balanceOf[msg.sender] >= _value, "Insufficient balance");
+        require(balanceOf[msg.sender] >= _value, "Niewystarczajacy balans konta");
         _transfer(msg.sender, _to, _value);
         return true;
     }
 
     function _transfer(address _from, address _to, uint256 _value) internal {
-        require(_to != address(0), "Invalid recipient address");
+        require(_to != address(0), "Niewlasciwy adres odbiorcy");
 
         balanceOf[_from] -= _value;
         balanceOf[_to] += _value;
@@ -57,10 +57,10 @@ contract FossaToken {
         emit Transfer(_from, _to, _value);
     }
 function approve(address _spender, uint256 _value) public returns (bool) {
-    require(_spender != address(0), "Invalid spender address");
+    require(_spender != address(0), "Niewlasciwy adres wysylajacego");
 
     // Ensure the allowance is set to a non-negative value
-    require(_value >= 0, "Negative allowance not allowed");
+    require(_value >= 0, "Wartosc dozwolonej ilosci nie moze byc ujemna");
 
     // If allowance was previously set, handle decrease in a gas-efficient way
     if (_value < allowance[msg.sender][_spender]) {
@@ -80,19 +80,19 @@ function approve(address _spender, uint256 _value) public returns (bool) {
         uint256 _value
     ) public returns (bool) {
           // Ensure the transfer amount is non-zero
-    require(_value > 0, "Transfer amount must be greater than zero");
+    require(_value > 0, "Wartosc transferu musi byc wieksza od zera");
 
     // Ensure the source account has sufficient balance
-    require( balanceOf[_from] >= _value, "Insufficient balance");
+    require( balanceOf[_from] >= _value, "Niwystarczajacy balans konta");
 
     // Ensure the allowance is set to a non-negative value
-    require(allowance[_from][msg.sender] >= _value, "Allowance is not big enough");
+    require(allowance[_from][msg.sender] >= _value, "Dozwolona ilosc nie jest wystarczajaco duza");
 
     // Check for overflow or underflow in balance adjustment
-    require(balanceOf[_to] + _value > balanceOf[_to], "Overflow in destination balance");
+    require(balanceOf[_to] + _value > balanceOf[_to], "Sprawdza czy wartosc moze zostac dodana do konta docelowego");
 
     // Check for overflow in allowance adjustment
-    require(allowance[_from][msg.sender] - _value <= allowance[_from][msg.sender], "Underflow in allowance");
+    require(allowance[_from][msg.sender] - _value <= allowance[_from][msg.sender], "Dozwolona ilosc jest za mala");
 
 
         allowance[_from][msg.sender] -= _value;
@@ -103,20 +103,12 @@ function approve(address _spender, uint256 _value) public returns (bool) {
         return true;
     }
 
-    // Owner can mint new tokens
-    function mint(uint256 _amount) public onlyOwner {
-        require(_amount > 0, "Minted amount must be greater than zero");
-        totalSupply += _amount;
-        balanceOf[owner] += _amount;
-        emit Transfer(address(0), owner, _amount);
-    }
-
     // Owner can transfer ownership
     function transferOwnership(address newOwner) public onlyOwner {
-        require(newOwner != address(0), "Invalid new owner address");
+        require(newOwner != address(0), "Nieprawidlowy adres ");
         owner = newOwner;
     }
 
      receive() external payable {}
-      fallback() external payable {}
+     fallback() external payable {}
 }

@@ -25,12 +25,12 @@ contract Transactions {
     event SaleEnded();
 
     modifier onlyAdmin() {
-        require(msg.sender == admin, "Only the admin can call this function");
+        require(msg.sender == admin, "Tylko wlasciel moze wywolac");
         _;
     }
 
     modifier saleIsActive() {
-        require(saleState == SaleState.Active, "The sale is not active");
+        require(saleState == SaleState.Active, "Sprzedaz nie aktywna");
         _;
     }
 
@@ -72,20 +72,20 @@ contract Transactions {
     function _executePurchase(Transaction memory transaction) private {
         require(
             transaction.amountOfTokens > 0,
-            "Number of tokens must be greater than zero"
+            "Liczba tokenow musi byc wieksza od zera"
         );
         require(
             tokenContract.balanceOf(address(this)) >=
                 transaction.amountOfTokens,
-            "Not enough tokens available"
+            "Nie wystarczajaca ilosc tokenow"
         );
-        require(msg.value == transaction.etherValue, "Incorrect value sent");
+        require(msg.value == transaction.etherValue, "Wyslano nieporawna wartosc");
         require(
             tokenContract.transfer(
                 transaction.account,
                 transaction.amountOfTokens
             ),
-            "Token transfer failed"
+            "Transfer nie udany"
         );
 
         purchased += transaction.amountOfTokens;
@@ -93,15 +93,15 @@ contract Transactions {
     }
 
     function _executeSwap(Transaction memory transaction) private {
-        require(transaction.amountOfTokens > 0, "Invalid token amount");
+        require(transaction.amountOfTokens > 0, "Liczba tokenow musi byc wieksza niz 0");
         require(
             tokenContract.balanceOf(transaction.account) >=
                 transaction.amountOfTokens,
-            "Insufficient token balance"
+            "Niwystarczajacy balans tokenow"
         );
         require(
             address(this).balance >= transaction.etherValue,
-            "Insufficient Ether balance in the contract"
+            "Niewystarczajaca ilosc Etheru na koncie"
         );
         require(
             tokenContract.transferFrom(
@@ -109,13 +109,13 @@ contract Transactions {
                 address(this),
                 transaction.amountOfTokens
             ),
-            "Token transfer failed"
+            "Transfer tokenow nieudany"
         );
 
         (bool success, ) = payable(transaction.account).call{
             value: transaction.etherValue
         }("");
-        require(success, "Ether transfer failed");
+        require(success, "Transfer Etheru nieudany");
 
         purchased -= transaction.amountOfTokens;
 
@@ -146,7 +146,7 @@ contract Transactions {
         // Ensure the token transfer is successful
         require(
             tokenContract.transferFrom(msg.sender, _receiver, _amount),
-            "Token transfer failed"
+            "Transfer tokenu nieudany"
         );
     }
 
@@ -170,7 +170,7 @@ contract Transactions {
 
     // End token sale
     function end() external onlyAdmin {
-        require(saleState == SaleState.Active, "The sale is already ended");
+        require(saleState == SaleState.Active, "Sprzedaz sie skonczyla");
 
         // Withdraw remaining tokens to admin
         tokenContract.transfer(admin, tokenContract.balanceOf(address(this)));
@@ -186,7 +186,7 @@ contract Transactions {
     function withdrawTokens() internal onlyAdmin {
         require(
             address(this).balance >= tokenContract.balanceOf(address(this)),
-            "Insufficient Token balance"
+            "Niwystarczajacy balans tokenow"
         );
         admin.transfer(address(this).balance);
     }

@@ -54,14 +54,12 @@
  
 }
 
-/* Add any additional styles for the spinner or its container here */
 
 html, body {
 
   color:#ffffff;
   
 }
-
 
 canvas {
   display: block;

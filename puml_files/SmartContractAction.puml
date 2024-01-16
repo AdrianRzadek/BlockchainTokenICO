@@ -1,4 +1,4 @@
-@startuml
+@startuml SmartContractAction
 
 
 SmartContractA -> SmartContractB: interakcja z ContractB

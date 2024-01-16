@@ -1,6 +1,6 @@
 {
   
-  "name": "client",
+  "name": "fossatoken",
   "version": "0.1.0",
   "private": true,
   "main": "hardhat.config.js",
