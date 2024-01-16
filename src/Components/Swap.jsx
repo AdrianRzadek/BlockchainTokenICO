@@ -73,7 +73,7 @@ const Swap = ({ transactions, fossaToken, provider, price }) => {
             type="text"
             id="tokensExchange"
             className="form-control"
-            placeholder="TokensExchange"
+            placeholder="Wymień"
             required
             value={tokensExchange}
             onChange={updateTokensValue}

@@ -13,7 +13,7 @@ const Background = () => {
 
     let cH;
     let cW;
-    let bgColor = "#FF6138";
+    let bgColor = "#FFAA00";
     let animations = [];
 
     function resizeCanvas() {
@@ -112,7 +112,7 @@ const Background = () => {
     }
 
     const colorPicker = (function () {
-      var colors = ["#FF6138", "#FFBE53", "#2980B9", "#282741"];
+      var colors = ["#FFAA00", "#FF9E00", "#FF9100", "#FF8500"];
       var index = 0;
       function next() {
         index = index++ < colors.length - 1 ? index : 0;

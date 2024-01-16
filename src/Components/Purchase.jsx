@@ -95,7 +95,7 @@ const Purchase = ({ fossaToken, transactions, price, provider, sold }) => {
         <div className="col-md-5">
             <p>Obecnie podłączone konto: {AddressProvider}</p>
             
-            <h2>Żeton FOSSA ICO</h2>
+            <h2>Żeton FOSSA</h2>
             <p>Cena żetonu: {Price} Wei</p>
             <p>Całkowita ilość żetonów: {Supply}</p>
             <p>Dostępne żetony: {Available}</p>
