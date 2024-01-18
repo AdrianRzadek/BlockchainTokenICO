@@ -10,11 +10,11 @@ contract Transactions {
     uint256 public price = 1000000000000000;
     uint256 public purchased;
     uint256 public newValue;
-    enum SaleState {
+    enum IcoState {
         Active,
         Ended
     }
-    SaleState public saleState = SaleState.Active;
+    IcoState public icoState = IcoState.Active;
 
     event Buy(address indexed account, uint256 amount);
     event Sell(
@@ -22,15 +22,12 @@ contract Transactions {
         address indexed tokenContract,
         uint256 amount
     );
-    event SaleEnded();
+    event IcoEnded();
 
-    modifier onlyAdmin() {
-        require(msg.sender == admin, "Tylko wlasciel moze wywolac");
-        _;
-    }
+  
 
-    modifier saleIsActive() {
-        require(saleState == SaleState.Active, "Sprzedaz nie aktywna");
+    modifier icoIsActive() {
+        require(icoState == IcoState.Active, "Sprzedaz nie aktywna");
         _;
     }
 
@@ -49,7 +46,7 @@ contract Transactions {
         uint256 etherValue;
     }
 
-    function purchase(uint256 amountOfTokens) external payable saleIsActive {
+    function purchase(uint256 amountOfTokens) external payable icoIsActive {
         Transaction memory transaction = Transaction({
             account: msg.sender,
             amountOfTokens: amountOfTokens,
@@ -59,7 +56,7 @@ contract Transactions {
         _executePurchase(transaction);
     }
 
-    function swap(uint256 amountOfTokens) external payable saleIsActive {
+    function swap(uint256 amountOfTokens) external payable icoIsActive {
         Transaction memory transaction = Transaction({
             account: msg.sender,
             amountOfTokens: amountOfTokens,
@@ -138,10 +135,9 @@ contract Transactions {
         address payable _receiver,
         uint256 _amount
     ) public payable {
-        transfersCounter += 1;
 
         // Add the transfer details to the transfers array
-        transfers.push(TransferStruct(msg.sender, _receiver, _amount));
+        TransferStruct(msg.sender, _receiver, _amount);
 
         // Ensure the token transfer is successful
         require(
@@ -150,17 +146,7 @@ contract Transactions {
         );
     }
 
-    function getAllTransactions()
-        public
-        view
-        returns (TransferStruct[] memory)
-    {
-        return transfers;
-    }
-
-    function getTransactionsCount() public view returns (uint256) {
-        return transfersCounter;
-    }
+ 
 
     // Fallback function to receive Ether
     receive() external payable {}
@@ -168,36 +154,8 @@ contract Transactions {
     // Fallback function to receive Ether
     fallback() external payable {}
 
-    // End token sale
-    function end() external onlyAdmin {
-        require(saleState == SaleState.Active, "Sprzedaz sie skonczyla");
 
-        // Withdraw remaining tokens to admin
-        tokenContract.transfer(admin, tokenContract.balanceOf(address(this)));
 
-        // Withdraw remaining Ether to admin
-        withdrawTokens();
-
-        saleState = SaleState.Ended;
-        emit SaleEnded();
-    }
-
-    // Withdraw Ether from the contract
-    function withdrawTokens() internal onlyAdmin {
-        require(
-            address(this).balance >= tokenContract.balanceOf(address(this)),
-            "Niwystarczajacy balans tokenow"
-        );
-        admin.transfer(address(this).balance);
-    }
-
-    // Circuit Breaker - Emergency stop
-    function toggleSaleStatus() external onlyAdmin {
-        saleState = (saleState == SaleState.Active)
-            ? SaleState.Ended
-            : SaleState.Active;
-        if (saleState == SaleState.Active) {
-            emit SaleEnded();
-        }
-    }
+   
+    
 }

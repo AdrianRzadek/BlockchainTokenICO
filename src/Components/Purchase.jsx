@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { ethers } from "ethers";
+import { Transaction, ethers } from "ethers";
 import Loading from "./Loading";
 import ProgressLabel from "./Progress";
 import "../App.css";
@@ -123,6 +123,7 @@ const Purchase = ({ fossaToken, transactions, price, provider, sold }) => {
           <ProgressLabel
             soldAmount={SoldAmount}
             supply={Supply}
+          
           />
         </div>
       </div>

@@ -2,8 +2,13 @@ import React from "react";
 import ProgressBar from "react-bootstrap/ProgressBar";
 import "../App.css";
 
-const ProgressLabel = ({ soldAmount, supply }) => {
+const ProgressLabel = ({ soldAmount, supply, transactions }) => {
   const valuePercentage = (soldAmount / supply) * 100;
+
+  if (valuePercentage === 100) {
+  
+    return (<div>Zakończono sprzedaż</div>);
+  }
 
   return (
     <div className="row align-items-center justify-content-center min-vh-10">

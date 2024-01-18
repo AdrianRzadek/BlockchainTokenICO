@@ -30,10 +30,7 @@ contract FossaToken {
     mapping(address => uint256) public balanceOf;
     mapping(address => mapping(address => uint256)) public allowance;
 
-    modifier onlyOwner() {
-        require(msg.sender == owner, "Tylko wlasciciel moze wywolac");
-        _;
-    }
+ 
 
     constructor(uint256 supply) {
         owner = msg.sender;
@@ -103,11 +100,6 @@ function approve(address _spender, uint256 _value) public returns (bool) {
         return true;
     }
 
-    // Owner can transfer ownership
-    function transferOwnership(address newOwner) public onlyOwner {
-        require(newOwner != address(0), "Nieprawidlowy adres ");
-        owner = newOwner;
-    }
 
      receive() external payable {}
      fallback() external payable {}

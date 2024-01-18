@@ -1,13 +1,13 @@
 require("@nomicfoundation/hardhat-toolbox");
 require("ethers");
-// Load dotenv to read environment variables from a .env file
+// Ładuje dotenv do odczytania zmiennej środowsikowej pliku .env 
 require('dotenv').config();
 
  module.exports = {
-  defaultNetwork: "localhost", // Set localhost as the default network
+  defaultNetwork: "localhost", 
   networks: {
     localhost: {
-      url: "http://localhost:8545", // URL of your local Ethereum node
+      url: "http://localhost:8545", // lokalny node Ethereum 
       accounts: {
         mnemonic: process.env.MNEMONIC , 
         path: "m/44'/60'/0'/0",

@@ -34,8 +34,7 @@ const Swap = ({ transactions, fossaToken, provider, price }) => {
     event.preventDefault();
     console.log(price);
     const addressSigner = (await provider) && provider.addressSigner;
-    const amount =
-      ethers.toBigInt(tokensExchange) * ethers.toBigInt(TokenPrice);
+    const amount = ethers.toBigInt(tokensExchange) * ethers.toBigInt(TokenPrice);
     console.log(tokensExchange);
     console.log(amount);
     const value = ethers.toBigInt(tokensExchange);
@@ -65,40 +64,39 @@ const Swap = ({ transactions, fossaToken, provider, price }) => {
 
   return (
     <div className="container-fluid">
-    <div className="row justify-content-center">
-      <div className="col-md-4 offset-md-6">
-        <p className="text-center">Wymień:</p>
-        <form onSubmit={swap} className="text-center">
-          <input
-            type="text"
-            id="tokensExchange"
-            className="form-control"
-            placeholder="Wymień"
-            required
-            value={tokensExchange}
-            onChange={updateTokensValue}
-          />
-          <br />
-          <span>Balans: {tokensValue}</span>
-          <br />
-          <input
-            type="text"
-            id="etherExchange"
-            className="form-control"
-            placeholder="0"
-            value={tokensValue}
-            disabled
-          />
-          <br />
-          <button type="submit" className="btn btn-primary">
-            Wymień
-          </button>
-          {loading && <Loading />}
-        </form>
+      <div className="row justify-content-center">
+        <div className="col-md-4 offset-md-6">
+          <p className="text-center">Wymień:</p>
+          <form onSubmit={swap} className="text-center">
+            <input
+              type="text"
+              id="tokensExchange"
+              className="form-control"
+              placeholder="Wymień"
+              required
+              value={tokensExchange}
+              onChange={updateTokensValue}
+            />
+            <br />
+            <span>Balans: {tokensValue}</span>
+            <br />
+            <input
+              type="text"
+              id="etherExchange"
+              className="form-control"
+              placeholder="0"
+              value={tokensValue}
+              disabled
+            />
+            <br />
+            <button type="submit" className="btn btn-primary">
+              Wymień
+            </button>
+            {loading && <Loading />}
+          </form>
+        </div>
       </div>
     </div>
-  </div>
-  
   );
 };
 export default Swap;
