@@ -81,7 +81,9 @@ describe("TransactionsTest2", () => {
     const ownerBalance = await FossaTokenContract.balanceOf(
       await owner.getAddress()
     );
+    const icoState = await TransactionsContract.icoState();
 
+    expect(icoState).to.equal(0);
     expect(ownerBalance).to.be.lessThanOrEqual(Available);
   });
 });

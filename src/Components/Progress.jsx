@@ -2,7 +2,7 @@ import React from "react";
 import ProgressBar from "react-bootstrap/ProgressBar";
 import "../App.css";
 
-const ProgressLabel = ({ soldAmount, supply, transactions }) => {
+const ProgressLabel = ({ soldAmount, supply }) => {
   const valuePercentage = (soldAmount / supply) * 100;
 
   if (valuePercentage === 100) {

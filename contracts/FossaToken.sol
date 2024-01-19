@@ -102,9 +102,7 @@ contract FossaToken {
 
         return true;
     }
-    //Funkcja zwracania żetonu
-    receive() external payable {}
 
-    //Funkcja wycofania
-    fallback() external payable {}
+    // Funkcja obsługuje przekazanie Etheru do kontraktu
+    receive() external payable {}
 }

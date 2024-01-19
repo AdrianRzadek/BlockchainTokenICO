@@ -23,7 +23,7 @@ contract Transactions {
         uint256 amount
     );
     //Stan sprzedazy
-    event IcoEnded();
+    event IcoEnded(address indexed admin);
 
     modifier icoIsActive() {
         require(icoState == IcoState.Active, "Sprzedaz nie aktywna");
@@ -153,9 +153,8 @@ contract Transactions {
         );
     }
 
-    // Funkcja zwracania etheru
+    // Funkcja obsługuje przekazanie Etheru do kontraktu
     receive() external payable {}
 
-    // Funkcja wycofania
-    fallback() external payable {}
+   
 }
