@@ -49,12 +49,12 @@ const LoadContracts = (addressProvider) => {
             setFossaToken(fossaTokenContract);
           } else {
             window.alert(
-              "Smart contracts not deployed to the detected network."
+              "Brak kontraktów w sieci."
             );
           }
         }
       } catch (error) {
-        console.error("Error loading blockchain data:", error);
+        console.error("Błąd:", error);
       }
     }
 

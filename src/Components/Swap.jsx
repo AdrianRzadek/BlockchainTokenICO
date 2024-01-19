@@ -55,9 +55,9 @@ const Swap = ({ transactions, fossaToken, provider, price }) => {
       });
       txSell.wait();
       setLoading(false);
-      console.log("Tokens approved and sold successfully!");
+      console.log("Sprzedano");
     } catch (error) {
-      console.error("Error during token approval and sale:", error);
+      console.error("Błąd:", error);
       setLoading(false);
     }
   };
@@ -90,7 +90,7 @@ const Swap = ({ transactions, fossaToken, provider, price }) => {
             />
             <br />
             <button type="submit" className="btn btn-primary">
-              Wymień
+              Sprzedaj
             </button>
             {loading && <Loading />}
           </form>

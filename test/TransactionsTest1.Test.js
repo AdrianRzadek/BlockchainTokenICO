@@ -18,7 +18,7 @@ describe("TransactionsTest1", () => {
     const FossaToken = await ethers.getContractFactory("FossaToken");
     const Transactions = await ethers.getContractFactory("Transactions");
 
-    FossaTokenContract = await FossaToken.deploy(1000000); // Deploy your FossaToken contract with an initial supply
+    FossaTokenContract = await FossaToken.deploy(Available); // Zaopatrzenie kontraktu w tokeny
     TransactionsContract = await Transactions.deploy(
       FossaTokenContract.target,
       Price
@@ -43,18 +43,16 @@ describe("TransactionsTest1", () => {
       await buyer.getAddress()
     );
 
-    // Transfer tokens to the token sale contract
+    // Transfer tokenów na kontrakt transakcji
     await FossaTokenContract.transfer(TransactionsContract.target, Available);
-    //sprawdzic w kodzie czy kontrakt ma dostepne tokeny????? !!!!!!!!!!!!!!!!!
 
-    // Ensure that the buyer has enough Ether to purchase tokens
     const etherAmount = ethers.toBigInt(TokensAmount) * ethers.toBigInt(Price);
     await TransactionsContract.connect(buyer).purchase(
       ethers.toBigInt(TokensAmount),
       { value: etherAmount }
     );
 
-    // Check if the buyer received the tokens
+    // Sprawdza czy kupujący otrzymał tokeny
     const finalOwnerBalance = await FossaTokenContract.balanceOf(
       await TransactionsContract.target
     );
@@ -75,11 +73,9 @@ describe("TransactionsTest1", () => {
       TransactionsContract.target,
       TokensAmount
     );
-     await TransactionsContract.connect(buyer).transfer(
-      user,
-      TokensAmount,
-      { value: TokensAmount * Price }
-    );
+    await TransactionsContract.connect(buyer).transfer(user, TokensAmount, {
+      value: TokensAmount * Price,
+    });
     const userBalance = await FossaTokenContract.balanceOf(
       await user.getAddress()
     );

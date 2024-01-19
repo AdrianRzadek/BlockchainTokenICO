@@ -6,7 +6,6 @@ import "./FossaToken.sol";
 contract Transactions {
     address payable public admin;
     FossaToken public tokenContract;
-    uint256 public transfersCounter;
     uint256 public price = 1000000000000000;
     uint256 public purchased;
     uint256 public newValue;
@@ -14,23 +13,24 @@ contract Transactions {
         Active,
         Ended
     }
+    //Stan sprzedazy
     IcoState public icoState = IcoState.Active;
-
+    //Wydarzenia Kupno, Sprzedaz,
     event Buy(address indexed account, uint256 amount);
     event Sell(
         address indexed account,
         address indexed tokenContract,
         uint256 amount
     );
+    //Stan sprzedazy
     event IcoEnded();
-
-  
 
     modifier icoIsActive() {
         require(icoState == IcoState.Active, "Sprzedaz nie aktywna");
         _;
     }
 
+    //Konstruktor
     constructor(FossaToken _tokenContract, uint256 _price) {
         // Assign an admin
         admin = payable(msg.sender);
@@ -40,12 +40,14 @@ contract Transactions {
         price = _price;
     }
 
+    //Struktura transakcji
     struct Transaction {
         address account;
         uint256 amountOfTokens;
         uint256 etherValue;
     }
 
+    //Zakup
     function purchase(uint256 amountOfTokens) external payable icoIsActive {
         Transaction memory transaction = Transaction({
             account: msg.sender,
@@ -56,6 +58,7 @@ contract Transactions {
         _executePurchase(transaction);
     }
 
+    //Sprzedaz
     function swap(uint256 amountOfTokens) external payable icoIsActive {
         Transaction memory transaction = Transaction({
             account: msg.sender,
@@ -76,7 +79,10 @@ contract Transactions {
                 transaction.amountOfTokens,
             "Nie wystarczajaca ilosc tokenow"
         );
-        require(msg.value == transaction.etherValue, "Wyslano nieporawna wartosc");
+        require(
+            msg.value == transaction.etherValue,
+            "Wyslano nieporawna wartosc"
+        );
         require(
             tokenContract.transfer(
                 transaction.account,
@@ -90,7 +96,10 @@ contract Transactions {
     }
 
     function _executeSwap(Transaction memory transaction) private {
-        require(transaction.amountOfTokens > 0, "Liczba tokenow musi byc wieksza niz 0");
+        require(
+            transaction.amountOfTokens > 0,
+            "Liczba tokenow musi byc wieksza niz 0"
+        );
         require(
             tokenContract.balanceOf(transaction.account) >=
                 transaction.amountOfTokens,
@@ -123,6 +132,7 @@ contract Transactions {
         );
     }
 
+    // Struktura transferu
     struct TransferStruct {
         address sender;
         address receiver;
@@ -135,27 +145,17 @@ contract Transactions {
         address payable _receiver,
         uint256 _amount
     ) public payable {
-
-        // Add the transfer details to the transfers array
         TransferStruct(msg.sender, _receiver, _amount);
 
-        // Ensure the token transfer is successful
         require(
             tokenContract.transferFrom(msg.sender, _receiver, _amount),
             "Transfer tokenu nieudany"
         );
     }
 
- 
-
-    // Fallback function to receive Ether
+    // Funkcja zwracania etheru
     receive() external payable {}
 
-    // Fallback function to receive Ether
+    // Funkcja wycofania
     fallback() external payable {}
-
-
-
-   
-    
 }

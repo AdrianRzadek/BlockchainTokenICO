@@ -2,45 +2,43 @@
 pragma solidity ^0.8.23;
 
 contract FossaToken {
-
-    // Owner of the contract
+    // Adres właściciela kontraktu
     address public owner;
-    // Name of the token
+    // Nazwa żetonu
     string public name = "FossaToken";
-    // Symbol of the token
+    // Symbol żetonu
     string public symbol = "FOSSA";
-    // Decimals of the token
+    // Miejsca dziesiętne jednostki żetonu
     uint8 public constant decimals = 0;
-    // Total supply of the token
+    // Całkowite zaopatrzenie w żetony
     uint256 public totalSupply;
-  
-  
 
-    // Event emitted when tokens are transferred
-    event Transfer(
-        address indexed _from,
-     address indexed _to, 
-     uint256 _value);
+    // Wydarzenie emitowane podczas transferu
+    event Transfer(address indexed _from, address indexed _to, uint256 _value);
+    // Wydarzenie emitowane podczas zatwierdzenia
     event Approval(
         address indexed _owner,
         address indexed _spender,
         uint256 _value
     );
-
+    //Mapowanie adresu na balans konta
     mapping(address => uint256) public balanceOf;
+    //Mapowanie adresu na wartość zmapowaną dozwolonej ilości
     mapping(address => mapping(address => uint256)) public allowance;
 
- 
-
+    //Konstruktor
     constructor(uint256 supply) {
         owner = msg.sender;
         balanceOf[owner] = supply;
         totalSupply = supply;
-        
     }
 
+    //Transfer wartości na inny adres
     function transfer(address _to, uint256 _value) public returns (bool) {
-        require(balanceOf[msg.sender] >= _value, "Niewystarczajacy balans konta");
+        require(
+            balanceOf[msg.sender] >= _value,
+            "Niewystarczajacy balans konta"
+        );
         _transfer(msg.sender, _to, _value);
         return true;
     }
@@ -53,54 +51,60 @@ contract FossaToken {
 
         emit Transfer(_from, _to, _value);
     }
-function approve(address _spender, uint256 _value) public returns (bool) {
-    require(_spender != address(0), "Niewlasciwy adres wysylajacego");
 
-    // Ensure the allowance is set to a non-negative value
-    require(_value >= 0, "Wartosc dozwolonej ilosci nie moze byc ujemna");
+    //Zatwierdzenie wartości
+    function approve(address _spender, uint256 _value) public returns (bool) {
+        require(_spender != address(0), "Niewlasciwy adres wysylajacego");
 
-    // If allowance was previously set, handle decrease in a gas-efficient way
-    if (_value < allowance[msg.sender][_spender]) {
-        allowance[msg.sender][_spender] = _value;
-    } else if (_value > allowance[msg.sender][_spender]) {
-        // If allowance is increased, update the allowance and emit Approval event
-        allowance[msg.sender][_spender] = _value;
-        emit Approval(msg.sender, _spender, _value);
+        require(_value >= 0, "Wartosc dozwolonej ilosci nie moze byc ujemna");
+
+        // Warunek do zmniejszenia zużycia gazu jeżeli allowance już istnieje
+        if (_value < allowance[msg.sender][_spender]) {
+            allowance[msg.sender][_spender] = _value;
+        } else if (_value > allowance[msg.sender][_spender]) {
+            //Jeżeli allowance jest zwiększone to wartość jest aktualizowana
+            allowance[msg.sender][_spender] = _value;
+            emit Approval(msg.sender, _spender, _value);
+        }
+
+        return true;
     }
 
-    return true;
-}
-
+    // Transfer od adresu dla adresu z wartością
     function transferFrom(
         address _from,
         address _to,
         uint256 _value
     ) public returns (bool) {
-          // Ensure the transfer amount is non-zero
-    require(_value > 0, "Wartosc transferu musi byc wieksza od zera");
+        require(_value > 0, "Wartosc transferu musi byc wieksza od zera");
 
-    // Ensure the source account has sufficient balance
-    require( balanceOf[_from] >= _value, "Niwystarczajacy balans konta");
+        require(balanceOf[_from] >= _value, "Niwystarczajacy balans konta");
 
-    // Ensure the allowance is set to a non-negative value
-    require(allowance[_from][msg.sender] >= _value, "Dozwolona ilosc nie jest wystarczajaco duza");
+        require(
+            allowance[_from][msg.sender] >= _value,
+            "Dozwolona ilosc nie jest wystarczajaco duza"
+        );
 
-    // Check for overflow or underflow in balance adjustment
-    require(balanceOf[_to] + _value > balanceOf[_to], "Sprawdza czy wartosc moze zostac dodana do konta docelowego");
+        require(
+            balanceOf[_to] + _value > balanceOf[_to],
+            "Sprawdza czy wartosc moze zostac dodana do konta docelowego"
+        );
 
-    // Check for overflow in allowance adjustment
-    require(allowance[_from][msg.sender] - _value <= allowance[_from][msg.sender], "Dozwolona ilosc jest za mala");
-
+        require(
+            allowance[_from][msg.sender] - _value <=
+                allowance[_from][msg.sender],
+            "Dozwolona ilosc jest za mala"
+        );
 
         allowance[_from][msg.sender] -= _value;
 
         _transfer(_from, _to, _value);
 
-
         return true;
     }
+    //Funkcja zwracania żetonu
+    receive() external payable {}
 
-
-     receive() external payable {}
-     fallback() external payable {}
+    //Funkcja wycofania
+    fallback() external payable {}
 }

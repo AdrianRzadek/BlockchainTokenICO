@@ -46,21 +46,21 @@ const LoadLogo = ({ target, symbol, decimals, logoState }) => {
                 });
 
                 if (wasAdded) {
-                  console.log("Thanks for your interest!");
+                  console.log("Dodano token");
                   localStorage.setItem("tokenAdded", "true");
                   localStorage.setItem("tokenAddress", target);
                 } else {
-                  console.log("Your loss!");
+                  console.log("Nie dodano tokenu");
                   return;
                 }
               }
             } else {
               console.log(
-                "Token already added or the user was previously prompted."
+                "Już dodano token."
               );
             }
 
-            // Set the session variable to indicate the user has visited the site
+            //Sprawdza które to jest wjeście na stone aby dodać token
             sessionStorage.setItem("firstVisit", "true");
           }
         }
@@ -69,7 +69,6 @@ const LoadLogo = ({ target, symbol, decimals, logoState }) => {
       }
     };
 
-    // Call loadLogo on each entry to the site
     loadLogo();
   }, [logoState]);
 

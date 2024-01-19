@@ -15,8 +15,8 @@ const LoadingScreen = ({ loadingInfo }) => {
     };
 
     p.setup = () => {
-      //   resizeCanvas(); // Call the resizeCanvas function
-      window.addEventListener("resize", resizeCanvas); // Attach resizeCanvas to the resize event
+      
+      window.addEventListener("resize", resizeCanvas);
 
       p.createCanvas(window.innerWidth, window.innerHeight);
       origin = p.createVector(window.innerWidth / 2, window.innerHeight / 2);

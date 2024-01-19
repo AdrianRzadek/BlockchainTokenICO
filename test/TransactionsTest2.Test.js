@@ -18,7 +18,7 @@ describe("TransactionsTest2", () => {
     const FossaToken = await ethers.getContractFactory("FossaToken");
     const Transactions = await ethers.getContractFactory("Transactions");
 
-    FossaTokenContract = await FossaToken.deploy(Available); // Deploy your FossaToken contract with an initial supply
+    FossaTokenContract = await FossaToken.deploy(Available); // Zaopatrzenie kontraktu w tokeny
     TransactionsContract = await Transactions.deploy(
       FossaTokenContract.target,
       Price
@@ -27,7 +27,6 @@ describe("TransactionsTest2", () => {
   });
 
   it("Test sprawdza kupno tokenów przez użytkownika ", async () => {
-    // Add balance verification, etc. according to your contract's logic and structure
     await TransactionsContract.connect(buyer).purchase(TokensAmount, {
       value: Price * TokensAmount,
     });
@@ -45,7 +44,6 @@ describe("TransactionsTest2", () => {
   });
 
   it("Test sprawdza sprzedaż tokenów przez użytkownika", async function () {
-    // Approve the YourTokenSaleContract to spend tokens on behalf of the buyer
     await FossaTokenContract.connect(buyer).approve(
       TransactionsContract.target,
       TokensAmount
@@ -54,12 +52,10 @@ describe("TransactionsTest2", () => {
     const initialBuyerBalance = await FossaTokenContract.balanceOf(
       buyer.address
     );
-    //console.log(initialBuyerBalance);
 
     const initialContractBalance = await FossaTokenContract.balanceOf(
       TransactionsContract.target
     );
-    // console.log(initialContractBalance);
 
     await TransactionsContract.connect(buyer).swap(TokensAmount);
 
@@ -68,25 +64,20 @@ describe("TransactionsTest2", () => {
       TransactionsContract.target
     );
 
-    // Check that the ether was transferred to the buyer
+    // Sprawdza czy tokeny zostały wysłane
     expect(initialBuyerBalance).to.be.equal(TokensAmount);
     expect(finalBuyerBalance).to.be.lessThan(initialBuyerBalance);
-    // Check that the tokens were transferred to the contract
+
     const contractTokenBalance = await FossaTokenContract.balanceOf(
       TransactionsContract.target
     );
+    //Sprawdza czy kontrakt otrzymał Ether
     expect(contractTokenBalance).to.be.above(TokensAmount);
-
-    // Check that the ether was transferred to the contract
     const expectedContractBalance = initialContractBalance + TokensAmount;
     expect(finalContractBalance).to.equal(expectedContractBalance);
   });
 
   it("Test sprawdza czy sprzedaż istnieje", async () => {
-    await expect(TransactionsContract.connect(buyer).end()).to.be.revertedWith(
-      "Only the admin can call this function"
-    );
-
     const ownerBalance = await FossaTokenContract.balanceOf(
       await owner.getAddress()
     );

@@ -5,7 +5,7 @@ const fs = require("fs");
 async function main() {
   const [deployer] = await ethers.getSigners();
   const address = await deployer.getAddress();
-  console.log("Deploying the contracts with the account:", address);
+  console.log("Wdrożene przez konto:", address);
 
   const FossaToken = await ethers.getContractFactory("FossaToken");
   const fossaToken = await FossaToken.deploy(1000);
@@ -13,14 +13,14 @@ async function main() {
   console.log("Token address:", fossaToken.target);
 
   //Ustawia cenę tokena
-  const tokenPrice = ethers.parseEther("1"); // Convert 1 Ether to Wei
+  const tokenPrice = ethers.parseEther("1"); // Zmienia 1 Ether na Wei
 
   const Transactions = await ethers.getContractFactory("Transactions");
   const transactions = await Transactions.deploy(fossaToken.target, tokenPrice);
   await transactions.waitForDeployment();
   console.log("Transactions address:", transactions.target);
 
-  //Token transfer to sale contract
+  //Token transfer do kontraktu transactions
   await fossaToken.transfer(transactions.target, "1000");
 
 

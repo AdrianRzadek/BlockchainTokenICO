@@ -14,8 +14,8 @@ const Web3Status = () => {
       //Sprawdza jakie konto jest podpięte przenieść niżej
       const checkAccountChange = () => {
         window.ethereum.on("accountsChanged", (accounts) => {
-          // Handle account change here
-          console.log("Account changed:", accounts[0]);
+          // Obsługuje zmienę kont
+          console.log("Konto zmienione:", accounts[0]);
           setAddressProvider(accounts[0]);
         });
       };
