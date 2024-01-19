@@ -61,15 +61,15 @@ const Purchase = ({ fossaToken, transactions, price, provider, sold }) => {
     try {
       const amount = event.target.amount.value;
       const amountBigInt = ethers.toBigInt(amount);
-      console.log("Buy Tokens Info:");
+      console.log("Info:");
       const priceBigInt = await ethers.toBigInt(Price);
 
       console.log(await priceBigInt);
       console.log(await amountBigInt);
 
-      console.log("Value: " + amountBigInt * priceBigInt);
-      console.log("Number of Tokens: " + amountBigInt);
-      console.log("address signer " + AddressProvider);
+      console.log("Wartośc: " + amountBigInt * priceBigInt);
+      console.log("Liczba tokenów: " + amountBigInt);
+      console.log("Adres kupującego " + AddressProvider);
       const value = priceBigInt * amountBigInt;
       console.log(value);
       const txBuy = await transactions.purchase(amountBigInt, {

@@ -15,8 +15,7 @@ const Transfer = ({ transactions, fossaToken, provider }) => {
     const reciver = await event.target.reciver.value;
     const amount = await event.target.amount.value;
     const value = await ethers.toBigInt(amount);
-    console.log(addressSigner);
-    console.log(reciver);
+
     await fossaToken.approve(transactionsTarget, value);
     await transactions.transfer(reciver, value, {
       from: await addressSigner,

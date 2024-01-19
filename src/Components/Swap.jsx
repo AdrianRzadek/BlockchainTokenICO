@@ -90,7 +90,7 @@ const Swap = ({ transactions, fossaToken, provider, price }) => {
             />
             <br />
             <button type="submit" className="btn btn-primary">
-              Sprzedaj
+              Wymień
             </button>
             {loading && <Loading />}
           </form>
