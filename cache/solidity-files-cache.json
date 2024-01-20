@@ -2,8 +2,8 @@
   "_format": "hh-sol-cache-2",
   "files": {
     "C:\\Users\\adria\\Documents\\GitHub\\Dapp\\contracts\\FossaToken.sol": {
-      "lastModificationDate": 1705652995463,
-      "contentHash": "22dfb507515473a71982b3bdaeb6f39b",
+      "lastModificationDate": 1705702303199,
+      "contentHash": "b1241d3a2c734b5db58dc62b78b84cb8",
       "sourceName": "contracts/FossaToken.sol",
       "solcConfig": {
         "version": "0.8.23",
@@ -74,8 +74,8 @@
       ]
     },
     "C:\\Users\\adria\\Documents\\GitHub\\Dapp\\contracts\\Transactions.sol": {
-      "lastModificationDate": 1705652946019,
-      "contentHash": "557482e074d6820eadb215126ac79ef2",
+      "lastModificationDate": 1705702534690,
+      "contentHash": "faa06cdf525d3a18a28ddbf9e7e2bd0e",
       "sourceName": "contracts/Transactions.sol",
       "solcConfig": {
         "version": "0.8.23",
