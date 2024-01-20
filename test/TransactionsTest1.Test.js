@@ -4,7 +4,7 @@ const { before } = require("mocha");
 describe("TransactionsTest1", () => {
   let TransactionsContract;
   let FossaTokenContract;
-  let Price = 1000000000000000000n; // in wei
+  let Price = 1000000000000000000n; // wei
   let owner;
   let buyer;
   let user;

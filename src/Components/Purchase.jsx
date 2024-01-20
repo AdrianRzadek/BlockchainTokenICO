@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Transaction, ethers } from "ethers";
+import { ethers } from "ethers";
 import Loading from "./Loading";
 import ProgressLabel from "./Progress";
 import "../App.css";

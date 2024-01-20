@@ -8,7 +8,7 @@ const LoadingScreen = ({ loadingInfo }) => {
     let origin;
     let frame = 0;
     const flyBoxes = [];
-    const flyBoxColors = ["#FF6138", "#FFBE53", "#2980B9", "#282741"];
+    const flyBoxColors = ["#FFAA00", "#023E8A", "#FF9100", "#0077B6"];
     const resizeCanvas = () => {
       p.resizeCanvas(window.innerWidth, window.innerHeight);
       origin = p.createVector(window.innerWidth / 2, window.innerHeight / 2);
