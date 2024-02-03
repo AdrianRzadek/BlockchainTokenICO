@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { ethers } from "ethers";
-import FossaToken from "../contracts/FossaToken.json";
+import ForsaToken from "../contracts/ForsaToken.json";
 import Transactions from "../contracts/Transactions.json";
 import contractAddress from "../contracts/contract-address.json";
 import Purchase from "./Purchase";
@@ -10,10 +10,10 @@ import LoadLogo from "./LoadLogo";
 
 const LoadContracts = (addressProvider) => {
   const [transactions, setTransactions] = useState();
-  const [fossaToken, setFossaToken] = useState();
-  const [fossaTokenSymbol, setFossaTokenSymbol] = useState();
-  const [fossaTokenDecimals, setFossaTokenDecimals] = useState();
-  const [fossaTokenTarget, setFossaTokenTarget] = useState();
+  const [forsaToken, setForsaToken] = useState();
+  const [forsaTokenSymbol, setForsaTokenSymbol] = useState();
+  const [forsaTokenDecimals, setForsaTokenDecimals] = useState();
+  const [forsaTokenTarget, setForsaTokenTarget] = useState();
   const [transactionsPrice, setTransactionsPrice] = useState();
   const [AddressSigner, setAddressSigner] = useState();
   const [TokensSold, setTokensSold] = useState();
@@ -27,7 +27,7 @@ const LoadContracts = (addressProvider) => {
           const provider = new ethers.BrowserProvider(window.ethereum);
           const signer = await provider.getSigner();
 
-          if (Transactions && FossaToken) {
+          if (Transactions && ForsaToken) {
             const addressTransactions = contractAddress.Transactions;
             const abiTransactions = Transactions.abi;
             const transactionsContract = new ethers.Contract(
@@ -36,17 +36,17 @@ const LoadContracts = (addressProvider) => {
               signer
             );
 
-            const addressFossaToken = contractAddress.FossaToken;
-            const abiFossaToken = FossaToken.abi;
-            const fossaTokenContract = new ethers.Contract(
-              addressFossaToken,
-              abiFossaToken,
+            const addressForsaToken = contractAddress.ForsaToken;
+            const abiForsaToken = ForsaToken.abi;
+            const forsaTokenContract = new ethers.Contract(
+              addressForsaToken,
+              abiForsaToken,
               signer
             );
 
            
             setTransactions(transactionsContract);
-            setFossaToken(fossaTokenContract);
+            setForsaToken(forsaTokenContract);
           } else {
             window.alert(
               "Brak kontraktów w sieci."
@@ -59,33 +59,33 @@ const LoadContracts = (addressProvider) => {
     }
 
     loadContracts();
-  }, [transactions, fossaToken]);
+  }, [transactions, forsaToken]);
 
   useEffect(() => {
-    if (fossaToken) {
+    if (forsaToken) {
       if (
-        fossaToken.symbol() !== undefined &&
-        fossaToken.decimals() !== undefined &&
-        fossaToken.target !== undefined
+        forsaToken.symbol() !== undefined &&
+        forsaToken.decimals() !== undefined &&
+        forsaToken.target !== undefined
       ) {
         if (logoState === false) {
-          setFossaTokenSymbol(fossaToken.symbol());
-          setFossaTokenDecimals(fossaToken.decimals());
-          setFossaTokenTarget(fossaToken.target);
+          setForsaTokenSymbol(forsaToken.symbol());
+          setForsaTokenDecimals(forsaToken.decimals());
+          setForsaTokenTarget(forsaToken.target);
           setLogoState(true);
         }
       }
     } else {
       return () => {};
     }
-  }, [fossaToken]);
+  }, [forsaToken]);
 
   useEffect(() => {
     if (transactions ) {
       setAddressSigner(addressProvider);
       setTransactionsPrice(transactions.price());
       setTokensSold(transactions.purchased());
-      setSupply(fossaToken.totalSupply());
+      setSupply(forsaToken.totalSupply());
     }
   }, [transactions, addressProvider]);
 
@@ -93,12 +93,12 @@ const LoadContracts = (addressProvider) => {
     <>
       <LoadLogo
         logoState={logoState}
-        target={fossaTokenTarget}
-        symbol={fossaTokenSymbol}
-        decimals={fossaTokenDecimals}
+        target={forsaTokenTarget}
+        symbol={forsaTokenSymbol}
+        decimals={forsaTokenDecimals}
       />
       <Purchase
-        fossaToken={fossaToken}
+        forsaToken={forsaToken}
         transactions={transactions}
         provider={AddressSigner}
         price={transactionsPrice}
@@ -108,13 +108,13 @@ const LoadContracts = (addressProvider) => {
 
       <Transfer
        transactions={transactions}
-        fossaToken={fossaToken}
+        forsaToken={forsaToken}
         provider={AddressSigner}
       />
 
       <Swap
         transactions={transactions}
-        fossaToken={fossaToken}
+        forsaToken={forsaToken}
         provider={AddressSigner}
         price={transactionsPrice}
       />

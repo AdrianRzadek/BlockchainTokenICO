@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { ethers } from "ethers";
 import Loading from "./Loading";
-const Swap = ({ transactions, fossaToken, provider, price }) => {
+const Swap = ({ transactions, forsaToken, provider, price }) => {
   const [tokensExchange, setTokensExchange] = useState("");
   const [TokenPrice, setTokenPrice] = useState("");
   const [tokensValue, setTokensValue] = useState("");
@@ -43,7 +43,7 @@ const Swap = ({ transactions, fossaToken, provider, price }) => {
     console.log(tokensValue);
 
     try {
-      await fossaToken.approve(transactions.target, value, {
+      await forsaToken.approve(transactions.target, value, {
         from: await addressSigner,
         gas: 20000000,
       });

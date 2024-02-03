@@ -1,13 +1,13 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.23;
 
-contract FossaToken {
+contract ForsaToken {
     // Adres właściciela kontraktu
     address public owner;
     // Nazwa żetonu
-    string public name = "FossaToken";
+    string public name = "ForsaToken";
     // Symbol żetonu
-    string public symbol = "FOSSA";
+    string public symbol = "FORSA";
     // Miejsca dziesiętne jednostki żetonu
     uint8 public constant decimals = 0;
     // Całkowite zaopatrzenie w żetony

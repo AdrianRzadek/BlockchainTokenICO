@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { ethers } from "ethers";
 import Loading from "./Loading";
 
-const Transfer = ({ transactions, fossaToken, provider }) => {
+const Transfer = ({ transactions, forsaToken, provider }) => {
   const [loading, setLoading] = useState(false);
 
   const addressSigner = provider && provider.addressProvider;
@@ -16,7 +16,7 @@ const Transfer = ({ transactions, fossaToken, provider }) => {
     const amount = await event.target.amount.value;
     const value = await ethers.toBigInt(amount);
 
-    await fossaToken.approve(transactionsTarget, value);
+    await forsaToken.approve(transactionsTarget, value);
     await transactions.transfer(reciver, value, {
       from: await addressSigner,
       value: value,

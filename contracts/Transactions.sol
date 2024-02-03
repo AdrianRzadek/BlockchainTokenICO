@@ -1,11 +1,11 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.23;
 
-import "./FossaToken.sol";
+import "./ForsaToken.sol";
 
 contract Transactions {
     address payable public admin;
-    FossaToken public tokenContract;
+    ForsaToken public tokenContract;
     uint256 public price = 1000000000000000;
     uint256 public purchased;
     uint256 public newValue;
@@ -31,7 +31,7 @@ contract Transactions {
     }
 
     //Konstruktor
-    constructor(FossaToken _tokenContract, uint256 _price) {
+    constructor(ForsaToken _tokenContract, uint256 _price) {
         // Assign an admin
         admin = payable(msg.sender);
         // Token Contract

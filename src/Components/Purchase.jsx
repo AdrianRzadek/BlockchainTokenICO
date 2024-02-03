@@ -3,7 +3,7 @@ import { ethers } from "ethers";
 import Loading from "./Loading";
 import ProgressLabel from "./Progress";
 import "../App.css";
-const Purchase = ({ fossaToken, transactions, price, provider, sold }) => {
+const Purchase = ({ forsaToken, transactions, price, provider, sold }) => {
   const [loading, setLoading] = useState(false);
   const [Price, setPrice] = useState("");
   const [SoldAmount, setSoldAmount] = useState("");
@@ -35,15 +35,15 @@ const Purchase = ({ fossaToken, transactions, price, provider, sold }) => {
 
   useEffect(() => {
     async function fetchData() {
-      if (fossaToken) {
-        const Available = await fossaToken.balanceOf(transactions.target);
+      if (forsaToken) {
+        const Available = await forsaToken.balanceOf(transactions.target);
         setAvailable(await Available.toString());
-        const tokensSupply = await fossaToken.totalSupply();
+        const tokensSupply = await forsaToken.totalSupply();
         setSupply(await tokensSupply.toString());
       }
     }
     fetchData();
-  }, [fossaToken, transactions]);
+  }, [forsaToken, transactions]);
 
   useEffect(() => {
     async function fetchData() {
