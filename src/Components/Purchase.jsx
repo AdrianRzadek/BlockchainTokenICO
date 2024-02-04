@@ -93,13 +93,13 @@ const Purchase = ({ forsaToken, transactions, price, provider, sold }) => {
        <div className="container-fluid text-center">
       <div className="row align-items-center justify-content-center min-vh-10">
         <div className="col-md-5">
-            <p>Obecnie podłączone konto: {AddressProvider}</p>
+            <h5>Obecnie podłączone konto: {AddressProvider}</h5>
             
-            <h2>Żeton FOSSA</h2>
-            <p>Cena żetonu: {Price} Wei</p>
-            <p>Całkowita ilość żetonów: {Supply}</p>
-            <p>Dostępne żetony: {Available}</p>
-          <p>Zakup</p>  
+            <h2>Żeton ICO</h2>
+            <h5>Cena żetonu: {Price} Wei</h5>
+            <h5>Całkowita ilość żetonów: {Supply}</h5>
+            <h5>Dostępne żetony: {Available}</h5>
+          <h5>Zakup</h5>  
             
             <form onSubmit={purchase}>
               <div className="form-group">

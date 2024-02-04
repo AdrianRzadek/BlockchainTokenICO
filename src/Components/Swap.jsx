@@ -66,7 +66,7 @@ const Swap = ({ transactions, forsaToken, provider, price }) => {
     <div className="container-fluid">
       <div className="row justify-content-center">
         <div className="col-md-4 offset-md-6">
-          <p className="text-center">Wymień:</p>
+          <h5 className="text-center">Wymień:</h5>
           <form onSubmit={swap} className="text-center">
             <input
               type="text"
@@ -78,8 +78,8 @@ const Swap = ({ transactions, forsaToken, provider, price }) => {
               onChange={updateTokensValue}
             />
             <br />
-            <span>Balans: {tokensValue}</span>
-            <br />
+            <h5>Balans: {tokensValue}</h5>
+          
             <input
               type="text"
               id="etherExchange"

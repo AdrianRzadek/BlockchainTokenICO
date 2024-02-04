@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 
 const LoadLogo = ({ target, symbol, decimals, logoState }) => {
   const tokenImage =
-    "https://github.com/AdrianRzadek/BlockchainTokenICO/blob/52105347ed36deaafb2f82a1b2b2c2e6a2cdce96/logo.png";
+    "https://raw.githubusercontent.com/AdrianRzadek/BlockchainTokenICO/52105347ed36deaafb2f82a1b2b2c2e6a2cdce96/logo.png";
 
   const [tokenAdded, setTokenAdded] = useState(false);
   const [storedTokenAddress, setStoredTokenAddress] = useState("");

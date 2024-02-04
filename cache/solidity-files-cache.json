@@ -1,42 +1,6 @@
 {
   "_format": "hh-sol-cache-2",
   "files": {
-    "C:\\Users\\adria\\Documents\\GitHub\\Dapp\\contracts\\FossaToken.sol": {
-      "lastModificationDate": 1705702303199,
-      "contentHash": "b1241d3a2c734b5db58dc62b78b84cb8",
-      "sourceName": "contracts/FossaToken.sol",
-      "solcConfig": {
-        "version": "0.8.23",
-        "settings": {
-          "evmVersion": "shanghai",
-          "optimizer": {
-            "enabled": true,
-            "runs": 200
-          },
-          "outputSelection": {
-            "*": {
-              "*": [
-                "abi",
-                "evm.bytecode",
-                "evm.deployedBytecode",
-                "evm.methodIdentifiers",
-                "metadata"
-              ],
-              "": [
-                "ast"
-              ]
-            }
-          }
-        }
-      },
-      "imports": [],
-      "versionPragmas": [
-        "^0.8.23"
-      ],
-      "artifacts": [
-        "FossaToken"
-      ]
-    },
     "C:\\Users\\adria\\Documents\\GitHub\\Dapp\\node_modules\\hardhat\\console.sol": {
       "lastModificationDate": 1704150507822,
       "contentHash": "896f68942c3a20e9ae3c3c5bfd3add54",
@@ -74,8 +38,8 @@
       ]
     },
     "C:\\Users\\adria\\Documents\\GitHub\\Dapp\\contracts\\Transactions.sol": {
-      "lastModificationDate": 1705702534690,
-      "contentHash": "faa06cdf525d3a18a28ddbf9e7e2bd0e",
+      "lastModificationDate": 1706997828221,
+      "contentHash": "3ae96f92d9b2f4e69393d5a2a34084f9",
       "sourceName": "contracts/Transactions.sol",
       "solcConfig": {
         "version": "0.8.23",
@@ -102,13 +66,49 @@
         }
       },
       "imports": [
-        "./FossaToken.sol"
+        "./ForsaToken.sol"
       ],
       "versionPragmas": [
         "^0.8.23"
       ],
       "artifacts": [
         "Transactions"
+      ]
+    },
+    "C:\\Users\\adria\\Documents\\GitHub\\Dapp\\contracts\\ForsaToken.sol": {
+      "lastModificationDate": 1706997813020,
+      "contentHash": "fea0fc9e9bdac176d34bacf21677ea23",
+      "sourceName": "contracts/ForsaToken.sol",
+      "solcConfig": {
+        "version": "0.8.23",
+        "settings": {
+          "evmVersion": "shanghai",
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [],
+      "versionPragmas": [
+        "^0.8.23"
+      ],
+      "artifacts": [
+        "ForsaToken"
       ]
     }
   }

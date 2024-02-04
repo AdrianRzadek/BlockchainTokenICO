@@ -31,7 +31,7 @@ const Transfer = ({ transactions, forsaToken, provider }) => {
        <br/><br/>
     <div className="row justify-content-left">
       <div className="col-md-4 text-center offset-md-1">
-        <p>Transfer:</p>
+        <h5>Transfer:</h5>
         <form onSubmit={transfer}>
           <div className="form-group">
             <input

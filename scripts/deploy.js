@@ -7,25 +7,25 @@ async function main() {
   const address = await deployer.getAddress();
   console.log("Wdrożene przez konto:", address);
 
-  const FossaToken = await ethers.getContractFactory("FossaToken");
-  const fossaToken = await FossaToken.deploy(1000);
-  await fossaToken.waitForDeployment();
-  console.log("Token address:", fossaToken.target);
+  const ForsaToken = await ethers.getContractFactory("ForsaToken");
+  const forsaToken = await ForsaToken.deploy(1000);
+  await forsaToken.waitForDeployment();
+  console.log("Token address:", forsaToken.target);
 
   //Ustawia cenę tokena
   const tokenPrice = ethers.parseEther("1"); // Zmienia 1 Ether na Wei
 
   const Transactions = await ethers.getContractFactory("Transactions");
-  const transactions = await Transactions.deploy(fossaToken.target, tokenPrice);
+  const transactions = await Transactions.deploy(forsaToken.target, tokenPrice);
   await transactions.waitForDeployment();
   console.log("Transactions address:", transactions.target);
 
   //Token transfer do kontraktu transactions
-  await fossaToken.transfer(transactions.target, "1000");
+  await forsaToken.transfer(transactions.target, "1000");
 
 
 
-  saveClientFiles(fossaToken, transactions);
+  saveClientFiles(forsaToken, transactions);
 
   const signers = await ethers.getSigners();
 
@@ -37,7 +37,7 @@ async function main() {
   fs.writeFileSync("src/contracts/wallet-address.json", serializedAddresses);
 }
 
-function saveClientFiles(fossaToken, transactions) {
+function saveClientFiles(forsaToken, transactions) {
   const contractsDir = path.join(__dirname, "..", "src", "contracts");
 
   if (!fs.existsSync(contractsDir)) {
@@ -45,7 +45,7 @@ function saveClientFiles(fossaToken, transactions) {
   }
 
   const contractAddresses = {
-    FossaToken: fossaToken.target,
+    ForsaToken: forsaToken.target,
     Transactions: transactions.target,
   };
 
@@ -54,12 +54,12 @@ function saveClientFiles(fossaToken, transactions) {
     JSON.stringify(contractAddresses, undefined, 2)
   );
 
-  const FossaTokenArtifact = artifacts.readArtifactSync("FossaToken");
+  const ForsaTokenArtifact = artifacts.readArtifactSync("ForsaToken");
   const TransactionsArtifact = artifacts.readArtifactSync("Transactions");
 
   fs.writeFileSync(
-    path.join(contractsDir, "FossaToken.json"),
-    JSON.stringify(FossaTokenArtifact, null, 2)
+    path.join(contractsDir, "ForsaToken.json"),
+    JSON.stringify(ForsaTokenArtifact, null, 2)
   );
   fs.writeFileSync(
     path.join(contractsDir, "Transactions.json"),

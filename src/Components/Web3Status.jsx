@@ -7,7 +7,7 @@ import Background from "./Background";
 const Web3Status = () => {
   const [addressProvider, setAddressProvider] = useState("");
   const [isLoading, setIsLoading] = useState(true);
-  const [loadingInfo, setLoadingInfo] = useState("Ładowanie danych");
+  const [loadingInfo, setLoadingInfo] = useState("Zaloguj się do zdecentralizowanej sieci");
 
   useEffect(() => {
     const web3Status = async () => {
